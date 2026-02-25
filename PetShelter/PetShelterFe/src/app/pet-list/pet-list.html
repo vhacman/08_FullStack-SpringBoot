@@ -1,0 +1,123 @@
+<!-- (click) sul div header apre/chiude la lista principale tramite toggleList().
+     showList() è un signal booleano: @if lo legge e mostra o nasconde il contenuto. -->
+<div class="list-header" (click)="toggleList()">
+  <span>List of Animals</span>
+</div>
+
+@if (showList()) {
+<h2>Search by</h2>
+<!-- I filtri sono collegati ai signal tramite il pattern [ngModel]/(ngModelChange).
+     Ogni modifica aggiorna il signal → filteredPets() si ricalcola automaticamente. -->
+<form class="filters">
+  <div>
+    <label>Name</label><br />
+    <input type="text" name="filterName"
+           [ngModel]="filterName()"
+           (ngModelChange)="filterName.set($event)" />
+  </div>
+  <div>
+    <label>Breed</label><br />
+    <input type="text" name="filterSpecies"
+           [ngModel]="filterSpecies()"
+           (ngModelChange)="filterSpecies.set($event)" />
+  </div>
+  <div>
+    <label>Notes</label><br />
+    <input type="text" name="filterNotes"
+           [ngModel]="filterNotes()"
+           (ngModelChange)="filterNotes.set($event)" />
+  </div>
+  <div>
+    <label>Older Than (age)</label><br />
+    <input type="number" name="filterOlderThan"
+           [ngModel]="filterOlderThan()"
+           (ngModelChange)="filterOlderThan.set($event)" />
+  </div>
+  <div>
+    <label>Younger Than (age)</label><br />
+    <input type="number" name="filterYoungerThan"
+           [ngModel]="filterYoungerThan()"
+           (ngModelChange)="filterYoungerThan.set($event)" />
+  </div>
+  <div>
+    <label>Sex</label><br />
+    <select name="filterSex"
+            [ngModel]="filterSex()"
+            (ngModelChange)="filterSex.set($event)">
+      <option value="">All</option>
+      <option value="MALE">Male</option>
+      <option value="FEMALE">Female</option>
+    </select>
+  </div>
+</form>
+
+<ul class="pet-list">
+  <!-- @for itera su filteredPets() (computed signal).
+       track pet.id ottimizza il rendering: Angular aggiorna solo gli elementi
+       il cui id è cambiato, invece di rifare tutta la lista. -->
+  @for (pet of filteredPets(); track pet.id) {
+    <li>
+      <!-- Cliccando la riga si apre/chiude il dettaglio del singolo pet -->
+      <div class="pet-header" (click)="togglePet(pet.id)">
+        <div>
+          <strong>{{pet.name}}</strong>
+          <small>({{pet.species}}, {{pet.age}} yrs — arrived {{pet.arrivalDate}})</small>
+        </div>
+        <!-- | lowercase è un pipe Angular: trasforma la stringa in minuscolo
+             per costruire la classe CSS dinamica (es. status-in_progress) -->
+        <span class="status-badge status-{{pet.status | lowercase}}">{{pet.status}}</span>
+      </div>
+      <!-- Il dettaglio è visibile solo se l'id del pet è nel Set expandedPets -->
+      @if (expandedPets().has(pet.id)) {
+        <div class="pet-details">
+          <span>Sex: {{pet.sex}}</span>
+          <!-- Operatore ternario nel template: se sterilized è true mostra "Sterilized" -->
+          <span>{{pet.sterilized ? 'Sterilized' : 'Not sterilized'}}</span>
+          @if (pet.notes) {
+            <p class="pet-notes">{{pet.notes}}</p>
+          }
+        </div>
+      }
+    </li>
+  }
+  @if (filteredPets().length === 0) {
+    <li class="no-results">No animals found.</li>
+  }
+</ul>
+} <!-- fine @if showList -->
+
+<!-- Sezione animali adottati: visibile solo se almeno uno è stato adottato.
+     Il contatore nel titolo si aggiorna in tempo reale grazie al computed signal. -->
+@if (adoptedPets().length > 0) {
+  <div class="adopted-header" (click)="toggleAdoptedList()">
+    <span>Adopted Animals ({{adoptedPets().length}})</span>
+  </div>
+  @if (showAdoptedList()) {
+    <ul class="adopted-list">
+      @for (pet of adoptedPets(); track pet.id) {
+        <li>
+          <strong>{{pet.name}}</strong>
+          <small>({{pet.species}}, {{pet.age}} yrs)</small>
+        </li>
+      }
+    </ul>
+  }
+}
+
+<!-- Sezione lista soppressione: visibile solo se ci sono candidati.
+     I dati vengono dal backend all'avvio dell'app (GET /suppression-list). -->
+@if (suppressionList().length > 0) {
+  <div class="suppression-header" (click)="toggleSuppressionList()">
+    <span>⚠ Suppression list</span>
+  </div>
+  @if (showSuppressionList()) {
+    <ul class="suppression-list">
+      @for (pet of suppressionList(); track pet.id) {
+        <li>
+          <strong>{{pet.name}}</strong>
+          <small>({{pet.species}}, {{pet.age}} yrs — arrived {{pet.arrivalDate}})</small>
+        </li>
+      }
+    </ul>
+  }
+}

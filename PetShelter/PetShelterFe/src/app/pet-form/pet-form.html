@@ -1,0 +1,57 @@
+<!-- (ngSubmit) intercetta l'invio del form (click su submit o Enter) e chiama submit().
+     È preferibile a (click) sul bottone perché funziona anche con la tastiera. -->
+<form (ngSubmit)="submit()">
+  <h2>New Pet</h2>
+
+  <!-- Pattern usato in tutto il form con i signal:
+       [ngModel]="name()"           → legge il valore del signal e lo mostra nell'input (one-way: TS → HTML)
+       (ngModelChange)="name.set($event)" → quando l'utente scrive, aggiorna il signal (one-way: HTML → TS)
+       Insieme simulano il two-way binding [(ngModel)], ma compatibile con i signal Angular. -->
+  <label for="name">Name</label>
+  <input id="name" type="text" name="name"
+         [ngModel]="name()"
+         (ngModelChange)="name.set($event)" />
+
+  <label for="species">Species</label>
+  <input id="species" type="text" name="species"
+         [ngModel]="species()"
+         (ngModelChange)="species.set($event)" />
+
+  <label for="age">Age</label>
+  <input id="age" type="number" name="age" min="0"
+         [ngModel]="age()"
+         (ngModelChange)="age.set($event)" />
+
+  <label for="notes">Notes</label>
+  <input id="notes" type="text" name="notes"
+         [ngModel]="notes()"
+         (ngModelChange)="notes.set($event)" />
+
+  <label for="sex">Sex</label>
+  <select id="sex" name="sex"
+          [ngModel]="sex()"
+          (ngModelChange)="sex.set($event)">
+    <option value="MALE">Male</option>
+    <option value="FEMALE">Female</option>
+  </select>
+
+  <label for="status">Status</label>
+  <select id="status" name="status"
+          [ngModel]="status()"
+          (ngModelChange)="status.set($event)">
+    <option value="AVAILABLE">Available</option>
+    <option value="ADOPTED">Adopted</option>
+  </select>
+
+  <label for="sterilized">Sterilized</label>
+  <input id="sterilized" type="checkbox" name="sterilized"
+         [ngModel]="sterilized()"
+         (ngModelChange)="sterilized.set($event)" />
+
+  <label for="arrivalDate">Arrival Date</label>
+  <input id="arrivalDate" type="date" name="arrivalDate"
+         [ngModel]="arrivalDate()"
+         (ngModelChange)="arrivalDate.set($event)" />
+
+  <button type="submit">Add Pet</button>
+</form>

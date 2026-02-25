@@ -1,0 +1,48 @@
+<div class="w3-card w3-white w3-round w3-margin-bottom w3-hover-shadow" style="border-left: 6px solid #607d8b;">
+            <div class="w3-row w3-padding-16">
+                
+                <!-- Avatar / Iniziali -->
+                <div class="w3-col m1 s2 w3-center">
+                    <div class="w3-circle w3-blue-grey w3-text-white w3-center" 
+                         style="width: 50px; height: 50px; line-height: 50px; font-weight: bold; margin: 0 auto; font-size: 1.2em;">
+                        {{ booking().guest.firstName.charAt(0) }}{{ booking().guest.lastName.charAt(0) }}
+                    </div>
+                </div>
+
+                <!-- Dettagli Ospite -->
+                <div class="w3-col m4 s10 w3-padding-small">
+                    <div class="w3-large" style="font-weight: bold; text-transform: uppercase; color: #455a64;">
+                        {{ booking().guest.firstName }} {{ booking().guest.lastName }}
+                    </div>
+                    <div class="w3-text-grey">
+                        <i class="fa fa-id-card-o w3-margin-right"></i> {{ booking().guest.ssn }}
+                    </div>
+                    <div class="w3-small w3-text-grey">
+                        <i class="fa fa-map-marker w3-margin-right"></i> {{ booking().guest.city }}
+                    </div>
+                </div>
+
+                <!-- Dettagli Prenotazione -->
+                <div class="w3-col m5 s12 w3-padding-small w3-border-left" style="border-color: #f1f1f1!important;">
+                    <div class="w3-text-blue-grey">
+                        <strong>Camera:</strong> {{ booking().room.name }}
+                    </div>
+                    <div class="w3-small w3-text-grey">
+                        <div><i class="fa fa-calendar-plus-o w3-margin-right"></i> Check-in: {{ booking().from | date:'dd/MM/yyyy' }}</div>
+                        <div><i class="fa fa-calendar-minus-o w3-margin-right"></i> Check-out: {{ booking().to | date:'dd/MM/yyyy' }}</div>
+                    </div>
+                </div>
+
+                <!-- Azioni -->
+                <div class="w3-col m2 s12 w3-right-align w3-padding-small">
+                    <!-- TODO: se booking().status == 'SCHEDULED' → mostrare due pulsanti: CHECK-IN e CANCELED -->
+
+                    <!-- TODO: se booking().status == 'EXECUTED' E oggi è il giorno del check-out (booking().to)
+                               → mostrare pulsante per segnare le pulizie eseguite (campo cleaned: false → true) -->
+
+                    <!-- TODO: se booking().status == 'EXECUTED' E oggi è DOPO il giorno del check-out
+                               → campo cleaned già visibile/aggiornabile -->
+                </div>
+
+            </div>
+        </div>

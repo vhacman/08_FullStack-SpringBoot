@@ -1,0 +1,26 @@
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-card" style="border-top: 6px solid #607d8b; display: flex; align-items: center; padding: 0 8px;">
+    <!-- Logo 80x80 -->
+    <a href="#" class="w3-bar-item w3-button w3-hover-none w3-hover-text-blue-grey" style="padding: 0; margin-right: 16px;">
+      <img src="img/logo.svg" alt="SBB Logo" style="height: 80px; width: 80px; object-fit: contain;">
+    </a>
+    <!-- Titolo del progetto -->
+    <div class="w3-bar-item" style="padding-left: 0;">
+      <div style="font-weight: bold; text-transform: uppercase; font-size: 1.2em; color: #607d8b; line-height: 1.1;">
+            SBB - {{loggedUser()!=null ? loggedUser()!.hotel.name : "LOADING"}}
+      </div>
+    </div>
+
+    <!-- Link di navigazione a destra -->
+    <div class="w3-right" style="margin-left: auto;color:blue">
+        Utente: {{userInfo()}}
+        <button class="w3-button w3-hover-light-grey w3-text-grey w3-hover-text-blue-grey" style="font-weight: bold; text-transform: uppercase;" routerLink="arrivals">Arrivi di oggi</button>
+        <button class="w3-button w3-hover-light-grey w3-text-grey w3-hover-text-blue-grey" style="font-weight: bold; text-transform: uppercase;" routerLink="departures">Partenze di oggi</button>
+        <button class="w3-button w3-hover-light-grey w3-text-grey w3-hover-text-blue-grey" style="font-weight: bold; text-transform: uppercase;" >Prenota</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Spaziatore per compensare il menù fisso (altezza logo + padding/bordi stimati) -->
+<div style="margin-top: 90px;"></div>

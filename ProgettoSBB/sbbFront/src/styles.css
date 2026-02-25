@@ -1,0 +1,12 @@
+@import url("https://www.w3schools.com/w3css/4/w3.css");
+
+H1, H2, H3, H4{
+    padding-left:10px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+INPUT, SELECT {
+    padding:0.2em;
+}
+

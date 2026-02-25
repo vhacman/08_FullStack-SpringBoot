@@ -1,0 +1,10 @@
+<nav class="navbar">
+  <ul class="nav-links">
+    <!-- (click)="metodo()" è il modo Angular per ascoltare un evento del DOM.
+         Cliccando il link viene chiamato il metodo del componente, che a sua volta
+         emette l'evento verso il componente padre (App). -->
+    <li><a (click)="onInsertPet()">Insert Pet</a></li>
+    <li><a (click)="onInsertAdoption()">Insert Adoption Form</a></li>
+    <li><a (click)="onManagePets()">Manage Pets</a></li>
+  </ul>
+</nav>

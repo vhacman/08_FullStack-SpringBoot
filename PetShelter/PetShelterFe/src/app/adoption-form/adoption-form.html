@@ -1,0 +1,38 @@
+<form (ngSubmit)="submit()">
+  <h2>New Adoption</h2>
+
+  <!-- [(ngModel)] è il two-way binding classico: aggiorna la proprietà del componente
+       in tempo reale mentre l'utente scrive, e viceversa. -->
+  <label for="adopterName">Adopter Name</label>
+  <input id="adopterName" type="text" name="adopterName" [(ngModel)]="adopterName" />
+  <label for="adopterEmail">Adopter Email</label>
+  <input id="adopterEmail" type="text" name="adopterEmail" [(ngModel)]="adopterEmail" />
+  <label for="adopterPhone">Adopter Phone</label>
+  <input id="adopterPhone" type="text" name="adopterPhone" [(ngModel)]="adopterPhone" />
+
+  <label for="petSelect">Select Pet</label>
+  <!-- Il select mostra solo i pet AVAILABLE (filtrati dal computed signal availablePets).
+       Usa (change) manuale invece di [(ngModel)] per poter convertire il valore
+       da stringa a number nel metodo onPetSelect(). -->
+  <select id="petSelect" name="petSelect" (change)="onPetSelect($event)">
+    <option value="">-- Select a pet --</option>
+    <!-- @for è la nuova sintassi Angular 17+ per i cicli, sostituisce *ngFor.
+         track pet.id permette ad Angular di identificare ogni elemento
+         per aggiornare solo quelli che cambiano, migliorando le performance. -->
+    @for (pet of availablePets(); track pet.id)
+    {
+      <option [value]="pet.id">
+        {{ pet.name }} ({{ pet.species }})
+      </option>
+    }
+  </select>
+
+  <label for="adoptionDate">Adoption Date</label>
+  <input id="adoptionDate" type="date" name="adoptionDate"
+         [(ngModel)]="adoptionDate" />
+
+  <label for="notes">Notes</label>
+  <input id="notes" type="text" name="notes"[(ngModel)]="notes" />
+
+  <button type="submit">Submit Adoption</button>
+</form>

@@ -1,0 +1,32 @@
+<div class="w3-container">
+  <h2 class="w3-text-blue">Ricerca Ospiti</h2>
+
+  <div class="w3-panel w3-light-grey w3-padding-16 w3-card-2">
+    <label>Cognome Ospite:</label>
+    <input type="text" 
+           [(ngModel)]="key" 
+           class="w3-input w3-border w3-white" 
+           placeholder="Inserisci il cognome e premi cerca o invio..."
+           (keyup.enter)="findMatches()"> <button (click)="findMatches()" 
+            class="w3-button w3-blue w3-margin-top"
+            [disabled]="loading()">
+      @if (loading()) { <i class="fa fa-spinner w3-spin"></i> }
+      Cerca
+    </button>
+  </div>
+
+  @if (errors()) {
+    <div class="w3-panel w3-red w3-display-container">
+      <span (click)="errors.set('')" class="w3-button w3-display-topright">&times;</span>
+      <p><b>Attenzione:</b> {{ errors() }}</p>
+    </div>
+  }
+
+  <div class="w3-row-padding">
+    @for (g of results(); track g.id) {
+      <div class="w3-col l4 m6 s12 w3-margin-bottom">
+        <app-guest-preview [guest]="g"></app-guest-preview>
+      </div>
+    } 
+  </div>
+</div>

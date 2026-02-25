@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <!-- Sfondo trasparente -->
+  <!-- Palazzo stilizzato -->
+  <path d="M15 75 V 25 L 40 5 L 65 25 V 75 H 15 Z" fill="#607d8b" stroke="#455a64" stroke-width="2"/>
+  <!-- Testo SBB -->
+  <text x="40" y="55" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="white" text-anchor="middle">SBB</text>
+</svg>

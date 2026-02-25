@@ -1,0 +1,33 @@
+#cityscroller{
+    overflow:scroll;
+    position:fixed;
+    z-index:100;
+    background-color:white !important;
+    max-height:100px;
+    width:99.5%;
+    padding-right:-30px;
+    
+}
+
+
+#cityscroller>div:hover{
+    background-color:azure;
+    color:red;
+}
+
+.cityinput{
+    padding:0.5em;
+    width:100%;
+}
+
+.cityinput INPUT[type=text]{
+    display:block;
+}
+
+.cityinput INPUT[type=text].selected{
+    font-weight:bold;
+}
+
+INPUT.match{
+    
+}

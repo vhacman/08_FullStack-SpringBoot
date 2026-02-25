@@ -1,0 +1,54 @@
+<!-- Sezione richieste di adozione in attesa (status IN_PROGRESS).
+     Viene popolata automaticamente ogni volta che un utente invia l'adoption form. -->
+<section class="pending-section">
+  <h2>Pending Adoptions</h2>
+
+  <!-- @if con condizione su .length: se non ci sono pending, mostriamo un messaggio -->
+  @if (pendingPets().length === 0) {
+    <p class="empty-message">No pending adoption requests.</p>
+  }
+
+  <!-- Per ogni adozione in attesa mostriamo una card con i bottoni Accept/Reject.
+       type="button" è importante: senza di esso il click su un bottone dentro un <form>
+       invierebbe il form, qui invece vogliamo solo chiamare il metodo. -->
+  @for (pet of pendingPets(); track pet.id) {
+    <div class="pending-card">
+      <span class="pet-info">{{ pet.name }} ({{ pet.species }}, {{ pet.age }} yr)</span>
+      <div class="actions">
+        <button type="button" class="btn-accept" (click)="accept(pet.id)">Accept</button>
+        <button type="button" class="btn-reject" (click)="reject(pet.id)">Reject</button>
+      </div>
+    </div>
+  }
+</section>
+
+<!-- Form per la gestione manuale degli status: permette allo staff di cambiare
+     lo status di qualsiasi pet senza passare dal flusso di adozione. -->
+<form (ngSubmit)="submit()">
+  <h2>Manage Pets</h2>
+
+  <!-- Questo select mostra TUTTI i pet (inclusi ADOPTED) con lo status corrente,
+       così lo staff ha visibilità completa. -->
+  <label for="petSelect">Select Pet</label>
+  <select id="petSelect" name="petSelect" (change)="onPetSelect($event)">
+    <option value="">-- Select a pet --</option>
+    @for (pet of pets(); track pet.id) {
+      <option [value]="pet.id">
+        {{ pet.name }} ({{ pet.species }}) — {{ pet.status }}
+      </option>
+    }
+  </select>
+
+  <!-- Il select del nuovo status usa il pattern signal-compatible:
+       [ngModel] legge il valore corrente, (ngModelChange) lo aggiorna. -->
+  <label for="newStatus">New Status</label>
+  <select id="newStatus" name="newStatus"
+          [ngModel]="newStatus()"
+          (ngModelChange)="newStatus.set($event)">
+    <option value="AVAILABLE">Available</option>
+    <option value="IN_PROGRESS">In Progress</option>
+    <option value="ADOPTED">Adopted</option>
+  </select>
+
+  <button type="submit">Update Status</button>
+</form>

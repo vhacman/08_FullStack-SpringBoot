@@ -1,0 +1,263 @@
+/* === FORM FILTRI === */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(32, 178, 170, 0.12);
+  margin-bottom: 24px;
+  align-items: flex-end;
+}
+
+.filters > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.filters label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #178a83;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.filters input[type="text"],
+.filters input[type="number"],
+.filters select {
+  padding: 8px 12px;
+  border: 1px solid #b2dfdb;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 160px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #20B2AA;
+  box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.18);
+}
+
+.filters input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #20B2AA;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+/* === HEADER CLICCABILE === */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  background: #e0f5f4;
+  border-left: 4px solid #20B2AA;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #178a83;
+  margin-bottom: 8px;
+}
+
+.list-header:hover {
+  background: #c5eceb;
+}
+
+/* === LISTA PET === */
+.pet-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.pet-list li {
+  background: white;
+  border-left: 4px solid #20B2AA;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+}
+
+.no-results {
+  color: #888;
+  font-size: 14px;
+}
+
+/* === RIGA CLICCABILE === */
+.pet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pet-header strong {
+  color: #178a83;
+}
+
+.pet-header small {
+  color: #888;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.arrow {
+  font-size: 11px;
+  color: #20B2AA;
+  flex-shrink: 0;
+}
+
+/* === STATUS BADGE === */
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.status-available {
+  background: #e0f5f4;
+  color: #178a83;
+}
+
+.status-in_progress {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* === DETTAGLI ESPANSI === */
+.pet-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e0f5f4;
+  font-size: 13px;
+  color: #555;
+}
+
+.pet-details span {
+  background: #e0f5f4;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.pet-notes {
+  width: 100%;
+  margin: 4px 0 0;
+  font-style: italic;
+  color: #777;
+  font-size: 12px;
+}
+
+
+h2 {
+  margin: 28px 0 8px;
+  font-size: 18px;
+}
+
+/* === ADOPTED LIST === */
+.adopted-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  background: #e8f5e9;
+  border-left: 4px solid #43a047;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.adopted-header:hover {
+  background: #c8e6c9;
+}
+
+.adopted-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.adopted-list li {
+  background: white;
+  border-left: 4px solid #43a047;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.adopted-list li strong {
+  color: #2e7d32;
+}
+
+.adopted-list li small {
+  color: #888;
+  font-size: 12px;
+}
+
+/* === SUPPRESSION LIST === */
+.suppression-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  background: #fdeaea;
+  border-left: 4px solid #e05050;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-weight: 600;
+  color: #c0392b;
+}
+
+.suppression-header:hover {
+  background: #fbd5d5;
+}
+
+.suppression-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.suppression-list li {
+  background: white;
+  border-left: 4px solid #e05050;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.suppression-list li strong {
+  color: #c0392b;
+}
+
+.suppression-list li small {
+  color: #888;
+  font-size: 12px;
+}

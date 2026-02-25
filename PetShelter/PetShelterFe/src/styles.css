@@ -1,0 +1,40 @@
+/* === VARIABILI COLORE === */
+:root {
+  --acqua:        #20B2AA;
+  --acqua-light:  #e0f5f4;
+  --acqua-dark:   #178a83;
+  --bg:           #f0fafa;
+  --text:         #2c2c2c;
+  --text-muted:   #666;
+  --white:        #ffffff;
+  --shadow:       rgba(32, 178, 170, 0.12);
+  --danger:       #e05050;
+  --danger-light: #fdeaea;
+}
+
+/* === RESET GLOBALE === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  padding: 24px;
+}
+
+h1, h2, h3 {
+  color: var(--acqua-dark);
+}
+
+/* === CARD GENERICA === */
+.card {
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+}

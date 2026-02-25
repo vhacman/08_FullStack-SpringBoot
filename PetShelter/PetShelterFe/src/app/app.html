@@ -1,0 +1,34 @@
+<header class="site-header">
+  <h1>Malibu Paws Rescue</h1>
+  <p>Saving lives one paw at a time &mdash; Malibu, California</p>
+</header>
+
+<!-- (menuChange) ascolta l'evento custom emesso dal MenuBar.
+     $event contiene la stringa emessa ('pet', 'adoption', 'manage')
+     e la passa al metodo onMenuChange() del componente App. -->
+<app-menubar (menuChange)="onMenuChange($event)"></app-menubar>
+
+<div class="layout">
+  <main class="list-col">
+    <!-- La lista animali è sempre visibile, indipendentemente dal menu selezionato -->
+    <app-pet-list></app-pet-list>
+  </main>
+  <div class="form-col">
+    <!-- @if è la nuova sintassi Angular 17+ per il rendering condizionale.
+         Sostituisce il vecchio *ngIf. Il componente viene montato/smontato
+         ogni volta che la condizione cambia. -->
+    @if (showPetForm) {
+      <app-pet-form></app-pet-form>
+    }
+    @if (showAdoptionForm) {
+      <app-adoption-form></app-adoption-form>
+    }
+    @if (showManagePets) {
+      <app-menage-pets></app-menage-pets>
+    }
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>&copy; 2025 Malibu Paws Rescue &mdash; A non-profit animal shelter dedicated to giving every paw a second chance. Malibu, CA 90265. All rights reserved.</p>
+</footer>

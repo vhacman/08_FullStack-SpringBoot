@@ -1,0 +1,14 @@
+<!--
+    for(ExamParameter examParameter:examParamters())
+-->
+Trovati: {{count()}} parametri.
+@for(examParameter of examParameters(); track examParameter.id){
+    <div class="w3-row">
+        <div class="w3-half">
+            {{examParameter.id}}-{{examParameter.name}}
+        </div>
+        <div class="w3-half">
+            Min {{examParameter.min}} Max {{examParameter.max}} {{examParameter.unit}}
+        </div>
+    </div>
+}

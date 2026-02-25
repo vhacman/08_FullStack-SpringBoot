@@ -1,0 +1,24 @@
+<div class="cityinput">
+    <form>
+        <div class="label">
+            {{label()}}
+        </div>
+        <input type="text" 
+            [class]="selected() ? 'w3-input selected' : 'w3-input'" 
+            (dblclick)="deselect()" 
+            [(ngModel)]="key" 
+            [readonly]="selected()"
+            name="key" 
+            (change)="findCity()"
+            /> {{loading() ?"LOADING..." : ""}}
+
+            @if(!selected() && results().length>0)
+            {
+                <div id="cityscroller" title="{{results().length}} matches">
+                @for(result of results(); track result.id){
+                    <div (click)="selectCity(result)">{{result.name}} {{result.province}} - {{result.region}} </div> 
+                }
+            </div>
+            }
+    </form>
+</div>

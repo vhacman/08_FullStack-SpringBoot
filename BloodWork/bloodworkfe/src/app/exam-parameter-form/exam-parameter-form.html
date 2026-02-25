@@ -1,0 +1,22 @@
+<!--
+    form1 è il nome dell'oggetto form gestito da angular
+    form1 tiene traccia della sua validità
+    come?? ora lo vedremo
+
+    #form1 è un modo per dare un nome locale alla form
+-->
+<form #form1="ngForm">
+    Name 
+    <input type="text" name="name" [(ngModel)]="newParameter.name" class="w3-input" required />
+    Notes 
+    <input type="text" name="notes" [(ngModel)]="newParameter.notes" class="w3-input" required />
+    Min 
+    <input type="number" name="min" [(ngModel)]="newParameter.min" min="0" class="w3-input" required />
+    Max
+    <input type="number" name="max" [(ngModel)]="newParameter.max" min="0" class="w3-input" required />
+    Unit 
+    <input type="text" name="unit" [(ngModel)]="newParameter.unit" class="w3-input" required />
+    <!-- il valore di disabled è calcolato a livello di logica -->
+    <input type="button" (click)="saveParameter()" class="w3-btn w3-teal w3-input" value="save" [disabled]="!form1.valid" />
+
+</form>
