@@ -21,6 +21,8 @@ export class TodaysArrivals
   loggedUser = this.userService.loggedUser;
   // Signal<Booking[]>: lista prenotazioni, si aggiorna tramite .set() → la view si ridisegna da sola
   bookings = signal<Booking[]>([]);
+  checkedInBookings  = signal<Booking[]>([]);
+  checkedInExpanded  = signal(false);
 
   constructor()
   {
@@ -43,11 +45,22 @@ export class TodaysArrivals
   private loadBookings(hotelId: number): void
   {
     console.log("Caricamento per hotel:", hotelId);
-    // Chiamata HTTP al backend → subscribe gestisce risposta (next) ed errori (error)
     this.bookingService.getTodaysArrivals(hotelId).subscribe({
-      next:  (json) => this.bookings.set(json),   // aggiorna il signal con i dati ricevuti
-      error: (err)  => console.error(err)         // logga l'errore senza bloccare l'app
+      next:  (json) => {
+        this.bookings.set(json.filter(b => b.status === 'SCHEDULED'));
+        this.checkedInBookings.set(json.filter(b => b.status === 'EXECUTED'));
+      },
+      error: (err)  => console.error(err)
     });
+  }
+
+  onCheckInDone(booking: Booking): void {
+    this.bookings.update(list => list.filter(b => b.id !== booking.id));
+    this.checkedInBookings.update(list => [...list, booking]);
+  }
+
+  toggleCheckedIn(): void {
+    this.checkedInExpanded.update(v => !v);
   }
 
   /** Ricarica manualmente gli arrivi di oggi */

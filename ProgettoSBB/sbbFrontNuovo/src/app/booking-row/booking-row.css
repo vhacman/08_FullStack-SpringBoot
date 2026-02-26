@@ -1,3 +1,4 @@
+/* ── Card container ── */
 .booking-card {
   background-color: #fdf6f0;
   border: 1px solid #e0d0c0;
@@ -7,122 +8,118 @@
   overflow: hidden;
 }
 
+/* ── Grid: 3 colonne ── */
 .booking-grid {
   display: grid;
-  grid-template-columns: 60px 1fr 1fr;
+  grid-template-columns: 2fr 2fr 1fr;
+  min-height: 72px;
 }
 
-/* ── Colonna 1: Avatar ── */
-.col-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f0e4d4;
+/* ── Separatori verticali tra colonne ── */
+.col-guest,
+.col-booking {
   border-right: 1px solid #e0d0c0;
-  padding: 10px 4px;
 }
 
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: #b5451b;
-  color: #fff;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ── Colonna 2: Dati ospite ── */
+/* ── COLONNA 1: Dati ospite ── */
 .col-guest {
-  padding: 8px 10px;
-  border-right: 1px solid #e0d0c0;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: center;
+  gap: 5px;
 }
 
 .guest-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.85rem;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.88rem;
   font-weight: 600;
   color: #3e2010;
   text-transform: capitalize;
   letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guest-icon {
+  width: 30px;
+  height: 30px;
+  opacity: 0.6;
+  flex-shrink: 0;
+  object-fit: contain;
 }
 
 .guest-detail {
-  font-size: 0.65rem;
-  color: #7a6050;
+  font-size: 0.68rem;
+  color: #5a3010;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  border: 1px solid #d4c4b0;
+  border-radius: 4px;
+  padding: 3px 7px;
+  cursor: pointer;
+  width: fit-content;
+  transition: color 0.15s, border-color 0.15s;
 }
 
-/* ── Colonna 3: Camera + date + azione ── */
+.guest-detail:hover {
+  color: #b5451b;
+  border-color: #b5451b;
+}
+
+/* ── COLONNA 2: Info prenotazione ── */
 .col-booking {
-  padding: 8px 10px;
+  padding: 10px 12px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.info-row {
+  display: flex;
+  align-items: baseline;
   gap: 8px;
 }
 
-.booking-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
+.info-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #7a5030;
+  white-space: nowrap;
+  min-width: 80px;
 }
 
-.room-name {
+.info-value {
+  font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #5a3010;
+  color: #1a0a00;
 }
 
-.booking-dates {
-  font-size: 0.65rem;
-  color: #7a6050;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.date-arrow {
-  color: #b5451b;
-  font-weight: bold;
-}
-
-.action-area {
+/* ── COLONNA 3: Azioni ── */
+.col-actions {
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
 }
 
-/* Aggiunta per allineare bene le icone delle due righe */
-.action-area i {
-  width: 14px;
-  text-align: center;
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
-.btn-checkin {
-  background-color: #b5451b;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 3px 10px;
-  font-size: 0.65rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-icon-checkin {
+.btn-icon {
   background: none;
   border: none;
   padding: 2px;
@@ -130,53 +127,27 @@
   transition: transform 0.2s;
 }
 
-.btn-icon-checkin:hover {
-  transform: scale(1.05);
+.btn-icon:hover {
+  transform: scale(1.08);
 }
 
-.btn-icon-checkin img {
-  width: 60px;
-  height: 60px;
+.btn-icon img,
+.status-icon {
+  width: 44px;
+  height: 44px;
 }
 
-.icon-checkedin {
-  width: 50px;
-  height: 50px;
-}
-
-.btn-checkin:hover {
-  background-color: #8b3214;
-}
-
-.status-done {
-  font-size: 0.65rem;
-  color: #2e7d32;
+.action-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.58rem;
   font-weight: 600;
+  color: #5a3010;
 }
 
-.btn-clean {
-  background-color: #1565c0;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 3px 10px;
-  font-size: 0.65rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-clean:hover {
-  background-color: #0d47a1;
-}
-
-.status-clean {
-  font-size: 0.65rem;
+.action-label.done {
   color: #2e7d32;
-  font-weight: 600;
 }
 
-.status-dirty {
-  font-size: 0.65rem;
+.action-label.warn {
   color: #b5451b;
-  font-weight: 600;
 }

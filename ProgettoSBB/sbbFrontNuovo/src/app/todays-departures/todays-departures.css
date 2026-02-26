@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap');
-
 .page-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 600;
   font-style: normal;
   font-size: 1.2rem;
@@ -69,4 +67,89 @@
 .bookings-list::-webkit-scrollbar-thumb {
   background-color: #b5451b;
   border-radius: 4px;
+}
+
+/* ── Collapsible generico ── */
+.collapsible-section {
+  margin-top: 16px;
+}
+
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  transition: opacity 0.15s;
+}
+
+.collapsible-header:hover {
+  opacity: 0.85;
+}
+
+.collapsible-header.orange {
+  background-color: #fff8f0;
+  border: 1px solid #b5451b;
+  color: #7b2700;
+}
+
+.collapsible-header .chevron {
+  margin-left: auto;
+  font-size: 0.75rem;
+}
+
+.count-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 8px;
+  color: #fff;
+}
+
+.orange-badge { background-color: #b5451b; }
+
+/* ── Chips (vista collassata) ── */
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 2px 10px;
+}
+
+.guest-chip,
+.room-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.room-chip {
+  background-color: #fff3e0;
+  border: 1px solid #ffcc80;
+  color: #7b2700;
+}
+
+.chip-room,
+.chip-guest {
+  opacity: 0.65;
+  font-size: 0.68rem;
+}
+
+/* ── Lista espansa ── */
+.expanded-list {
+  border: 1px solid #ffcc80;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: #fffaf5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }

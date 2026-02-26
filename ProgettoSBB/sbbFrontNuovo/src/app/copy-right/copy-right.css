@@ -1,12 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap');
-
 :host {
   display: block;
   padding: 2px 16px;
   text-align: center;
   background-color: #fdf0e0;
   border-top: 1px solid #d4c4b0;
-  font-family: 'Cormorant Garamond', serif;
   color: #5a3010;
   font-size: 0.8rem;
   width: 100%;

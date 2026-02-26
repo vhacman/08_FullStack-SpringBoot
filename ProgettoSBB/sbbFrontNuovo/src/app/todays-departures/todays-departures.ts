@@ -14,7 +14,10 @@ export class TodaysDepartures {
   private bookingService = inject(BookingService);
   private userService    = inject(UserService);
   loggedUser = this.userService.loggedUser;
-  bookings = signal<Booking[]>([]);
+
+  toCleanBookings  = signal<Booking[]>([]);
+  cleanedBookings  = signal<Booking[]>([]);
+  cleanedExpanded  = signal(false);
 
   constructor() {
     effect(() => {
@@ -27,9 +30,21 @@ export class TodaysDepartures {
 
   private loadBookings(hotelId: number): void {
     this.bookingService.getTodaysDepartures(hotelId).subscribe({
-      next:  (json) => this.bookings.set(json),
-      error: (err)  => console.error(err)
+      next: (json) => {
+        this.toCleanBookings.set(json.filter(b => !b.cleaned));
+        this.cleanedBookings.set(json.filter(b => b.cleaned));
+      },
+      error: (err) => console.error(err)
     });
+  }
+
+  onCleanedDone(booking: Booking): void {
+    this.toCleanBookings.update(list => list.filter(b => b.id !== booking.id));
+    this.cleanedBookings.update(list => [...list, booking]);
+  }
+
+  toggleCleaned(): void {
+    this.cleanedExpanded.update(v => !v);
   }
 
   refresh(): void {

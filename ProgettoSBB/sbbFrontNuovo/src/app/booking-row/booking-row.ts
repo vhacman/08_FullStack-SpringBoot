@@ -1,17 +1,8 @@
-import {Component, inject, model} from '@angular/core';
+import {Component, inject, model, output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Booking} from '../model/hotel.entities';
 import {BookingService} from '../booking-service';
 
-/**
- * Componente che rappresenta una singola riga di prenotazione.
- * Riceve un Booking dal componente padre e gestisce le azioni su di esso.
- *
- * Logica pulsanti in base allo stato:
- *   SCHEDULED                        → [Check-in]
- *   EXECUTED + oggi == booking.to    → [Pulizie eseguite] (cleaned: false → true)
- *   EXECUTED + oggi >  booking.to    → indicatore cleaned read-only
- */
 @Component({
   selector: 'app-booking-row',
   imports: [CommonModule],
@@ -20,13 +11,21 @@ import {BookingService} from '../booking-service';
 })
 export class BookingRow {
   booking = model.required<Booking>();
+  checkInDone  = output<Booking>();
+  cleanedDone  = output<Booking>();
   bookingService = inject(BookingService);
 
-  // Calcolo oggi una volta sola al momento della creazione del componente
-  // e la tengo come stringa "YYYY-MM-DD" (es. "2026-02-26").
-  // La uso per confrontarla con booking.to che arriva dal JSON nello stesso formato.
-  // Non uso Date() per il confronto perché le date JavaScript hanno problemi
-  // di timezone: toISOString() garantisce sempre il formato UTC corretto.
+  ssnVisible = signal(false);
+  addressVisible = signal(false);
+
+  toggleSsn(): void {
+    this.ssnVisible.update(v => !v);
+  }
+
+  toggleAddress(): void {
+    this.addressVisible.update(v => !v);
+  }
+
   readonly today = new Date().toISOString().split('T')[0];
 
   // Confronto stringhe invece di oggetti Date: "2026-02-26" === "2026-02-26".
@@ -52,7 +51,11 @@ export class BookingRow {
       // Aggiorno solo il campo status nel signal locale senza ricaricare dal server.
       // L'operatore spread {...old} crea un nuovo oggetto con tutti i campi precedenti
       // e sovrascrive solo status → il signal si aggiorna e Angular ridisegna la view.
-      next:  () => this.booking.update(old => ({ ...old, status: 'EXECUTED' })),
+      next: () => {
+        const updated = { ...this.booking(), status: 'EXECUTED' };
+        this.booking.set(updated);
+        this.checkInDone.emit(updated);
+      },
       error: err => console.error('Errore check-in:', err)
     });
   }
@@ -63,7 +66,11 @@ export class BookingRow {
   setCleaned(): void {
     const id = this.booking().id ?? 0;
     this.bookingService.setCleaned(id).subscribe({
-      next:  () => this.booking.update(old => ({ ...old, cleaned: true })),
+      next: () => {
+        const updated = { ...this.booking(), cleaned: true };
+        this.booking.set(updated);
+        this.cleanedDone.emit(updated);
+      },
       error: err => console.error('Errore pulizie:', err)
     });
   }

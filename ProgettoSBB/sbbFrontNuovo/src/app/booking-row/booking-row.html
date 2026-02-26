@@ -1,64 +1,86 @@
 <div class="booking-card">
   <div class="booking-grid">
-    <!-- COLONNA 1: Avatar -->
-    <div class="col-avatar">
-      <div class="avatar">
-        {{ booking().guest.firstName.charAt(0) }}{{ booking().guest.lastName.charAt(0) }}
-      </div>
-    </div>
-    <!-- COLONNA 2: Dati ospite -->
+
+    <!-- COLONNA 1: Dati ospite -->
     <div class="col-guest">
-      <div class="guest-name">{{ booking().guest.firstName }} {{ booking().guest.lastName }}</div>
-      <div class="guest-detail">
-        <i class="fa fa-id-card-o"></i> {{ booking().guest.ssn }}
+      <div class="guest-name">
+        <img src="img/clienteIcon.png" alt="ospite" class="guest-icon">
+        {{ booking().guest.firstName }} {{ booking().guest.lastName }}
       </div>
-      <div class="guest-detail">
-        <i class="fa fa-map-marker"></i> {{ booking().guest.city }}
+      <div class="guest-detail" (click)="toggleSsn()" style="cursor:pointer">
+        <i class="fa fa-id-card-o"></i>
+        @if (ssnVisible()) {
+          {{ booking().guest.ssn }}
+        } @else {
+          Codice Fiscale
+        }
+      </div>
+      <div class="guest-detail" (click)="toggleAddress()" style="cursor:pointer">
+        <i class="fa fa-map-marker"></i>
+        @if (addressVisible()) {
+          {{ booking().guest.address }}, {{ booking().guest.city }}
+        } @else {
+          Indirizzo
+        }
       </div>
     </div>
-    <!-- COLONNA 3: Camera, date, azione -->
+
+    <!-- COLONNA 2: Info prenotazione -->
     <div class="col-booking">
-      <div class="booking-info">
-        <div class="room-name">
-          <i class="fa fa-bed"></i> {{ booking().room.name }}
-        </div>
-        <div class="booking-dates">
-          <span><i class="fa fa-sign-in"></i> {{ booking().from | date:'dd/MM/yy' }}</span>
-          <span class="date-arrow">→</span>
-          <span><i class="fa fa-sign-out"></i> {{ booking().to | date:'dd/MM/yy' }}</span>
-        </div>
+      <div class="info-row">
+        <span class="info-label"><i class="fa fa-bed"></i> Camera</span>
+        <span class="info-value">{{ booking().room.name }}</span>
       </div>
-      <div class="action-area">
-        <!-- CASO 1: prenotazione confermata, ospite non ancora arrivato → mostro icona check-in -->
-        @if (booking().status === 'SCHEDULED') {
-          <button class="btn-icon-checkin" (click)="doCheckIn()" title="Check-in">
+      <div class="info-row">
+        <span class="info-label"><i class="fa fa-sign-in"></i> Check-in</span>
+        <span class="info-value">{{ booking().from | date:'dd/MM/yy' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label"><i class="fa fa-sign-out"></i> Check-out</span>
+        <span class="info-value">{{ booking().to | date:'dd/MM/yy' }}</span>
+      </div>
+    </div>
+
+    <!-- COLONNA 3: Azioni -->
+    <div class="col-actions">
+      @if (booking().status === 'SCHEDULED') {
+        <div class="action-item">
+          <button class="btn-icon" (click)="doCheckIn()" title="Check-in">
             <img src="img/checkInIcona.png" alt="Check-in">
           </button>
+          <span class="action-label">Check in</span>
+        </div>
+      }
+      @if (booking().status === 'EXECUTED') {
+        @if (isFuture(booking().to)) {
+          <div class="action-item">
+            <img src="img/checkedInIcona.png" alt="Checked in" class="status-icon">
+            <span class="action-label done">Checked in</span>
+          </div>
         }
-        <!-- CASO 2: check-in effettuato (EXECUTED) -->
-        @if (booking().status === 'EXECUTED') {
-          @if (isFuture(booking().to)) {
-            <img src="img/checkedInIcona.png" alt="Check-in effettuato" class="icon-checkedin">
-          }
-          @if (isToday(booking().to) || isPast(booking().to)) {
-            <img src="img/checkedInIcona.png" alt="Check-in effettuato" class="icon-checkedin">
-          }
-          <!-- Se cleaned è true → MOSTRO SEMPRE "Camera pulita" -->
-          @if (booking().cleaned) {
-            <span class="status-clean"><i class="fa fa-check-circle"></i> Camera pulita</span>
-          }
-          @else {
-            @if (isToday(booking().to)) {
-              <button class="btn-clean" (click)="setCleaned()">
-                <i class="fa fa-shower"></i> Pulizie eseguite
+        @if (booking().cleaned) {
+          <div class="action-item">
+            <img src="img/cleanedIcona.png" alt="Camera pulita" class="status-icon">
+            <span class="action-label done">Disponibile</span>
+          </div>
+        } @else {
+          @if (isToday(booking().to)) {
+            <div class="action-item">
+              <button class="btn-icon" (click)="setCleaned()" title="Pulizie eseguite">
+                <img src="img/toCleanIcon.png" alt="Esegui pulizie">
               </button>
-            }
-            @if (isPast(booking().to)) {
-              <span class="status-dirty"><i class="fa fa-exclamation-circle"></i> Da pulire</span>
-            }
+              <span class="action-label warn">Da pulire</span>
+            </div>
+          }
+          @if (isPast(booking().to)) {
+            <div class="action-item">
+              <img src="img/toCleanIcon.png" alt="Da pulire" class="status-icon">
+              <span class="action-label warn">Da pulire</span>
+            </div>
           }
         }
-      </div>
+      }
     </div>
+
   </div>
 </div>

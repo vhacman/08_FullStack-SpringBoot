@@ -1,5 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://www.w3schools.com/w3css/4/w3.css');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
 
 .stdpadding{
     padding-left:5px;

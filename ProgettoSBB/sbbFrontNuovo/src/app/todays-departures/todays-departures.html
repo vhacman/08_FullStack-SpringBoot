@@ -13,17 +13,53 @@
   </div>
 
   <!-- Stato vuoto -->
-  @if (bookings().length === 0) {
+  @if (toCleanBookings().length === 0 && cleanedBookings().length === 0) {
     <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
       <p><i class="fa fa-info-circle"></i> Nessuna partenza prevista per oggi.</p>
     </div>
   }
 
-  <!-- Lista Partenze -->
-  <div class="bookings-list">
-    @for (booking of bookings(); track booking.id) {
-      <app-booking-row [booking]="booking"></app-booking-row>
-    }
-  </div>
+  <!-- Lista partenze da pulire -->
+  @if (toCleanBookings().length > 0) {
+    <div class="bookings-list">
+      @for (booking of toCleanBookings(); track booking.id) {
+        <app-booking-row [booking]="booking" (cleanedDone)="onCleanedDone($event)"></app-booking-row>
+      }
+    </div>
+  }
+
+  <!-- Sezione Camere Pulite collassabile -->
+  @if (cleanedBookings().length > 0) {
+    <div class="collapsible-section">
+
+      <div class="collapsible-header orange" (click)="toggleCleaned()">
+        <i class="fa fa-check-square-o"></i>
+        <span>Camere Pulite</span>
+        <span class="count-badge orange-badge">{{ cleanedBookings().length }}</span>
+        <i class="fa chevron" [class.fa-chevron-down]="!cleanedExpanded()" [class.fa-chevron-up]="cleanedExpanded()"></i>
+      </div>
+
+      @if (!cleanedExpanded()) {
+        <!-- Collapsed: chip con camera + ospite -->
+        <div class="chips-container">
+          @for (b of cleanedBookings(); track b.id) {
+            <span class="room-chip">
+              <i class="fa fa-bed"></i>
+              {{ b.room.name }}
+              <span class="chip-guest">· {{ b.guest.lastName }}</span>
+            </span>
+          }
+        </div>
+      } @else {
+        <!-- Expanded: card complete -->
+        <div class="expanded-list">
+          @for (b of cleanedBookings(); track b.id) {
+            <app-booking-row [booking]="b"></app-booking-row>
+          }
+        </div>
+      }
+
+    </div>
+  }
 
 </div>
