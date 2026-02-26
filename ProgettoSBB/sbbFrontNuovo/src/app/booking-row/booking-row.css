@@ -3,13 +3,13 @@
   border: 1px solid #e0d0c0;
   border-left: 5px solid #b5451b;
   border-radius: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   overflow: hidden;
 }
 
 .booking-grid {
   display: grid;
-  grid-template-columns: 80px 1fr 1fr;
+  grid-template-columns: 60px 1fr 1fr;
 }
 
 /* ── Colonna 1: Avatar ── */
@@ -19,17 +19,17 @@
   justify-content: center;
   background-color: #f0e4d4;
   border-right: 1px solid #e0d0c0;
-  padding: 16px 8px;
+  padding: 10px 4px;
 }
 
 .avatar {
-  width: 46px;
-  height: 46px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background-color: #b5451b;
   color: #fff;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -38,16 +38,16 @@
 
 /* ── Colonna 2: Dati ospite ── */
 .col-guest {
-  padding: 14px 16px;
+  padding: 8px 10px;
   border-right: 1px solid #e0d0c0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .guest-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #3e2010;
   text-transform: capitalize;
@@ -55,50 +55,59 @@
 }
 
 .guest-detail {
-  font-size: 0.78rem;
+  font-size: 0.65rem;
   color: #7a6050;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 /* ── Colonna 3: Camera + date + azione ── */
 .col-booking {
-  padding: 14px 16px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.booking-info {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  flex: 1;
 }
 
 .room-name {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #5a3010;
 }
 
 .booking-dates {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: #7a6050;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .date-arrow {
   color: #b5451b;
   font-weight: bold;
 }
+
 .action-area {
-  margin-top: 8px;      /* Aumentato leggermente per respiro */
   display: flex;
-  flex-direction: column; /* Gli elementi vanno uno sotto l'altro */
-  gap: 6px;              /* Spazio tra le righe di stato */
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 
 /* Aggiunta per allineare bene le icone delle due righe */
 .action-area i {
-  width: 18px;
+  width: 14px;
   text-align: center;
 }
 
@@ -107,10 +116,32 @@
   color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 5px 14px;
-  font-size: 0.8rem;
+  padding: 3px 10px;
+  font-size: 0.65rem;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+.btn-icon-checkin {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-icon-checkin:hover {
+  transform: scale(1.05);
+}
+
+.btn-icon-checkin img {
+  width: 60px;
+  height: 60px;
+}
+
+.icon-checkedin {
+  width: 50px;
+  height: 50px;
 }
 
 .btn-checkin:hover {
@@ -118,7 +149,7 @@
 }
 
 .status-done {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: #2e7d32;
   font-weight: 600;
 }
@@ -128,8 +159,8 @@
   color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 5px 14px;
-  font-size: 0.8rem;
+  padding: 3px 10px;
+  font-size: 0.65rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -139,13 +170,13 @@
 }
 
 .status-clean {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: #2e7d32;
   font-weight: 600;
 }
 
 .status-dirty {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   color: #b5451b;
   font-weight: 600;
 }

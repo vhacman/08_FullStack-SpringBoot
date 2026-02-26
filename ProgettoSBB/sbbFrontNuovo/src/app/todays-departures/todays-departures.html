@@ -20,8 +20,10 @@
   }
 
   <!-- Lista Partenze -->
-  @for (booking of bookings(); track booking.id) {
-    <app-booking-row [booking]="booking"></app-booking-row>
-  }
+  <div class="bookings-list">
+    @for (booking of bookings(); track booking.id) {
+      <app-booking-row [booking]="booking"></app-booking-row>
+    }
+  </div>
 
 </div>
