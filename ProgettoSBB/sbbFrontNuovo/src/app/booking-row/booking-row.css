@@ -88,9 +88,18 @@
   color: #b5451b;
   font-weight: bold;
 }
-
 .action-area {
-  margin-top: 4px;
+  margin-top: 8px;      /* Aumentato leggermente per respiro */
+  display: flex;
+  flex-direction: column; /* Gli elementi vanno uno sotto l'altro */
+  gap: 6px;              /* Spazio tra le righe di stato */
+  align-items: flex-start;
+}
+
+/* Aggiunta per allineare bene le icone delle due righe */
+.action-area i {
+  width: 18px;
+  text-align: center;
 }
 
 .btn-checkin {

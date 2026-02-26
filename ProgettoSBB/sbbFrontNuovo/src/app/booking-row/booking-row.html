@@ -1,13 +1,11 @@
 <div class="booking-card">
   <div class="booking-grid">
-
     <!-- COLONNA 1: Avatar -->
     <div class="col-avatar">
       <div class="avatar">
         {{ booking().guest.firstName.charAt(0) }}{{ booking().guest.lastName.charAt(0) }}
       </div>
     </div>
-
     <!-- COLONNA 2: Dati ospite -->
     <div class="col-guest">
       <div class="guest-name">{{ booking().guest.firstName }} {{ booking().guest.lastName }}</div>
@@ -18,7 +16,6 @@
         <i class="fa fa-map-marker"></i> {{ booking().guest.city }}
       </div>
     </div>
-
     <!-- COLONNA 3: Camera, date, azione -->
     <div class="col-booking">
       <div class="room-name">
@@ -29,54 +26,43 @@
         <span class="date-arrow">→</span>
         <span><i class="fa fa-sign-out"></i> {{ booking().to | date:'dd/MM/yy' }}</span>
       </div>
-
       <div class="action-area">
-
         <!-- CASO 1: prenotazione confermata, ospite non ancora arrivato → mostro Check-in -->
         @if (booking().status === 'SCHEDULED') {
           <button class="btn-checkin" (click)="doCheckIn()">
             <i class="fa fa-check"></i> Check-in
           </button>
         }
-
         <!-- CASO 2: check-in effettuato (EXECUTED).
              Se è il giorno del checkout oggi → mostro solo stato pulizia.
              Altrimenti → mostro "Check-in effettuato" + stato pulizia. -->
         @if (booking().status === 'EXECUTED') {
-
           @if (!isToday(booking().to)) {
             <span class="status-done"><i class="fa fa-check-circle"></i> Check-in effettuato</span>
           }
-
-          <!-- Se è il giorno del checkout oggi → pulsante pulizie -->
-          @if (isToday(booking().to) && !booking().cleaned) {
-            <button class="btn-clean" (click)="setCleaned()">
-              <i class="fa fa-shower"></i> Pulizie eseguite
-            </button>
-          }
-
-          <!-- Se è il giorno del checkout e già pulito → Camera pulita -->
-          @if (isToday(booking().to) && booking().cleaned) {
+          <!-- Se cleaned è true → MOSTRO SEMPRE "Camera pulita" (indipendentemente dalla data) -->
+          @if (booking().cleaned) {
             <span class="status-clean"><i class="fa fa-check-circle"></i> Camera pulita</span>
           }
-
-          <!-- Se checkout futuro (non dovrebbe capitare spesso, ma per sicurezza) -->
-          @if (isFuture(booking().to)) {
-            <span class="status-dirty"><i class="fa fa-clock-o"></i> Ospite in camera</span>
-          }
-
-          <!-- Se checkout passato → Camera pulita o Da pulire -->
-          @if (isPast(booking().to)) {
-            @if (booking().cleaned) {
-              <span class="status-clean"><i class="fa fa-check-circle"></i> Camera pulita</span>
-            } @else {
+          @else {
+            <!-- Se cleaned è false → mostro in base alla data -->
+            <!-- Se è il giorno del checkout oggi → pulsante pulizie -->
+            @if (isToday(booking().to)) {
+              <button class="btn-clean" (click)="setCleaned()">
+                <i class="fa fa-shower"></i> Pulizie eseguite
+              </button>
+            }
+            <!-- Se checkout futuro -->
+            @if (isFuture(booking().to)) {
+              <span class="status-dirty"><i class="fa fa-clock-o"></i> Ospite in camera</span>
+            }
+            <!-- Se checkout passato -->
+            @if (isPast(booking().to)) {
               <span class="status-dirty"><i class="fa fa-exclamation-circle"></i> Da pulire</span>
             }
           }
         }
-
       </div>
     </div>
-
   </div>
 </div>
