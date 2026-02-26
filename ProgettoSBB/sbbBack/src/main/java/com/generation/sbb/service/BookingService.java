@@ -62,4 +62,21 @@ public class BookingService {
         bookingRepository.save(b);
     }
 
+    // Ho aggiunto questo metodo separato da changeStatus perché le pulizie non sono
+    // uno "stato" della prenotazione ma un campo indipendente.
+    // Avrei potuto riusare changeStatus, ma sarebbe stato semanticamente sbagliato:
+    // cleaned è un boolean, non una stringa di stato. Tenerli separati rende il codice
+    // più chiaro e rispetta il principio di singola responsabilità (ogni metodo fa una cosa sola).
+    public void setCleaned(int id) {
+        Booking b = bookingRepository.findById(id)
+                // orElseThrow: se la prenotazione non esiste lancio un'eccezione
+                // che il controller catturerà e trasformerà in un 404.
+                // È il modo corretto per gestire il caso "risorsa non trovata" in REST.
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + id));
+        // Setto solo cleaned a true, il resto della prenotazione rimane intatto.
+        // Questo è esattamente il caso d'uso di PATCH: modifica parziale di una risorsa.
+        b.setCleaned(true);
+        bookingRepository.save(b);
+    }
+
 }

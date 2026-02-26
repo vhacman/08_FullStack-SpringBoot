@@ -1,11 +1,14 @@
 <div class="w3-container w3-padding-large">
 
   <!-- Intestazione -->
-  <div class="w3-row w3-margin-bottom">
-    <div class="w3-col s12">
-      <h2 class="page-title">
+  <div class="arrivals-header-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <h2 class="page-title" style="margin: 0;">
         <i class="fa fa-calendar-check-o"></i> Arrivi di Oggi
       </h2>
+      <button class="refresh-btn" (click)="refresh()" title="Aggiorna">
+        <img src="img/iconaRefresh.png" alt="Aggiorna">
+      </button>
     </div>
   </div>
 

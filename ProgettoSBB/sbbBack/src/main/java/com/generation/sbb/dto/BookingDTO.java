@@ -36,4 +36,12 @@ public class BookingDTO {
     private int price;
 
     private String status;
+
+    // Ho aggiunto cleaned anche nel DTO perché il frontend ne ha bisogno per
+    // decidere quale pulsante mostrare (pulizie da fare / già fatte).
+    // Senza questo campo il JSON di risposta non lo includerebbe e il frontend
+    // non saprebbe mai se la camera è stata pulita o no.
+    // MapStruct lo mappa automaticamente dall'entità al DTO perché il nome del campo
+    // è identico in entrambe le classi → nessuna annotazione @Mapping necessaria.
+    private boolean cleaned;
 }

@@ -21,6 +21,7 @@ export class TodaysArrivals
   loggedUser = this.userService.loggedUser;
   // Signal<Booking[]>: lista prenotazioni, si aggiorna tramite .set() → la view si ridisegna da sola
   bookings = signal<Booking[]>([]);
+
   constructor()
   {
     /*
@@ -34,13 +35,28 @@ export class TodaysArrivals
       // Guardia: procedo solo se l'utente è loggato e ha un hotel associato
       if (user && user.hotel?.id)
       {
-        console.log("Caricamento per hotel:", user.hotel.id);
-        // Chiamata HTTP al backend → subscribe gestisce risposta (next) ed errori (error)
-        this.bookingService.getTodaysArrivals(user.hotel.id).subscribe({
-          next:  (json) => this.bookings.set(json),   // aggiorna il signal con i dati ricevuti
-          error: (err)  => console.error(err)         // logga l'errore senza bloccare l'app
-        });
+        this.loadBookings(user.hotel.id);
       }
     });
+  }
+
+  private loadBookings(hotelId: number): void
+  {
+    console.log("Caricamento per hotel:", hotelId);
+    // Chiamata HTTP al backend → subscribe gestisce risposta (next) ed errori (error)
+    this.bookingService.getTodaysArrivals(hotelId).subscribe({
+      next:  (json) => this.bookings.set(json),   // aggiorna il signal con i dati ricevuti
+      error: (err)  => console.error(err)         // logga l'errore senza bloccare l'app
+    });
+  }
+
+  /** Ricarica manualmente gli arrivi di oggi */
+  refresh(): void
+  {
+    const user = this.loggedUser();
+    if (user && user.hotel?.id)
+    {
+      this.loadBookings(user.hotel.id);
+    }
   }
 }

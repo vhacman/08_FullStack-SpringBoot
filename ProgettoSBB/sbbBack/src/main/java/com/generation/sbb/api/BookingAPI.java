@@ -63,6 +63,26 @@ public class BookingAPI {
         return service.findTodaysDeparturesForHotel(hotelId);
     }
 
+    // Ho aggiunto questo endpoint per gestire la segnalazione delle pulizie.
+    // Uso PATCH perché voglio modificare solo il campo "cleaned" senza toccare
+    // il resto della prenotazione (stesso principio del changeStatus qui sotto).
+    // L'URL è /bookings/{id}/cleaned invece di /bookings/{id}/{campo} perché
+    // "cleaned" non è un valore variabile ma una azione specifica e ben definita:
+    // segna questa camera come pulita. Avere un path dedicato lo rende più leggibile
+    // e più sicuro (non posso chiamarlo con valori sbagliati come farei con {status}).
+    @PatchMapping("/{id}/cleaned")
+    public ResponseEntity<Void> setCleaned(@PathVariable("id") int id) {
+        try {
+            service.setCleaned(id);
+            // 204 No Content: operazione riuscita, non c'è nulla da restituire nel body.
+            // Il frontend sa già cosa è successo (cleaned = true) e aggiorna localmente
+            // il signal senza bisogno di rileggere tutto dal server.
+            return ResponseEntity.status(204).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
     /**
      * Aggiorna parzialmente lo stato di una risorsa identificata dal suo ID.
      *

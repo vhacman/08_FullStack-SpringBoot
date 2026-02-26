@@ -2,36 +2,69 @@ import {Component, inject, model} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Booking} from '../model/hotel.entities';
 import {BookingService} from '../booking-service';
+
 /**
  * Componente che rappresenta una singola riga di prenotazione.
  * Riceve un Booking dal componente padre e gestisce le azioni su di esso.
+ *
+ * Logica pulsanti in base allo stato:
+ *   SCHEDULED                        → [Check-in]
+ *   EXECUTED + oggi == booking.to    → [Pulizie eseguite] (cleaned: false → true)
+ *   EXECUTED + oggi >  booking.to    → indicatore cleaned read-only
  */
 @Component({
   selector: 'app-booking-row',
-  imports: [CommonModule], // fornisce le direttive base di Angular nel template HTML @if, @for
+  imports: [CommonModule],
   templateUrl: './booking-row.html',
   styleUrl: './booking-row.css',
 })
 export class BookingRow {
-  // model.required = signal bidirezionale: il padre passa il valore, questo componente può modificarlo
-  // e la modifica si propaga automaticamente verso l'alto (two-way binding)
   booking = model.required<Booking>();
   bookingService = inject(BookingService);
-  /**
-   * Esegue il check-in della prenotazione corrente.
-   * Chiama il backend e, solo in caso di successo, aggiorna lo stato locale del booking.
-   */
+
+  // Calcolo oggi una volta sola al momento della creazione del componente
+  // e la tengo come stringa "YYYY-MM-DD" (es. "2026-02-26").
+  // La uso per confrontarla con booking.to che arriva dal JSON nello stesso formato.
+  // Non uso Date() per il confronto perché le date JavaScript hanno problemi
+  // di timezone: toISOString() garantisce sempre il formato UTC corretto.
+  readonly today = new Date().toISOString().split('T')[0];
+
+  // Confronto stringhe invece di oggetti Date: "2026-02-26" === "2026-02-26".
+  // Funziona perché il formato ISO YYYY-MM-DD è ordinabile lessicograficamente,
+  // quindi < e > funzionano correttamente anche come stringhe.
+  isToday(date: any): boolean {
+    return String(date) === this.today;
+  }
+
+  // Uso < tra stringhe ISO: "2026-02-25" < "2026-02-26" è true → la data è nel passato.
+  isPast(date: any): boolean {
+    return String(date) < this.today;
+  }
+
+  // Più chiaro di !isToday() && !isPast() - una data è sempre oggi/passato/futuro
+  isFuture(date: any): boolean {
+    return String(date) > this.today;
+  }
+
   doCheckIn(): void {
-    // Fallback a 0 se l'id è undefined, ma in condizioni normali non dovrebbe mai esserlo
-    const id: number = this.booking().id ?? 0;
+    const id = this.booking().id ?? 0;
     this.bookingService.doCheckIn(id).subscribe({
-      next: () => {
-        // Non ricarica tutto dal server: aggiorna solo il campo status localmente.
-        // L'operatore spread {...old} crea un nuovo oggetto mantenendo tutti i campi
-        // precedenti e sovrascrivendo solo status → immutabilità del segnale
-        this.booking.update(old => ({ ...old, status: "executed" }));
-      },
-      error: err => console.error('Errore durante il check-in:', err)
+      // Aggiorno solo il campo status nel signal locale senza ricaricare dal server.
+      // L'operatore spread {...old} crea un nuovo oggetto con tutti i campi precedenti
+      // e sovrascrive solo status → il signal si aggiorna e Angular ridisegna la view.
+      next:  () => this.booking.update(old => ({ ...old, status: 'EXECUTED' })),
+      error: err => console.error('Errore check-in:', err)
+    });
+  }
+
+  // Ho aggiunto questo metodo per gestire il click sul pulsante "Pulizie eseguite".
+  // Chiama il backend per persistere il cambio, poi aggiorna il signal locale:
+  // stesso pattern di doCheckIn() → il frontend non deve fare un'altra GET al server.
+  setCleaned(): void {
+    const id = this.booking().id ?? 0;
+    this.bookingService.setCleaned(id).subscribe({
+      next:  () => this.booking.update(old => ({ ...old, cleaned: true })),
+      error: err => console.error('Errore pulizie:', err)
     });
   }
 }

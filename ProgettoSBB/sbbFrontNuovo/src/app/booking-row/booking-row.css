@@ -1,25 +1,142 @@
-.card-row {
-  border-left: 6px solid #c0392b;
+.booking-card {
   background-color: #fdf6f0;
+  border: 1px solid #e0d0c0;
+  border-left: 5px solid #b5451b;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+}
+
+/* ── Colonna 1: Avatar ── */
+.col-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0e4d4;
+  border-right: 1px solid #e0d0c0;
+  padding: 16px 8px;
 }
 
 .avatar {
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
-  font-weight: bold;
-  font-size: 1.2em;
-  margin: 0 auto;
-  background-color: #c0392b;
-  color: white;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: #b5451b;
+  color: #fff;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Colonna 2: Dati ospite ── */
+.col-guest {
+  padding: 14px 16px;
+  border-right: 1px solid #e0d0c0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .guest-name {
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #3e2723;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #3e2010;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
 }
 
-.booking-details-border {
-  border-color: #e8ddd5 !important;
+.guest-detail {
+  font-size: 0.78rem;
+  color: #7a6050;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Colonna 3: Camera + date + azione ── */
+.col-booking {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.room-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #5a3010;
+}
+
+.booking-dates {
+  font-size: 0.8rem;
+  color: #7a6050;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.date-arrow {
+  color: #b5451b;
+  font-weight: bold;
+}
+
+.action-area {
+  margin-top: 4px;
+}
+
+.btn-checkin {
+  background-color: #b5451b;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-checkin:hover {
+  background-color: #8b3214;
+}
+
+.status-done {
+  font-size: 0.8rem;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.btn-clean {
+  background-color: #1565c0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-clean:hover {
+  background-color: #0d47a1;
+}
+
+.status-clean {
+  font-size: 0.8rem;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.status-dirty {
+  font-size: 0.8rem;
+  color: #b5451b;
+  font-weight: 600;
 }

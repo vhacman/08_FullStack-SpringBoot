@@ -1,5 +1,38 @@
-<div class="w3-card-2 w3-sand stdpadding w3-row">
-    <div id="logodiv" class="w3-col s2 m2 l2">
-        <img src="img/logo.jpg" routerLink="" />
+<div class="w3-top">
+  <div class="navbar-main w3-card-2 w3-sand w3-row">
+
+    <!-- Logo -->
+    <div class="w3-col s2 m2 l2 logo-container">
+      <img src="img/logo.png" routerLink="" class="logo-img" alt="SBB Logo" />
     </div>
+
+    <!-- Spazio centrale -->
+    <div class="w3-col s6 m6 l6"></div>
+
+    <!-- Info utente (destra) -->
+    <div class="w3-col s4 m4 l4 nav-right">
+      <div class="user-block">
+
+        <div class="hotel-name">
+          <i class="fa fa-building-o"></i>
+          {{ loggedUser() != null ? loggedUser()!.hotel.name : 'Caricamento...' }}
+        </div>
+
+        <div class="user-info">
+          <div class="user-details">
+            <span class="user-name">{{ userInfo() }}</span>
+            <span class="user-role">{{ loggedUser()?.role | titlecase }}</span>
+          </div>
+          <img src="img/iconaProfilo.png" class="user-icon" alt="profilo" />
+          <button class="logout-btn">
+            <i class="fa fa-sign-out"></i> LogOut
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<div class="nav-spacer"></div>

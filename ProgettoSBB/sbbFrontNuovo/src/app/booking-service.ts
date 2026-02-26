@@ -15,19 +15,28 @@ export class BookingService {
 
   private apiURL = "http://localhost:8080/sbb/api/bookings";
 
-  public getTodaysArrivals(id:number):Observable<Booking[]>{
-
-    let url = this.apiURL+"/todaysarrivals/"+id;
-    console.log(url);
-
-    return this.http.get<Booking[]>(url);
+  public getTodaysArrivals(id: number): Observable<Booking[]> {
+    return this.http.get<Booking[]>(`${this.apiURL}/todaysarrivals/${id}`);
   }
 
-  public doCheckIn(id:number): Observable<Booking> {
-    let url = this.apiURL+"/" +id + "/executed";
-    return this.http.patch<Booking>(url, null);
+  public getTodaysDepartures(id: number): Observable<Booking[]> {
+    return this.http.get<Booking[]>(`${this.apiURL}/todaysdepartures/${id}`);
   }
 
+  // Ho cambiato il path da "/executed" a "/EXECUTED" (maiuscolo) per allinearlo
+  // al valore che Hibernate salva nel DB e che il backend restituisce nel JSON.
+  // Prima c'era un'incongruenza: il DB aveva "EXECUTED" ma il frontend inviava "executed",
+  // creando status diversi a seconda di come veniva creata la prenotazione.
+  // Ora tutto il sistema usa lo stesso valore → meno bug nascosti.
+  public doCheckIn(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiURL}/${id}/EXECUTED`, null);
+  }
 
-
+  // Ho aggiunto questo metodo per chiamare il nuovo endpoint PATCH /bookings/{id}/cleaned.
+  // Restituisce Observable<void> perché il backend risponde 204 No Content:
+  // non mi serve il body della risposta, mi interessa solo sapere se è andata bene.
+  // Il frontend aggiornerà il signal localmente senza ricaricare tutto dal server.
+  public setCleaned(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiURL}/${id}/cleaned`, null);
+  }
 }

@@ -1,52 +1,82 @@
-<div class="w3-card w3-round w3-margin-bottom w3-hover-shadow card-row">
-  <div class="w3-row w3-padding-16">
-    <!-- ===== AVATAR: mostra le iniziali dell'ospite in un cerchio ===== -->
-    <div class="w3-col m1 s2 w3-center">
-      <div class="w3-circle w3-center avatar">
-        <!-- charAt(0) prende il primo carattere di firstName e lastName -->
+<div class="booking-card">
+  <div class="booking-grid">
+
+    <!-- COLONNA 1: Avatar -->
+    <div class="col-avatar">
+      <div class="avatar">
         {{ booking().guest.firstName.charAt(0) }}{{ booking().guest.lastName.charAt(0) }}
       </div>
     </div>
-    <!-- ===== DATI OSPITE: nome, codice fiscale, città ===== -->
-    <div class="w3-col m4 s10 w3-padding-small">
-      <div class="w3-large guest-name">
-        {{ booking().guest.firstName }} {{ booking().guest.lastName }}
+
+    <!-- COLONNA 2: Dati ospite -->
+    <div class="col-guest">
+      <div class="guest-name">{{ booking().guest.firstName }} {{ booking().guest.lastName }}</div>
+      <div class="guest-detail">
+        <i class="fa fa-id-card-o"></i> {{ booking().guest.ssn }}
       </div>
-      <div class="w3-text-grey">
-        <!-- SSN = Social Security Number, qui usato come codice fiscale -->
-        <i class="fa fa-id-card-o w3-margin-right"></i> {{ booking().guest.ssn }}
-      </div>
-      <div class="w3-small w3-text-grey">
-        <i class="fa fa-map-marker w3-margin-right"></i> {{ booking().guest.city }}
+      <div class="guest-detail">
+        <i class="fa fa-map-marker"></i> {{ booking().guest.city }}
       </div>
     </div>
-    <!-- ===== DETTAGLI PRENOTAZIONE: camera, check-in, check-out ===== -->
-    <div class="w3-col m5 s12 w3-padding-small w3-border-left booking-details-border">
-      <div class="w3-text-grey">
-        <strong>Camera:</strong> {{ booking().room.name }}
+
+    <!-- COLONNA 3: Camera, date, azione -->
+    <div class="col-booking">
+      <div class="room-name">
+        <i class="fa fa-bed"></i> {{ booking().room.name }}
       </div>
-      <div class="w3-small w3-text-grey">
-        <!-- Il pipe 'date' formatta il timestamp in formato italiano gg/mm/aaaa -->
-        <div><i class="fa fa-calendar-plus-o  w3-margin-right"></i> Check-in:  {{ booking().from | date:'dd/MM/yyyy' }}</div>
-        <div><i class="fa fa-calendar-minus-o w3-margin-right"></i> Check-out: {{ booking().to   | date:'dd/MM/yyyy' }}</div>
+      <div class="booking-dates">
+        <span><i class="fa fa-sign-in"></i> {{ booking().from | date:'dd/MM/yy' }}</span>
+        <span class="date-arrow">→</span>
+        <span><i class="fa fa-sign-out"></i> {{ booking().to | date:'dd/MM/yy' }}</span>
+      </div>
+
+      <div class="action-area">
+
+        <!-- CASO 1: prenotazione confermata, ospite non ancora arrivato → mostro Check-in -->
+        @if (booking().status === 'SCHEDULED') {
+          <button class="btn-checkin" (click)="doCheckIn()">
+            <i class="fa fa-check"></i> Check-in
+          </button>
+        }
+
+        <!-- CASO 2: check-in effettuato (EXECUTED).
+             Se è il giorno del checkout oggi → mostro solo stato pulizia.
+             Altrimenti → mostro "Check-in effettuato" + stato pulizia. -->
+        @if (booking().status === 'EXECUTED') {
+
+          @if (!isToday(booking().to)) {
+            <span class="status-done"><i class="fa fa-check-circle"></i> Check-in effettuato</span>
+          }
+
+          <!-- Se è il giorno del checkout oggi → pulsante pulizie -->
+          @if (isToday(booking().to) && !booking().cleaned) {
+            <button class="btn-clean" (click)="setCleaned()">
+              <i class="fa fa-shower"></i> Pulizie eseguite
+            </button>
+          }
+
+          <!-- Se è il giorno del checkout e già pulito → Camera pulita -->
+          @if (isToday(booking().to) && booking().cleaned) {
+            <span class="status-clean"><i class="fa fa-check-circle"></i> Camera pulita</span>
+          }
+
+          <!-- Se checkout futuro (non dovrebbe capitare spesso, ma per sicurezza) -->
+          @if (isFuture(booking().to)) {
+            <span class="status-dirty"><i class="fa fa-clock-o"></i> Ospite in camera</span>
+          }
+
+          <!-- Se checkout passato → Camera pulita o Da pulire -->
+          @if (isPast(booking().to)) {
+            @if (booking().cleaned) {
+              <span class="status-clean"><i class="fa fa-check-circle"></i> Camera pulita</span>
+            } @else {
+              <span class="status-dirty"><i class="fa fa-exclamation-circle"></i> Da pulire</span>
+            }
+          }
+        }
+
       </div>
     </div>
-    <!-- ===== AZIONI: pulsanti contestuali in base allo status della prenotazione ===== -->
-    <div class="w3-col m2 s12 w3-right-align w3-padding-small">
-      <!--
-        LOGICA STATUS:
 
-        'SCHEDULED' → prenotazione confermata, ospite non ancora arrivato
-                       → mostrare: [CHECK-IN]  [ANNULLA]
-
-        'EXECUTED' + oggi == booking().to
-                       → ospite in partenza oggi
-                       → mostrare: [PULIZIE ESEGUITE] (cleaned: false → true)
-
-        'EXECUTED' + oggi > booking().to
-                       → check-out già avvenuto
-                       → mostrare/aggiornare stato pulizie (campo cleaned)
-      -->
-    </div>
   </div>
 </div>

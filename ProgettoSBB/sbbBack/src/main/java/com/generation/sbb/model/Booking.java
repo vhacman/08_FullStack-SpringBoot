@@ -37,6 +37,12 @@ public class Booking {
 
     private String notes;
 
-    //aggiungo status
     private String status = "SCHEDULED";
+
+    // Ho aggiunto questo campo per tracciare se la camera è stata pulita dopo il checkout.
+    // È un boolean perché lo stato è binario: o è stata pulita o non lo è ancora.
+    // Il default è false perché quando una prenotazione viene creata la camera non è
+    // ancora stata liberata, quindi non può essere pulita.
+    // Hibernate creerà automaticamente la colonna "cleaned" nel DB grazie a ddl-auto=update.
+    private boolean cleaned = false;
 }

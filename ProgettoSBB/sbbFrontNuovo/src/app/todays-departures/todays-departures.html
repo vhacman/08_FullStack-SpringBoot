@@ -1,1 +1,27 @@
-<p>todays-departures works!</p>
+<div class="w3-container w3-padding-large">
+
+  <!-- Intestazione -->
+  <div class="departures-header-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <h2 class="page-title" style="margin: 0;">
+        <i class="fa fa-calendar-minus-o"></i> Partenze di Oggi
+      </h2>
+      <button class="refresh-btn" (click)="refresh()" title="Aggiorna">
+        <img src="img/iconaRefresh.png" alt="Aggiorna">
+      </button>
+    </div>
+  </div>
+
+  <!-- Stato vuoto -->
+  @if (bookings().length === 0) {
+    <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
+      <p><i class="fa fa-info-circle"></i> Nessuna partenza prevista per oggi.</p>
+    </div>
+  }
+
+  <!-- Lista Partenze -->
+  @for (booking of bookings(); track booking.id) {
+    <app-booking-row [booking]="booking"></app-booking-row>
+  }
+
+</div>
