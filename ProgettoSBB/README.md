@@ -43,6 +43,12 @@ ProgettoSBB/
 └── sbbFrontVecchio/ # Frontend Angular (versione precedente)
 ```
 
+## Demo
+
+[Demo.mp4](./Demo.mp4)
+
+![Demo.gif](./Demo.gif)
+
 ## Come eseguire
 
 **Backend** (richiede MySQL su localhost:3306):
