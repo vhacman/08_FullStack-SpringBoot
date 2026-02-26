@@ -1,0 +1,31 @@
+.operations-box {
+  margin: 16px 8px;
+  border: 1px solid #d4c4b0;
+  border-left: 5px solid #b5451b;
+  border-radius: 6px;
+  background-color: #fdf6f0;
+  overflow: hidden;
+}
+
+.operations-title {
+  background-color: #fdf0e0;
+  border-bottom: 1px solid #d4c4b0;
+  padding: 10px 16px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a5030;
+}
+
+/* Riduci padding interno dei due form dentro il riquadro */
+.operations-box app-insert-guest > div,
+.operations-box app-insert-quick-booking > div {
+  padding: 8px 12px;
+}
+
+/* Separatore tra i due form */
+.operations-box app-insert-guest {
+  display: block;
+  border-bottom: 1px solid #e0d0c0;
+}

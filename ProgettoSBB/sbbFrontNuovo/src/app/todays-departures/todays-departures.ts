@@ -1,7 +1,7 @@
 import {Component, effect, inject, signal} from '@angular/core';
 import {Booking} from '../model/hotel.entities';
-import {BookingService} from '../booking-service';
-import {UserService} from '../user-service';
+import {BookingService} from '../services/booking/booking-service';
+import {UserService} from '../services/user/user-service';
 import {BookingRow} from '../booking-row/booking-row';
 
 @Component({

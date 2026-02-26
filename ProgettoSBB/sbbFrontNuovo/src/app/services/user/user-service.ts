@@ -1,6 +1,6 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {User} from './model/hotel.entities';
+import {User} from '../../model/hotel.entities';
 
 /**
  * Servizio globale per la gestione dell'utente autenticato e delle prenotazioni.

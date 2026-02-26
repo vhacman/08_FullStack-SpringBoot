@@ -1,6 +1,5 @@
-<div class="w3-container w3-padding-large">
+<div class="w3-container" style="padding: 0 8px 8px; margin-top: 16px;">
 
-  <!-- Intestazione -->
   <div class="departures-header-box">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <h2 class="page-title" style="margin: 0;">
@@ -28,8 +27,11 @@
     </div>
   }
 
-  <!-- Sezione Camere Pulite collassabile -->
-  @if (cleanedBookings().length > 0) {
+</div>
+
+<!-- Sezione Camere Pulite separata -->
+@if (cleanedBookings().length > 0) {
+  <div class="cleaned-section" style="padding: 0 8px 8px; margin-top: 16px;">
     <div class="collapsible-section">
 
       <div class="collapsible-header orange" (click)="toggleCleaned()">
@@ -39,19 +41,7 @@
         <i class="fa chevron" [class.fa-chevron-down]="!cleanedExpanded()" [class.fa-chevron-up]="cleanedExpanded()"></i>
       </div>
 
-      @if (!cleanedExpanded()) {
-        <!-- Collapsed: chip con camera + ospite -->
-        <div class="chips-container">
-          @for (b of cleanedBookings(); track b.id) {
-            <span class="room-chip">
-              <i class="fa fa-bed"></i>
-              {{ b.room.name }}
-              <span class="chip-guest">· {{ b.guest.lastName }}</span>
-            </span>
-          }
-        </div>
-      } @else {
-        <!-- Expanded: card complete -->
+      @if (cleanedExpanded()) {
         <div class="expanded-list">
           @for (b of cleanedBookings(); track b.id) {
             <app-booking-row [booking]="b"></app-booking-row>
@@ -60,6 +50,5 @@
       }
 
     </div>
-  }
-
-</div>
+  </div>
+}

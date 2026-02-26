@@ -49,6 +49,9 @@ public class BookingService {
 
     public BookingDTO save(@Valid BookingDTO bookingDTO) {
         Booking booking = bookingMapper.toEntity(bookingDTO);
+        if (booking.getStatus() == null) {
+            booking.setStatus("SCHEDULED");
+        }
         booking = bookingRepository.save(booking);
         return bookingMapper.toDTO(booking);
     }

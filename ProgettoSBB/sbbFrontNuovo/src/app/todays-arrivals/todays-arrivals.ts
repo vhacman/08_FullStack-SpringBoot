@@ -1,7 +1,7 @@
 import {Component, effect, inject, signal} from '@angular/core';
 import {BookingRow} from '../booking-row/booking-row';
-import {BookingService} from '../booking-service';
-import {UserService} from '../user-service';
+import {BookingService} from '../services/booking/booking-service';
+import {UserService} from '../services/user/user-service';
 import {Booking} from '../model/hotel.entities';
 /**
  * Componente che mostra le prenotazioni in arrivo oggi per l'hotel dell'utente loggato.

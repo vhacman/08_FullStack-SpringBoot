@@ -1,6 +1,5 @@
-<div class="w3-container w3-padding-large">
+<div class="w3-container" style="padding: 0 8px 8px; margin-top: 16px;">
 
-  <!-- Intestazione -->
   <div class="arrivals-header-box">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <h2 class="page-title" style="margin: 0;">
@@ -28,8 +27,11 @@
     </div>
   }
 
-  <!-- Sezione Checked In collassabile -->
-  @if (checkedInBookings().length > 0) {
+</div>
+
+<!-- Sezione Checked In separata -->
+@if (checkedInBookings().length > 0) {
+  <div class="checked-in-section" style="padding: 0 8px 8px; margin-top: 16px;">
     <div class="collapsible-section">
 
       <div class="collapsible-header green" (click)="toggleCheckedIn()">
@@ -39,19 +41,7 @@
         <i class="fa chevron" [class.fa-chevron-down]="!checkedInExpanded()" [class.fa-chevron-up]="checkedInExpanded()"></i>
       </div>
 
-      @if (!checkedInExpanded()) {
-        <!-- Collapsed: chip con i nomi -->
-        <div class="chips-container">
-          @for (b of checkedInBookings(); track b.id) {
-            <span class="guest-chip">
-              <i class="fa fa-user"></i>
-              {{ b.guest.firstName }} {{ b.guest.lastName }}
-              <span class="chip-room">· {{ b.room.name }}</span>
-            </span>
-          }
-        </div>
-      } @else {
-        <!-- Expanded: card complete -->
+      @if (checkedInExpanded()) {
         <div class="expanded-list">
           @for (b of checkedInBookings(); track b.id) {
             <app-booking-row [booking]="b"></app-booking-row>
@@ -60,6 +50,5 @@
       }
 
     </div>
-  }
-
-</div>
+  </div>
+}

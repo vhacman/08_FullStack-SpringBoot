@@ -1,7 +1,7 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Booking} from './model/hotel.entities';
+import {Booking} from '../../model/hotel.entities';
 
 /**
  * Servizio globale per la gestione dell'utente autenticato e delle prenotazioni.
@@ -38,5 +38,9 @@ export class BookingService {
   // Il frontend aggiornerà il signal localmente senza ricaricare tutto dal server.
   public setCleaned(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiURL}/${id}/cleaned`, null);
+  }
+
+  public insert(data: { guestId: number; roomId: number; from: string; to: string; price: number; notes: string }): Observable<void> {
+    return this.http.post<void>(this.apiURL, { ...data, status: 'SCHEDULED' });
   }
 }

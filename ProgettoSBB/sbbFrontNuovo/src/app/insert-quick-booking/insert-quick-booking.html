@@ -1,1 +1,121 @@
-<p>insert-quick-booking works!</p>
+<div class="w3-container w3-padding-large">
+
+  <!-- Header -->
+  <div class="booking-header-box" (click)="toggleForm()" style="cursor:pointer">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <img src="img/iconaInsertGuest.png" alt="Inserisci prenotazione" class="header-icon">
+      <h2 class="page-title" style="margin:0;">Inserisci Prenotazione</h2>
+    </div>
+    <i class="fa chevron"
+       [class.fa-chevron-down]="!formVisible()"
+       [class.fa-chevron-up]="formVisible()">
+    </i>
+  </div>
+
+  @if (formVisible()) {
+    <form class="booking-form" #bookingForm="ngForm" (ngSubmit)="submit()">
+
+      <!-- Ospite autocomplete -->
+      <div class="form-group">
+        <label>Ospite</label>
+        <div class="autocomplete-wrapper">
+          <input type="text"
+                 [value]="guestInput()"
+                 (input)="onGuestInput($any($event.target).value)"
+                 (focus)="showDropdown.set(true)"
+                 (blur)="onGuestBlur()"
+                 placeholder="Cerca per nome o cognome..."
+                 class="form-input"
+                 autocomplete="off">
+          @if (showDropdown() && filteredGuests().length > 0) {
+            <div class="autocomplete-dropdown">
+              @for (g of filteredGuests(); track g.id) {
+                <div class="autocomplete-item" (mousedown)="selectGuest(g)">
+                  <i class="fa fa-user"></i>
+                  {{ g.lastName }} {{ g.firstName }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa fa-sign-in"></i> Check-in</label>
+          <input type="date" name="from" [(ngModel)]="form.from" required class="form-input">
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-sign-out"></i> Check-out</label>
+          <input type="date" name="to" [(ngModel)]="form.to" required class="form-input">
+        </div>
+      </div>
+
+      <!-- Cerca camere -->
+      <button type="button" class="btn-search"
+              [disabled]="!form.from || !form.to"
+              (click)="searchRooms()">
+        <i class="fa fa-search"></i> Cerca camere disponibili
+      </button>
+
+      <!-- Camera -->
+      @if (roomsSearched()) {
+        @if (freeRooms().length === 0) {
+          <div class="msg-empty">
+            <i class="fa fa-info-circle"></i> Nessuna camera disponibile per le date selezionate.
+          </div>
+        } @else {
+          <div class="form-group">
+            <label>Camera</label>
+            <select name="roomId" [(ngModel)]="form.roomId" required class="form-input"
+                    (ngModelChange)="onRoomChange()">
+              <option [value]="0" disabled>-- Seleziona camera --</option>
+              @for (r of freeRooms(); track r.id) {
+                <option [value]="r.id">{{ r.name }} — €{{ r.basePrice }}</option>
+              }
+            </select>
+          </div>
+        }
+      }
+
+      <!-- Prezzo -->
+      <div class="form-group">
+        <label>Prezzo (€)</label>
+        <input type="number" name="price" [(ngModel)]="form.price" required min="0" class="form-input">
+      </div>
+
+      <!-- Note -->
+      <div class="form-group">
+        <label>Note</label>
+        <textarea name="notes" [(ngModel)]="form.notes" rows="2"
+                  placeholder="Opzionale..." class="form-input"></textarea>
+      </div>
+
+      <!-- Feedback -->
+      @if (success()) {
+        <div class="msg-success">
+          <i class="fa fa-check-circle"></i> Prenotazione salvata con successo!
+        </div>
+      }
+      @if (errorMsg()) {
+        <div class="msg-error">
+          <i class="fa fa-exclamation-circle"></i> {{ errorMsg() }}
+        </div>
+      }
+
+      <!-- Azioni -->
+      <div class="form-actions">
+        <button type="submit" class="btn-submit"
+                [disabled]="bookingForm.invalid || form.guestId === 0 || form.roomId === 0">
+          <i class="fa fa-save"></i> Salva
+        </button>
+        <button type="button" class="btn-reset" (click)="reset()">
+          <i class="fa fa-undo"></i> Reset
+        </button>
+      </div>
+
+    </form>
+  }
+
+</div>
