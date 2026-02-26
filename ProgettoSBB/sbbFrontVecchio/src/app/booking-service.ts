@@ -1,8 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Booking } from './model/hotel.entities';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { UserService } from './user-service';
+import { Observable } from 'rxjs'; 
 
 @Injectable({
   providedIn: 'root'

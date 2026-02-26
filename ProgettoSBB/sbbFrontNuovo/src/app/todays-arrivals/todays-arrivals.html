@@ -1,0 +1,24 @@
+<div class="w3-container w3-padding-large">
+
+  <!-- Intestazione -->
+  <div class="w3-row w3-margin-bottom">
+    <div class="w3-col s12">
+      <h2 class="page-title">
+        <i class="fa fa-calendar-check-o"></i> Arrivi di Oggi
+      </h2>
+    </div>
+  </div>
+
+  <!-- Stato vuoto -->
+  @if (bookings().length === 0) {
+    <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
+      <p><i class="fa fa-info-circle"></i> Nessun arrivo previsto per oggi.</p>
+    </div>
+  }
+
+  <!-- Lista Arrivi -->
+  @for (booking of bookings(); track booking.id) {
+    <app-booking-row [booking]="booking"></app-booking-row>
+  }
+
+</div>

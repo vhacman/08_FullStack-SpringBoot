@@ -1,0 +1,11 @@
+.page-title {
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #3e2723;
+}
+
+.empty-state {
+  background-color: #fdf6f0;
+  border-color: #c0392b;
+  color: #5d4037;
+}

@@ -2,5 +2,15 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../00_libraries" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../01_fundamentals_examples" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../02_tickets_transportation" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../03_Business_Applications" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../04_Exercises_Practice" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../05_Spring &amp; FrontEnd - FullStack" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../06_Angular-Frontend" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../07_FullStack-NodeJS-Angular" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../09_Database-MySql" vcs="Git" />
   </component>
 </project>
