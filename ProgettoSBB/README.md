@@ -38,8 +38,9 @@ Il backend segue un'architettura a layer: API → Service → Repository → Ent
 
 ```
 ProgettoSBB/
-├── sbbBack/    # Backend Spring Boot (REST API su /sbb/api/)
-└── sbbFront/   # Frontend Angular 21
+├── sbbBack/         # Backend Spring Boot (REST API su /sbb/api/)
+├── sbbFrontNuovo/  # Frontend Angular 21 (versione corrente)
+└── sbbFrontVecchio/ # Frontend Angular (versione precedente)
 ```
 
 ## Come eseguire

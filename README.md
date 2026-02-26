@@ -8,14 +8,15 @@ Applicazioni full-stack con backend Spring Boot REST API e frontend Angular 21. 
 |----------|-------------|-------|
 | [BloodWork](BloodWork/) | Gestione parametri esami del sangue ospedalieri | Spring Boot 4.0.2, Angular, MySQL, JPA, DTO, MapStruct |
 | [PetShelter](PetShelter/) | Gestionale rifugio animali con adozioni e stato animali | Spring Boot 4.0.3, Angular, MySQL, JPA, DTO, Enum |
-| [ProgettoSBB](ProgettoSBB/) | Gestione hotel: prenotazioni, camere, ospiti e autenticazione con ruoli | Spring Boot 4.0.2, Angular, MySQL, JWT-like auth, MapStruct |
+| [ProgettoSBB](ProgettoSBB/) | Gestione hotel: prenotazioni, camere, ospiti e autenticazione con ruoli | Spring Boot 4.0.2, Angular 21, MySQL, JWT-like auth, MapStruct |
 
 ## Struttura comune
 
 ```
 ProjectName/
-├── [project]be/     # Backend Spring Boot (REST API)
-└── [project]fe/     # Frontend Angular 21
+├── [project]be/          # Backend Spring Boot (REST API)
+├── [project]fe/          # Frontend Angular 21 (versione corrente)
+└── [project]FeVecchio/   # Frontend (versione precedente, se presente)
 ```
 
 ## Stack
