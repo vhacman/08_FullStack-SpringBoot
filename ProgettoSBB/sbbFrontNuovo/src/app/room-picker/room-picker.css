@@ -1,0 +1,44 @@
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.room-card {
+  border: 1px solid #d4c4b0;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.room-card:hover {
+  border-color: #b5451b;
+  background: #fdf0e0;
+}
+
+.room-card.selected {
+  border-color: #b5451b;
+  background: #fdf0e0;
+}
+
+.room-card .room-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #5a3010;
+  margin-bottom: 4px;
+}
+
+.room-card .room-price {
+  color: #b5451b;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.room-card .room-desc {
+  font-size: 0.75rem;
+  color: #7a5030;
+  margin-top: 4px;
+}

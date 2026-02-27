@@ -1,7 +1,7 @@
 import {Component, inject, model, output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Booking} from '../model/hotel.entities';
-import {BookingService} from '../services/booking/booking-service';
+import {BookingService} from '../APIservices/booking/booking-service';
 
 @Component({
   selector: 'app-booking-row',

@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { UserService } from '../services/user/user-service';
+import { UserLogicService } from '../ComponentLogicService/user-logic-service';
 import { RouterLink } from '@angular/router';
 import { TitleCasePipe } from '@angular/common';
 
@@ -11,9 +11,9 @@ import { TitleCasePipe } from '@angular/common';
 })
 export class TopMenu {
 
-  userService = inject(UserService);
+  userLogicService = inject(UserLogicService);
 
-  loggedUser = this.userService.loggedUser;
+  loggedUser = this.userLogicService.loggedUser;
 
   userInfo = computed(()=> this.loggedUser()==null ? "loading" : this.loggedUser()?.firstName+" "+this.loggedUser()?.lastName);
 

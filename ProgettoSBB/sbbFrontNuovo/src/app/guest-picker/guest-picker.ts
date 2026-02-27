@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, output } from '@angular/core';
-import { GuestService } from '../services/guest/guest-service';
+import { GuestLogicService } from '../ComponentLogicService/guest-logic-service';
 import { Guest } from '../model/hotel.entities';
 
 @Component({
@@ -10,7 +10,7 @@ import { Guest } from '../model/hotel.entities';
 })
 export class GuestPicker {
 
-  private guestService = inject(GuestService);
+  private guestLogicService = inject(GuestLogicService);
 
   guestSelected = output<number>();
 
@@ -18,8 +18,8 @@ export class GuestPicker {
   guestInput   = signal('');
   showDropdown = signal(false);
 
-  // Il computed delega al servizio: la logica di filtraggio non è più qui
-  filteredGuests = computed(() => this.guestService.filter(this.guestInput()));
+  // La logica di filtraggio vive nel service; il componente delega
+  filteredGuests = computed(() => this.guestLogicService.filter(this.guestInput()));
 
   onGuestInput(value: string): void {
     this.guestInput.set(value);
@@ -38,9 +38,9 @@ export class GuestPicker {
     setTimeout(() => this.showDropdown.set(false), 150);
   }
 
-  // Metodo pubblico: il padre lo chiama tramite viewChild quando resetta il form
+  // Chiamato dal padre tramite viewChild per azzerare il campo
   reset(): void {
-      this.guestInput.set('');
-      this.showDropdown.set(false);
+    this.guestInput.set('');
+    this.showDropdown.set(false);
   }
 }

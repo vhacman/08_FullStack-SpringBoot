@@ -14,10 +14,10 @@ public class BookingDTO {
     private int id;
 
     @NotNull(message = "Guest ID is required")
-    private Long guestId;
+    private int guestId;
 
     @NotNull(message = "Room ID is required")
-    private Long roomId;
+    private int roomId;
 
     // Le stanze e i guest vengono DTOizzati senza includere le prenotazioni:
     // evita riferimenti circolari (Booking → Room → Booking → ...) che

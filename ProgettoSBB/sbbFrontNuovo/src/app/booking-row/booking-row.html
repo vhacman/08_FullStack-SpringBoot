@@ -43,43 +43,49 @@
 
     <!-- COLONNA 3: Azioni -->
     <div class="col-actions">
-      @if (booking().status === 'SCHEDULED') {
+
+      @if (booking().status === 'PENDING') {
         <div class="action-item">
-          <button class="btn-icon" (click)="doCheckIn()" title="Check-in">
+          <button class="btn-icon" (click)="acceptBooking()" title="Check-in">
             <img src="img/checkInIcona.png" alt="Check-in">
           </button>
           <span class="action-label">Check in</span>
         </div>
       }
-      @if (booking().status === 'EXECUTED') {
+
+      @if (booking().status === 'CHECKED_IN') {
         @if (isFuture(booking().checkOut)) {
           <div class="action-item">
             <img src="img/checkedInIcona.png" alt="Checked in" class="status-icon">
             <span class="action-label done">Checked in</span>
           </div>
         }
-        @if (booking().cleaned) {
+        @if (isToday(booking().checkOut) || isPast(booking().checkOut)) {
           <div class="action-item">
-            <img src="img/cleanedIcona.png" alt="Camera pulita" class="status-icon">
-            <span class="action-label done">Disponibile</span>
+            <button class="btn-icon" (click)="checkout()" title="Check-out">
+              <img src="img/toCleanIcon.png" alt="Check-out">
+            </button>
+            <span class="action-label warn">Check out</span>
           </div>
-        } @else {
-          @if (isToday(booking().checkOut)) {
-            <div class="action-item">
-              <button class="btn-icon" (click)="setCleaned()" title="Pulizie eseguite">
-                <img src="img/toCleanIcon.png" alt="Esegui pulizie">
-              </button>
-              <span class="action-label warn">Da pulire</span>
-            </div>
-          }
-          @if (isPast(booking().checkOut)) {
-            <div class="action-item">
-              <img src="img/toCleanIcon.png" alt="Da pulire" class="status-icon">
-              <span class="action-label warn">Da pulire</span>
-            </div>
-          }
         }
       }
+
+      @if (booking().status === 'CHECKED_OUT') {
+        <div class="action-item">
+          <button class="btn-icon" (click)="complete()" title="Pulizie eseguite">
+            <img src="img/toCleanIcon.png" alt="Esegui pulizie">
+          </button>
+          <span class="action-label warn">Da pulire</span>
+        </div>
+      }
+
+      @if (booking().status === 'COMPLETE') {
+        <div class="action-item">
+          <img src="img/cleanedIcona.png" alt="Camera pulita" class="status-icon">
+          <span class="action-label done">Disponibile</span>
+        </div>
+      }
+
     </div>
 
   </div>

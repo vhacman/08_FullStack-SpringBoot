@@ -18,9 +18,9 @@
   color: #7a5030;
 }
 
-/* Riduci padding interno dei due form dentro il riquadro */
+/* Riduci padding interno dei form dentro il riquadro */
 .operations-box app-insert-guest > div,
-.operations-box app-insert-quick-booking > div {
+.operations-box app-insert-booking > div {
   padding: 8px 12px;
 }
 

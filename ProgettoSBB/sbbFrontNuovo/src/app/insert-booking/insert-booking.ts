@@ -1,66 +1,163 @@
-import {Component, computed, inject, signal} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {GuestPicker} from '../guest-picker/guest-picker';
-import {RouterLink} from '@angular/router';
-import {BookingService} from '../services/booking/booking-service';
-import {RoomService} from '../services/room/room-service';
-import {UserService} from '../services/user/user-service';
-import {differenceInDays} from 'date-fns';
-import {Room} from '../model/hotel.entities';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { GuestPicker } from '../guest-picker/guest-picker';
+import { RoomPicker } from '../room-picker/room-picker';
+import { RouterLink } from '@angular/router';
+import { BookingService } from '../APIservices/booking/booking-service';
+import { UserLogicService } from '../ComponentLogicService/user-logic-service';
+import { differenceInDays } from 'date-fns';
+import { Room } from '../model/hotel.entities';
 
 @Component({
   selector: 'app-insert-booking',
-  imports: [FormsModule, GuestPicker, RouterLink],
+  imports: [FormsModule, GuestPicker, RoomPicker, RouterLink],
   templateUrl: './insert-booking.html',
   styleUrl: './insert-booking.css',
 })
 export class InsertBooking {
 
-  // Iniezione dei servizi tramite inject() — alternativa moderna al costruttore
-  private bookingService = inject(BookingService);
-  private roomService = inject(RoomService);
-  private userService = inject(UserService);
-  private guestPicker = inject(GuestPicker);
+  private bookingService   = inject(BookingService);
+  private userLogicService = inject(UserLogicService);
+  private guestPicker      = viewChild(GuestPicker);
+  private roomPicker       = viewChild(RoomPicker);
 
-  // Signal che tiene l'ID dell'ospite selezionato (null = nessuno)
-  guestId = signal<number | null>(null);
-
-  // Computed: si aggiorna automaticamente quando guestId cambia
+  // ID dell'ospite selezionato (null = nessuno)
+  guestId       = signal<number | null>(null);
   guestSelected = computed(() => this.guestId() !== null);
 
-  // Signal per le date di inizio e fine prenotazione
-  checkIn  = signal<string | null>(null);
-  checkOut = signal<string | null>(null);
-
-  // Data odierna in formato "YYYY-MM-DD", usata come min negli input date
+  // Data odierna "YYYY-MM-DD", usata come min negli input date
   today: string = new Date().toISOString().split('T')[0];
 
-  // Data minima selezionabile per il check-out:
-  // se checkIn non è ancora impostato, usa oggi come fallback,
-  // altrimenti restituisce il giorno successivo al check-in
-  // (non puoi fare check-out lo stesso giorno del check-in)
-  minimumCheckOut = computed(() => {
-    if (!this.checkIn())
-      return this.today;
-    const date = new Date(this.checkIn()!);
+  private getTomorrow(): string {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  }
+
+  // Signal per le date di check-in e check-out
+  checkIn  = signal<string>(this.today);
+  checkOut = signal<string>(this.getTomorrow());
+
+  // Data minima per il check-out: giorno successivo al check-in
+  minCheckOut = computed(() => {
+    const date = new Date(this.checkIn());
     date.setDate(date.getDate() + 1);
     return date.toISOString().split('T')[0];
   });
 
-  // Calcola il numero di notti tra check-in e check-out.
-  // Se una delle due date manca, restituisce 0.
-  // Usa differenceInDays() di date-fns al posto del calcolo manuale in ms
+  // Numero di notti tra check-in e check-out
   nights = computed(() => {
-    if (!this.checkIn() || !this.checkOut())
-      return 0;
-    return differenceInDays(new Date(this.checkOut()!), new Date(this.checkIn()!));
+    return differenceInDays(new Date(this.checkOut()), new Date(this.checkIn()));
   });
 
+  // Price come signal per renderlo reattivo
+  price = signal<number>(0);
 
-  //FREE ROOMS
-  freeRooms = signal<Room[]>([]);
-  roomsSearched = signal(false);
+  // Totale calcolato: price × nights
+  totalCost = computed(() => this.price() * this.nights());
 
+  // Oggetto plain per i campi del form non reattivi (solo roomId e notes)
+  form = { roomId: 0, notes: '' };
 
+  // Camera attualmente selezionata (arriva dal RoomPicker)
+  selectedRoom = signal<Room | null>(null);
 
+  // Stato della submit: true = successo, false = idle
+  success      = signal<boolean>(false);
+  errorMessage = signal<string>('');
+
+  // ── Handlers ──
+
+  // Chiamato dal GuestPicker quando l'utente seleziona un ospite
+  onGuestSelected(id: number): void {
+    this.guestId.set(id);
+    this.checkIn.set(this.today);
+    this.checkOut.set(this.getTomorrow());
+    this.resetRoom();
+  }
+
+  // Aggiorna il check-in; se il check-out esistente diventasse precedente o uguale,
+  // lo sposta automaticamente al giorno successivo
+  onCheckInChange(value: string): void {
+    console.log('onCheckInChange:', value);
+    this.checkIn.set(value);
+    if (this.checkOut() <= value) {
+      const d = new Date(value);
+      d.setDate(d.getDate() + 1);
+      this.checkOut.set(d.toISOString().split('T')[0]);
+    }
+    this.resetRoom();
+  }
+
+  // Aggiorna il check-out e resetta i risultati della ricerca
+  onCheckOutChange(value: string): void {
+    console.log('onCheckOutChange:', value);
+    this.checkOut.set(value);
+    this.resetRoom();
+  }
+
+  // Chiamato dal RoomPicker quando l'utente seleziona una camera
+  onRoomSelected(room: Room): void {
+    console.log('onRoomSelected:', room);
+    this.selectedRoom.set(room);
+    this.form.roomId = room.id!;
+    this.price.set(room.basePrice);
+  }
+
+  // Invia la prenotazione al backend; in caso di successo resetta il form
+  submit(): void {
+    console.log('Submitting booking:', {
+      guestId: this.guestId(),
+      roomId: this.form.roomId,
+      checkIn: this.checkIn(),
+      checkOut: this.checkOut(),
+      price: this.price()
+    });
+    this.bookingService.insert({
+      guestId:  this.guestId()!,
+      roomId:   this.form.roomId,
+      checkIn:  this.checkIn(),
+      checkOut: this.checkOut(),
+      price:    this.price(),
+      notes:    this.form.notes,
+      cleaned:  false
+    }).subscribe({
+      next: () => {
+        this.success.set(true);
+        this.errorMessage.set('');
+        this.resetForm();
+      },
+      error: err => {
+        const msg = err.error?.message || err.message || 'Errore durante il salvataggio. Riprova.';
+        this.errorMessage.set(msg);
+        console.error('Booking error:', err);
+      }
+    });
+  }
+
+  // Resetta tutto il form inclusi i messaggi di stato
+  reset(): void {
+    this.resetForm();
+    this.success.set(false);
+    this.errorMessage.set('');
+  }
+
+  // Resetta tutti i signal, l'oggetto form e il GuestPicker/RoomPicker
+  private resetForm(): void {
+    this.guestId.set(null);
+    this.checkIn.set(this.today);
+    this.checkOut.set(this.getTomorrow());
+    this.selectedRoom.set(null);
+    this.price.set(0);
+    this.form = { roomId: 0, notes: '' };
+    this.guestPicker()?.reset();
+    this.roomPicker()?.reset();
+  }
+
+  // Svuota la selezione della camera
+  private resetRoom(): void {
+    this.selectedRoom.set(null);
+    this.form.roomId = 0;
+    this.price.set(0);
+  }
 }

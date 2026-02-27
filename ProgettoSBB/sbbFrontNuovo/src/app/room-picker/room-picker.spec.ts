@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InsertQuickBooking } from './insert-quick-booking';
+import { RoomPicker } from './room-picker';
 
-describe('InsertQuickBooking', () => {
-  let component: InsertQuickBooking;
-  let fixture: ComponentFixture<InsertQuickBooking>;
+describe('RoomPicker', () => {
+  let component: RoomPicker;
+  let fixture: ComponentFixture<RoomPicker>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InsertQuickBooking]
+      imports: [RoomPicker]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(InsertQuickBooking);
+    fixture = TestBed.createComponent(RoomPicker);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

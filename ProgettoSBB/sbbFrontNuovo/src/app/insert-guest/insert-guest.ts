@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { GuestService } from '../services/guest/guest-service';
+import { GuestService } from '../APIservices/guest/guest-service';
 import { Guest } from '../model/hotel.entities';
 
 @Component({

@@ -7,8 +7,8 @@ import { Room } from '../../model/hotel.entities';
   providedIn: 'root'
 })
 export class RoomService {
-  private http = inject(HttpClient);
-  private apiURL   = 'http://localhost:8080/sbb/api/rooms';
+  private http      = inject(HttpClient);
+  private apiURL    = 'http://localhost:8080/sbb/api/rooms';
   private hotelsURL = 'http://localhost:8080/sbb/api/hotels';
 
   findAll(): Observable<Room[]> {
@@ -31,7 +31,6 @@ export class RoomService {
     return this.http.delete<void>(`${this.apiURL}/${id}`);
   }
 
-  // Chiama GET /sbb/api/hotels/{hotelId}/free-rooms?checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD
   getFreeRooms(hotelId: number, checkIn: string, checkOut: string): Observable<Room[]> {
     return this.http.get<Room[]>(`${this.hotelsURL}/${hotelId}/free-rooms`, {
       params: { checkIn, checkOut }

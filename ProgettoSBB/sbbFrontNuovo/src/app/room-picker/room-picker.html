@@ -1,0 +1,23 @@
+<!-- RoomPicker: mostra le camere libere come cards selezionabili;
+     il padre riceve solo l'evento (roomSelected) -->
+@if (searched()) {
+  @if (rooms().length === 0) {
+    <div class="msg-empty">
+      <i class="fa fa-info-circle"></i> Nessuna camera disponibile per le date selezionate.
+    </div>
+  } @else {
+    <div class="room-grid">
+      @for (room of rooms(); track room.id) {
+        <div class="room-card"
+             [class.selected]="selectedRoom()?.id === room.id"
+             (click)="select(room)">
+          <div class="room-name">{{ room.name }}</div>
+          <div class="room-price">€ {{ room.basePrice }}</div>
+          @if (room.description) {
+            <div class="room-desc">{{ room.description }}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+}

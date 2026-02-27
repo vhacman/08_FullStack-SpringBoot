@@ -1,7 +1,7 @@
 import {Component, effect, inject, signal} from '@angular/core';
 import {Booking} from '../model/hotel.entities';
-import {BookingService} from '../services/booking/booking-service';
-import {UserService} from '../services/user/user-service';
+import {BookingService} from '../APIservices/booking/booking-service';
+import {UserLogicService} from '../ComponentLogicService/user-logic-service';
 import {BookingRow} from '../booking-row/booking-row';
 
 @Component({
@@ -11,9 +11,9 @@ import {BookingRow} from '../booking-row/booking-row';
   styleUrl: './todays-departures.css',
 })
 export class TodaysDepartures {
-  private bookingService = inject(BookingService);
-  private userService    = inject(UserService);
-  loggedUser = this.userService.loggedUser;
+  private bookingService   = inject(BookingService);
+  private userLogicService = inject(UserLogicService);
+  loggedUser = this.userLogicService.loggedUser;
 
   toCleanBookings  = signal<Booking[]>([]);
   cleanedBookings  = signal<Booking[]>([]);
@@ -31,8 +31,8 @@ export class TodaysDepartures {
   private loadBookings(hotelId: number): void {
     this.bookingService.getTodaysDepartures(hotelId).subscribe({
       next: (json) => {
-        this.toCleanBookings.set(json.filter(b => !b.cleaned));
-        this.cleanedBookings.set(json.filter(b => b.cleaned));
+        this.toCleanBookings.set(json.filter(b => b.status === 'CHECKED_IN' || b.status === 'CHECKED_OUT'));
+        this.cleanedBookings.set(json.filter(b => b.status === 'COMPLETE'));
       },
       error: (err) => console.error(err)
     });

@@ -1,7 +1,7 @@
 import {Component, effect, inject, signal} from '@angular/core';
 import {BookingRow} from '../booking-row/booking-row';
-import {BookingService} from '../services/booking/booking-service';
-import {UserService} from '../services/user/user-service';
+import {BookingService} from '../APIservices/booking/booking-service';
+import {UserLogicService} from '../ComponentLogicService/user-logic-service';
 import {Booking} from '../model/hotel.entities';
 /**
  * Componente che mostra le prenotazioni in arrivo oggi per l'hotel dell'utente loggato.
@@ -15,10 +15,9 @@ import {Booking} from '../model/hotel.entities';
 })
 export class TodaysArrivals
 {
-  private bookingService = inject(BookingService);
-  private userService    = inject(UserService);
-  // Signal<User | null>: valore reattivo — null finché l'utente non è loggato
-  loggedUser = this.userService.loggedUser;
+  private bookingService   = inject(BookingService);
+  private userLogicService = inject(UserLogicService);
+  loggedUser = this.userLogicService.loggedUser;
   // Signal<Booking[]>: lista prenotazioni, si aggiorna tramite .set() → la view si ridisegna da sola
   bookings = signal<Booking[]>([]);
   checkedInBookings  = signal<Booking[]>([]);
@@ -47,8 +46,8 @@ export class TodaysArrivals
     console.log("Caricamento per hotel:", hotelId);
     this.bookingService.getTodaysArrivals(hotelId).subscribe({
       next:  (json) => {
-        this.bookings.set(json.filter(b => b.status === 'SCHEDULED'));
-        this.checkedInBookings.set(json.filter(b => b.status === 'EXECUTED'));
+        this.bookings.set(json.filter(b => b.status === 'PENDING'));
+        this.checkedInBookings.set(json.filter(b => b.status === 'CHECKED_IN'));
       },
       error: (err)  => console.error(err)
     });
