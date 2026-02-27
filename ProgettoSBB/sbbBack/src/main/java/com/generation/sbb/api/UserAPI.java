@@ -29,7 +29,7 @@ public class UserAPI {
 
     @GetMapping("/default")
     public UserDTO getDefault() {
-        return service.findById(2);
+        return service.findById(1);
     }
     
 

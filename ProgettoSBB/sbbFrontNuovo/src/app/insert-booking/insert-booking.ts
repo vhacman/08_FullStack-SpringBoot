@@ -2,7 +2,7 @@ import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GuestPicker } from '../guest-picker/guest-picker';
 import { RoomPicker } from '../room-picker/room-picker';
-import { RouterLink } from '@angular/router';
+import { InsertGuest } from '../insert-guest/insert-guest';
 import { BookingService } from '../APIservices/booking/booking-service';
 import { UserLogicService } from '../ComponentLogicService/user-logic-service';
 import { differenceInDays } from 'date-fns';
@@ -10,7 +10,7 @@ import { Room } from '../model/hotel.entities';
 
 @Component({
   selector: 'app-insert-booking',
-  imports: [FormsModule, GuestPicker, RoomPicker, RouterLink],
+  imports: [FormsModule, GuestPicker, RoomPicker, InsertGuest],
   templateUrl: './insert-booking.html',
   styleUrl: './insert-booking.css',
 })
@@ -24,6 +24,9 @@ export class InsertBooking {
   // ID dell'ospite selezionato (null = nessuno)
   guestId       = signal<number | null>(null);
   guestSelected = computed(() => this.guestId() !== null);
+
+  // Mostra form inserimento ospite se non trovato
+  showInsertGuest = signal(false);
 
   // Data odierna "YYYY-MM-DD", usata come min negli input date
   today: string = new Date().toISOString().split('T')[0];
@@ -70,6 +73,22 @@ export class InsertBooking {
 
   // Chiamato dal GuestPicker quando l'utente seleziona un ospite
   onGuestSelected(id: number): void {
+    this.guestId.set(id);
+    this.showInsertGuest.set(false);
+    this.checkIn.set(this.today);
+    this.checkOut.set(this.getTomorrow());
+    this.resetRoom();
+  }
+
+  // Chiamato dal GuestPicker quando non trova nessun ospite
+  onGuestNotFound(name: string): void {
+    this.showInsertGuest.set(true);
+    this.guestId.set(null);
+  }
+
+  // Chiamato quando un nuovo ospite viene creato
+  onGuestCreated(id: number): void {
+    this.showInsertGuest.set(false);
     this.guestId.set(id);
     this.checkIn.set(this.today);
     this.checkOut.set(this.getTomorrow());

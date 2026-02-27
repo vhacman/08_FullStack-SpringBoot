@@ -45,6 +45,10 @@ public class BookingService {
         return bookingMapper.toDTOs(bookingRepository.findAll());
     }
 
+    public List<BookingDTO> findByHotelId(int hotelId) {
+        return bookingMapper.toDTOs(bookingRepository.findByHotelId(hotelId));
+    }
+
     public BookingDTO findById(Integer id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + id));

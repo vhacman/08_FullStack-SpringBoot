@@ -54,6 +54,11 @@ public class BookingAPI {
         return service.findTodaysArrivalForHotel(hotelId);
     }
 
+    @GetMapping("/hotel/{hotelId}")
+    public List<BookingDTO> findByHotel(@PathVariable int hotelId) {
+        return service.findByHotelId(hotelId);
+    }
+
     @GetMapping("/todaysdepartures/{hotelId}")
     public List<BookingDTO> findTodaysDepartures(@PathVariable int hotelId) {
         return service.findTodaysDeparturesForHotel(hotelId);

@@ -13,6 +13,7 @@ export class GuestPicker {
   private guestLogicService = inject(GuestLogicService);
 
   guestSelected = output<number>();
+  guestNotFound = output<string>();
 
   // Solo stato UI: testo digitato e visibilità dropdown
   guestInput   = signal('');
@@ -25,6 +26,11 @@ export class GuestPicker {
     this.guestInput.set(value);
     this.guestSelected.emit(0);
     this.showDropdown.set(true);
+    
+    // Se l'utente ha digitato qualcosa e non ci sono risultati, emetti evento
+    if (value.trim().length > 0 && this.filteredGuests().length === 0) {
+      this.guestNotFound.emit(value);
+    }
   }
 
   selectGuest(g: Guest): void {

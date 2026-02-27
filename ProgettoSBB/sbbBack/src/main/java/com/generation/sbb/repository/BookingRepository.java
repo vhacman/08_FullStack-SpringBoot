@@ -21,4 +21,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("SELECT b FROM Booking b WHERE b.checkOut = ?1 AND b.room.hotel.id = ?2")
     List<Booking> findByCheckOutAndHotelId(LocalDate checkOut, int hotelId);
 
+    List<Booking> findByRoomHotelId(int hotelId);
+
 }

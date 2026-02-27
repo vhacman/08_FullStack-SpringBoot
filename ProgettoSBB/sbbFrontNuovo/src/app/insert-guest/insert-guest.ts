@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GuestService } from '../APIservices/guest/guest-service';
 import { Guest } from '../model/hotel.entities';
@@ -11,6 +11,8 @@ import { Guest } from '../model/hotel.entities';
 })
 export class InsertGuest {
   private guestService = inject(GuestService);
+
+  guestCreated = output<number>();
 
   formVisible = signal(false);
   success     = signal(false);
@@ -26,9 +28,10 @@ export class InsertGuest {
 
   submit(): void {
     this.guestService.insert(this.guest).subscribe({
-      next: () => {
+      next: (createdGuest) => {
         this.success.set(true);
         this.errorMsg.set('');
+        this.guestCreated.emit(createdGuest.id!);
         this.guest = this.emptyGuest();
       },
       error: err => {
