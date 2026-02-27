@@ -33,11 +33,11 @@
       </div>
       <div class="info-row">
         <span class="info-label"><i class="fa fa-sign-in"></i> Check-in</span>
-        <span class="info-value">{{ booking().from | date:'dd/MM/yy' }}</span>
+        <span class="info-value">{{ booking().checkIn | date:'dd/MM/yy' }}</span>
       </div>
       <div class="info-row">
         <span class="info-label"><i class="fa fa-sign-out"></i> Check-out</span>
-        <span class="info-value">{{ booking().to | date:'dd/MM/yy' }}</span>
+        <span class="info-value">{{ booking().checkOut | date:'dd/MM/yy' }}</span>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
         </div>
       }
       @if (booking().status === 'EXECUTED') {
-        @if (isFuture(booking().to)) {
+        @if (isFuture(booking().checkOut)) {
           <div class="action-item">
             <img src="img/checkedInIcona.png" alt="Checked in" class="status-icon">
             <span class="action-label done">Checked in</span>
@@ -64,7 +64,7 @@
             <span class="action-label done">Disponibile</span>
           </div>
         } @else {
-          @if (isToday(booking().to)) {
+          @if (isToday(booking().checkOut)) {
             <div class="action-item">
               <button class="btn-icon" (click)="setCleaned()" title="Pulizie eseguite">
                 <img src="img/toCleanIcon.png" alt="Esegui pulizie">
@@ -72,7 +72,7 @@
               <span class="action-label warn">Da pulire</span>
             </div>
           }
-          @if (isPast(booking().to)) {
+          @if (isPast(booking().checkOut)) {
             <div class="action-item">
               <img src="img/toCleanIcon.png" alt="Da pulire" class="status-icon">
               <span class="action-label warn">Da pulire</span>

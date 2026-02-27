@@ -11,14 +11,14 @@ import java.time.LocalDate;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-    @Query("SELECT b FROM Booking b WHERE b.from = ?1 AND b.room.hotel.id = ?2")
-    List<Booking> findByFromAndHotelId(LocalDate from, int hotelId);
+    @Query("SELECT b FROM Booking b WHERE b.checkIn = ?1 AND b.room.hotel.id = ?2")
+    List<Booking> findByCheckInAndHotelId(LocalDate checkIn, int hotelId);
 
     // TODO 25-02-26
-    // Aggiunto rispetto a findByFromAndHotelId (usato per gli arrivi):
-    // qui il filtro è su b.to invece di b.from, perché per le partenze
+    // Aggiunto rispetto a findByCheckInAndHotelId (usato per gli arrivi):
+    // qui il filtro è su b.checkOut invece di b.checkIn, perché per le partenze
     // ci interessa la data di fine soggiorno, non quella di inizio.
-    @Query("SELECT b FROM Booking b WHERE b.to = ?1 AND b.room.hotel.id = ?2")
-    List<Booking> findByToAndHotelId(LocalDate to, int hotelId);
+    @Query("SELECT b FROM Booking b WHERE b.checkOut = ?1 AND b.room.hotel.id = ?2")
+    List<Booking> findByCheckOutAndHotelId(LocalDate checkOut, int hotelId);
 
 }

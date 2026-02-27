@@ -1,0 +1,25 @@
+<!-- Tutto ciò che riguarda la selezione dell'ospite è incapsulato qui;
+     il padre riceve solo l'evento (guestSelected) -->
+<div class="form-group">
+  <label>Ospite</label>
+  <div class="autocomplete-wrapper">
+    <input type="text"
+           [value]="guestInput()"
+           (input)="onGuestInput($any($event.target).value)"
+           (focus)="showDropdown.set(true)"
+           (blur)="onGuestBlur()"
+           placeholder="Cerca per nome o cognome..."
+           class="form-input"
+           autocomplete="off">
+    @if (showDropdown() && filteredGuests().length > 0) {
+      <div class="autocomplete-dropdown">
+        @for (g of filteredGuests(); track g.id) {
+          <div class="autocomplete-item" (mousedown)="selectGuest(g)">
+            <i class="fa fa-user"></i>
+            {{ g.lastName }} {{ g.firstName }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

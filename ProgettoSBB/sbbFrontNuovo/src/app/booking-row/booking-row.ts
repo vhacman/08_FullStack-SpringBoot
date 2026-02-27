@@ -12,7 +12,7 @@ import {BookingService} from '../services/booking/booking-service';
 export class BookingRow {
   booking = model.required<Booking>();
   checkInDone  = output<Booking>();
-  cleanedDone  = output<Booking>();
+  completeDone = output<Booking>();
   bookingService = inject(BookingService);
 
   ssnVisible = signal(false);
@@ -45,14 +45,11 @@ export class BookingRow {
     return String(date) > this.today;
   }
 
-  doCheckIn(): void {
+  acceptBooking(): void {
     const id = this.booking().id ?? 0;
-    this.bookingService.doCheckIn(id).subscribe({
-      // Aggiorno solo il campo status nel signal locale senza ricaricare dal server.
-      // L'operatore spread {...old} crea un nuovo oggetto con tutti i campi precedenti
-      // e sovrascrive solo status → il signal si aggiorna e Angular ridisegna la view.
+    this.bookingService.acceptBooking(id).subscribe({
       next: () => {
-        const updated = { ...this.booking(), status: 'EXECUTED' };
+        const updated = { ...this.booking(), status: 'CHECKED_IN' as const };
         this.booking.set(updated);
         this.checkInDone.emit(updated);
       },
@@ -60,18 +57,37 @@ export class BookingRow {
     });
   }
 
-  // Ho aggiunto questo metodo per gestire il click sul pulsante "Pulizie eseguite".
-  // Chiama il backend per persistere il cambio, poi aggiorna il signal locale:
-  // stesso pattern di doCheckIn() → il frontend non deve fare un'altra GET al server.
-  setCleaned(): void {
+  cancel(): void {
     const id = this.booking().id ?? 0;
-    this.bookingService.setCleaned(id).subscribe({
+    this.bookingService.cancel(id).subscribe({
       next: () => {
-        const updated = { ...this.booking(), cleaned: true };
+        const updated = { ...this.booking(), status: 'CANCELED' as const };
         this.booking.set(updated);
-        this.cleanedDone.emit(updated);
       },
-      error: err => console.error('Errore pulizie:', err)
+      error: err => console.error('Errore cancel:', err)
+    });
+  }
+
+  checkout(): void {
+    const id = this.booking().id ?? 0;
+    this.bookingService.checkout(id).subscribe({
+      next: () => {
+        const updated = { ...this.booking(), status: 'CHECKED_OUT' as const };
+        this.booking.set(updated);
+      },
+      error: err => console.error('Errore check-out:', err)
+    });
+  }
+
+  complete(): void {
+    const id = this.booking().id ?? 0;
+    this.bookingService.complete(id).subscribe({
+      next: () => {
+        const updated = { ...this.booking(), status: 'COMPLETE' as const };
+        this.booking.set(updated);
+        this.completeDone.emit(updated);
+      },
+      error: err => console.error('Errore complete:', err)
     });
   }
 }

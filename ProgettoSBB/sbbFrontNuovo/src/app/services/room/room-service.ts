@@ -31,10 +31,10 @@ export class RoomService {
     return this.http.delete<void>(`${this.apiURL}/${id}`);
   }
 
-  // Chiama GET /sbb/api/hotels/{hotelId}/free-rooms?from=YYYY-MM-DD&to=YYYY-MM-DD
-  getFreeRooms(hotelId: number, from: string, to: string): Observable<Room[]> {
+  // Chiama GET /sbb/api/hotels/{hotelId}/free-rooms?checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD
+  getFreeRooms(hotelId: number, checkIn: string, checkOut: string): Observable<Room[]> {
     return this.http.get<Room[]>(`${this.hotelsURL}/${hotelId}/free-rooms`, {
-      params: { from, to }
+      params: { checkIn, checkOut }
     });
   }
 }

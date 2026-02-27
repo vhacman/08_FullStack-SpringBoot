@@ -65,7 +65,7 @@ public class HotelAPI {
     }
 
     @GetMapping("/{id}/free-rooms")
-    public List<RoomDTO> getFreeRooms(@PathVariable int id, @RequestParam LocalDate from, @RequestParam LocalDate to) {
-        return service.findFreeRooms(id, from, to);
+    public List<RoomDTO> getFreeRooms(@PathVariable int id, @RequestParam LocalDate checkIn, @RequestParam LocalDate checkOut) {
+        return service.findFreeRooms(id, checkIn, checkOut);
     }
 }

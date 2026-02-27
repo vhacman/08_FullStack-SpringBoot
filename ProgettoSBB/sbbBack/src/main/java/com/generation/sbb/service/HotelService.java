@@ -51,7 +51,7 @@ public class HotelService {
         hotelRepository.deleteById(id);
     }
 
-    public List<RoomDTO> findFreeRooms(int hotelId, LocalDate from, LocalDate to) {
-        return roomMapper.toDTOs(roomRepository.findFreeRoomsInHotel(hotelId, from, to));
+    public List<RoomDTO> findFreeRooms(int hotelId, LocalDate checkIn, LocalDate checkOut) {
+        return roomMapper.toDTOs(roomRepository.findFreeRoomsInHotel(hotelId, checkIn, checkOut));
     }
 }

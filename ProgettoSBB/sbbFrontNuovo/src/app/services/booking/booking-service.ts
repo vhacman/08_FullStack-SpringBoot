@@ -23,24 +23,27 @@ export class BookingService {
     return this.http.get<Booking[]>(`${this.apiURL}/todaysdepartures/${id}`);
   }
 
-  // Ho cambiato il path da "/executed" a "/EXECUTED" (maiuscolo) per allinearlo
-  // al valore che Hibernate salva nel DB e che il backend restituisce nel JSON.
-  // Prima c'era un'incongruenza: il DB aveva "EXECUTED" ma il frontend inviava "executed",
-  // creando status diversi a seconda di come veniva creata la prenotazione.
-  // Ora tutto il sistema usa lo stesso valore → meno bug nascosti.
-  public doCheckIn(id: number): Observable<void> {
-    return this.http.patch<void>(`${this.apiURL}/${id}/EXECUTED`, null);
+  // PENDING → CHECKED_IN  |  room → OCCUPIED
+  public acceptBooking(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiURL}/${id}/checkin`, null);
   }
 
-  // Ho aggiunto questo metodo per chiamare il nuovo endpoint PATCH /bookings/{id}/cleaned.
-  // Restituisce Observable<void> perché il backend risponde 204 No Content:
-  // non mi serve il body della risposta, mi interessa solo sapere se è andata bene.
-  // Il frontend aggiornerà il signal localmente senza ricaricare tutto dal server.
-  public setCleaned(id: number): Observable<void> {
-    return this.http.patch<void>(`${this.apiURL}/${id}/cleaned`, null);
+  // PENDING → CANCELED
+  public cancel(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiURL}/${id}/cancel`, null);
   }
 
-  public insert(data: { guestId: number; roomId: number; from: string; to: string; price: number; notes: string }): Observable<void> {
-    return this.http.post<void>(this.apiURL, { ...data, status: 'SCHEDULED' });
+  // CHECKED_IN → CHECKED_OUT  |  room → TO_CLEAN
+  public checkout(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiURL}/${id}/checkout`, null);
+  }
+
+  // CHECKED_OUT → COMPLETE  |  room → AVAILABLE  (camera pulita)
+  public complete(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiURL}/${id}/complete`, null);
+  }
+
+  public insert(data: { guestId: number; roomId: number; checkIn: string; checkOut: string; price: number; notes: string }): Observable<void> {
+    return this.http.post<void>(this.apiURL, data);
   }
 }

@@ -26,23 +26,26 @@ public class Booking {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @Column(name = "booking_from")
-    private LocalDate from;
+    private LocalDate checkIn;
 
-    @Column(name = "booking_to")
-    private LocalDate to;
+    private LocalDate checkOut;
 
     @Min(value=0, message="Price cannot be negative")
     private int price;
 
     private String notes;
 
-    private String status = "SCHEDULED";
+    // Usiamo @Enumerated(STRING) per salvare il nome dell'enum nel DB ("PENDING",
+    // "CHECKED_IN"...) invece dell'indice numerico (0, 1, 2...).
+    // Con ORDINAL, aggiungere o riordinare valori nell'enum corromperebbe i dati
+    // già salvati. Con STRING il DB rimane leggibile e robusto.
+    // Il default PENDING viene assegnato alla creazione; il BookingService
+    // lo garantisce anche quando il DTO arriva senza status valorizzato.
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status = BookingStatus.PENDING;
 
-    // Ho aggiunto questo campo per tracciare se la camera è stata pulita dopo il checkout.
-    // È un boolean perché lo stato è binario: o è stata pulita o non lo è ancora.
-    // Il default è false perché quando una prenotazione viene creata la camera non è
-    // ancora stata liberata, quindi non può essere pulita.
-    // Hibernate creerà automaticamente la colonna "cleaned" nel DB grazie a ddl-auto=update.
-    private boolean cleaned = false;
+    // Il campo "cleaned" è stato rimosso: lo stato di pulizia ora appartiene
+    // alla camera (Room.status = TO_CLEAN / AVAILABLE) e non alla prenotazione.
+    // Tenere "cleaned" qui era semanticamente sbagliato: la pulizia è una
+    // proprietà della stanza, non di chi ci ha soggiornato.
 }

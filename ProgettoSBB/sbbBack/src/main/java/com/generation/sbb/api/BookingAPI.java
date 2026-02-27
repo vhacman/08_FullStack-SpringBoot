@@ -50,67 +50,77 @@ public class BookingAPI {
     }
 
     @GetMapping("/todaysarrivals/{hotelId}")
-    public List<BookingDTO> findAll(@PathVariable("hotelId") int hotelId) {
+    public List<BookingDTO> findTodaysArrivals(@PathVariable int hotelId) {
         return service.findTodaysArrivalForHotel(hotelId);
     }
 
-    // TODO 25-02-26
-    // Aggiunto rispetto all'endpoint /todaysarrivals/{hotelId}:
-    // nuovo endpoint /todaysdepartures/{hotelId} che chiama findTodaysDeparturesForHotel.
-    // (findTodaysDepartures invece di findAll).
     @GetMapping("/todaysdepartures/{hotelId}")
-    public List<BookingDTO> findTodaysDepartures(@PathVariable("hotelId") int hotelId) {
+    public List<BookingDTO> findTodaysDepartures(@PathVariable int hotelId) {
         return service.findTodaysDeparturesForHotel(hotelId);
     }
 
-    // Ho aggiunto questo endpoint per gestire la segnalazione delle pulizie.
-    // Uso PATCH perché voglio modificare solo il campo "cleaned" senza toccare
-    // il resto della prenotazione (stesso principio del changeStatus qui sotto).
-    // L'URL è /bookings/{id}/cleaned invece di /bookings/{id}/{campo} perché
-    // "cleaned" non è un valore variabile ma una azione specifica e ben definita:
-    // segna questa camera come pulita. Avere un path dedicato lo rende più leggibile
-    // e più sicuro (non posso chiamarlo con valori sbagliati come farei con {status}).
-    @PatchMapping("/{id}/cleaned")
-    public ResponseEntity<Void> setCleaned(@PathVariable("id") int id) {
+    // ── Transizioni di stato ─────────────────────────────────────────────────
+    // Usiamo endpoint dedicati invece di un unico PATCH /{id}/{status} per due motivi:
+    // 1. Sicurezza: il client non può inviare un valore di status arbitrario,
+    //    solo le azioni esplicitamente previste dall'API.
+    // 2. Chiarezza: ogni endpoint ha un nome che rispecchia l'azione di dominio,
+    //    non un dettaglio implementativo (il nome dello stato).
+    // Tutti restituiscono 204 No Content: l'operazione è riuscita ma non c'è
+    // corpo da restituire (il frontend aggiorna il signal localmente).
+    // 400 Bad Request se la transizione non è consentita (es. checkout su PENDING).
+    // 404 Not Found se la prenotazione non esiste.
+
+    // PENDING → CHECKED_IN  |  room → OCCUPIED
+    @PatchMapping("/{id}/checkin")
+    public ResponseEntity<Void> checkIn(@PathVariable int id) {
         try {
-            service.setCleaned(id);
-            // 204 No Content: operazione riuscita, non c'è nulla da restituire nel body.
-            // Il frontend sa già cosa è successo (cleaned = true) e aggiorna localmente
-            // il signal senza bisogno di rileggere tutto dal server.
-            return ResponseEntity.status(204).build();
+            service.acceptBooking(id);
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
-    /**
-     * Aggiorna parzialmente lo stato di una risorsa identificata dal suo ID.
-     *
-     * @param id     identificatore univoco della risorsa da aggiornare
-     * @param status nuovo stato da assegnare alla risorsa
-     * @return ResponseEntity vuoto con status 204 se aggiornato, 404 se non trovato
-     */
-    @PatchMapping("/{id}/{status}")
-    public ResponseEntity<Void> changeStatus(@PathVariable("id") int id, @PathVariable("status") String status)
-    {   /*
-         * PATCH vs PUT — Modifica Parziale di una Risorsa:
-         * → PUT sostituisce l'intera risorsa con una nuova versione
-         * → PATCH modifica solo un campo specifico, lasciando il resto intatto
-         * In questo caso aggiorniamo SOLO lo stato, senza toccare
-         * gli altri dati della risorsa → rispetta il principio REST
-         * di operazioni granulari e mirate.
-         * 204: l'operazione è andata a buon fine ma non c'è
-         *      nessun corpo da restituire nella risposta.
-         * 404: il Service ha lanciato EntityNotFoundException
-         *      perché nessuna riga corrisponde all'id ricevuto. */
-        try
-        {
-            service.changeStatus(id, status);
-            return ResponseEntity.status(204).build();
+    // PENDING → CANCELED
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancel(@PathVariable int id) {
+        try {
+            service.cancel(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
         }
-        catch (EntityNotFoundException e)
-        {
-            return ResponseEntity.status(404).build();
+    }
+
+    // CHECKED_IN → CHECKED_OUT  |  room → TO_CLEAN
+    // Il service valida che la data odierna >= checkOut prima di procedere.
+    @PatchMapping("/{id}/checkout")
+    public ResponseEntity<Void> checkout(@PathVariable int id) {
+        try {
+            service.checkout(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // CHECKED_OUT → COMPLETE  |  room → AVAILABLE + lastCleaned = oggi
+    // Chiamato dal frontend quando il personale segna la camera come pulita.
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<Void> complete(@PathVariable int id) {
+        try {
+            service.complete(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

@@ -1,52 +1,35 @@
-import { Component, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BookingService } from '../services/booking/booking-service';
-import { GuestService } from '../services/guest/guest-service';
-import { RoomService } from '../services/room/room-service';
-import { UserService } from '../services/user/user-service';
-import { Guest, Room } from '../model/hotel.entities';
+import { RoomService }    from '../services/room/room-service';
+import { UserService }    from '../services/user/user-service';
+import { Room }           from '../model/hotel.entities';
+import { GuestPicker }    from '../guest-picker/guest-picker';
 
 @Component({
   selector: 'app-insert-quick-booking',
-  imports: [FormsModule],
+  // GuestPicker aggiunto agli imports: ora è lui a gestire autocomplete e caricamento
+  imports: [FormsModule, GuestPicker],
   templateUrl: './insert-quick-booking.html',
   styleUrl: './insert-quick-booking.css',
 })
-export class InsertQuickBooking implements OnInit {
+export class InsertQuickBooking {
   private bookingService = inject(BookingService);
-  private guestService   = inject(GuestService);
   private roomService    = inject(RoomService);
   private userService    = inject(UserService);
 
-  formVisible  = signal(false);
-  success      = signal(false);
-  errorMsg     = signal('');
+  // Riferimento al picker per poterne chiamare reset() quando si azzera il form
+  private guestPicker = viewChild(GuestPicker);
 
-  // ── Guest autocomplete ──
-  guests         = signal<Guest[]>([]);
-  guestInput     = signal('');
-  showDropdown   = signal(false);
-  filteredGuests = computed(() => {
-    const s = this.guestInput().toLowerCase().trim();
-    if (!s) return this.guests();
-    return this.guests().filter(g =>
-      g.firstName.toLowerCase().includes(s) ||
-      g.lastName.toLowerCase().includes(s)
-    );
-  });
+  formVisible = signal(false);
+  success     = signal(false);
+  errorMsg    = signal('');
 
   // ── Camere ──
   freeRooms     = signal<Room[]>([]);
   roomsSearched = signal(false);
 
-  form = { guestId: 0, roomId: 0, from: '', to: '', price: 0, notes: '' };
-
-  ngOnInit(): void {
-    this.guestService.findAll().subscribe({
-      next:  g   => this.guests.set(g),
-      error: err => console.error('Errore caricamento ospiti:', err)
-    });
-  }
+  form = { guestId: 0, roomId: 0, checkIn: '', checkOut: '', price: 0, notes: '' };
 
   toggleForm(): void {
     this.formVisible.update(v => !v);
@@ -54,29 +37,16 @@ export class InsertQuickBooking implements OnInit {
     this.errorMsg.set('');
   }
 
-  // ── Autocomplete handlers ──
-  onGuestInput(value: string): void {
-    this.guestInput.set(value);
-    this.form.guestId = 0;
-    this.showDropdown.set(true);
-  }
-
-  selectGuest(g: Guest): void {
-    this.guestInput.set(`${g.lastName} ${g.firstName}`);
-    this.form.guestId = g.id!;
-    this.showDropdown.set(false);
-  }
-
-  onGuestBlur(): void {
-    // Timeout: lascia il tempo al mousedown sull'item di scattare prima del blur
-    setTimeout(() => this.showDropdown.set(false), 150);
+  // Aggiorna form.guestId quando il picker emette la selezione
+  onGuestSelected(id: number): void {
+    this.form.guestId = id;
   }
 
   // ── Camere ──
   searchRooms(): void {
     const hotelId = this.userService.loggedUser()?.hotel?.id;
-    if (!hotelId || !this.form.from || !this.form.to) return;
-    this.roomService.getFreeRooms(hotelId, this.form.from, this.form.to).subscribe({
+    if (!hotelId || !this.form.checkIn || !this.form.checkOut) return;
+    this.roomService.getFreeRooms(hotelId, this.form.checkIn, this.form.checkOut).subscribe({
       next: rooms => {
         this.freeRooms.set(rooms);
         this.roomsSearched.set(true);
@@ -114,8 +84,9 @@ export class InsertQuickBooking implements OnInit {
   }
 
   private resetForm(): void {
-    this.form = { guestId: 0, roomId: 0, from: '', to: '', price: 0, notes: '' };
-    this.guestInput.set('');
+    this.form = { guestId: 0, roomId: 0, checkIn: '', checkOut: '', price: 0, notes: '' };
+    // Il picker gestisce il proprio stato: gli deleghiamo il reset del testo
+    this.guestPicker()?.reset();
     this.freeRooms.set([]);
     this.roomsSearched.set(false);
   }
