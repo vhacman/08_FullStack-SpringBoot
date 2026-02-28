@@ -1,7 +1,12 @@
-<!-- Tutto ciò che riguarda la selezione dell'ospite è incapsulato qui;
-     il padre riceve solo l'evento (guestSelected) -->
+<!-- Autocomplete per la ricerca ospiti. Tutto ciò che riguarda la selezione
+     è incapsulato qui: il padre riceve solo l'evento (guestSelected) con l'id. -->
 <div class="form-group">
   <div class="autocomplete-wrapper">
+
+    <!-- [value] lega l'input al Signal in sola lettura (uno-direzionale).
+         (input) cattura ogni tasto premuto e aggiorna il Signal.
+         $any($event.target).value è un cast TypeScript nel template:
+         serve perché Angular non sa che $event.target è un HTMLInputElement. -->
     <input type="text"
            [value]="guestInput()"
            (input)="onGuestInput($any($event.target).value)"
@@ -10,8 +15,12 @@
            placeholder="Cerca per nome o cognome..."
            class="form-input"
            autocomplete="off">
+
     @if (showDropdown() && filteredGuests().length > 0) {
       <div class="autocomplete-dropdown">
+        <!-- (mousedown) invece di (click): il mousedown si attiva PRIMA che
+             l'input perda il focus (blur), così selectGuest() viene chiamato
+             prima che il dropdown venga chiuso da onGuestBlur(). -->
         @for (g of filteredGuests(); track g.id) {
           <div class="autocomplete-item" (mousedown)="selectGuest(g)">
             {{ g.lastName }} {{ g.firstName }}
@@ -19,5 +28,6 @@
         }
       </div>
     }
+
   </div>
 </div>

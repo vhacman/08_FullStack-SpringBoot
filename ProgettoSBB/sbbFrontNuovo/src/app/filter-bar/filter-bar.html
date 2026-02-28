@@ -1,3 +1,9 @@
+<!-- Barra di navigazione: ogni <a> è un tab della SPA.
+     routerLink naviga senza ricaricare la pagina.
+     routerLinkActive="active" aggiunge la classe "active" automaticamente
+     quando la route corrisponde, così non dobbiamo gestire lo stato del tab a mano.
+     [routerLinkActiveOptions]="{ exact: true }" sulla home è necessario perché
+     senza exact, "/" sarebbe "attivo" anche su /bookings, /rooms ecc. -->
 <nav class="filter-bar">
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="tab">
     Home

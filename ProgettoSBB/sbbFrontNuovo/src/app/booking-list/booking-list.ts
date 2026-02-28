@@ -1,19 +1,20 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { BookingRow } from '../booking-row/booking-row';
 import { BookingService } from '../APIservices/booking/booking-service';
-import { UserLogicService } from '../ComponentLogicService/user-logic-service';
+import { UserLogicService } from '../APIservices/user/user-logic-service';
 import { Booking } from '../model/hotel.entities';
 
 // Tipo locale che aggiunge 'TUTTI' ai valori di BookingStatus.
-// Serve per il filtro UI: non esiste nel backend, è solo un'opzione visiva.
+// Non esiste nel backend, è solo un'opzione visiva per il filtro UI.
+// Ho usato un union type TypeScript invece di un enum perché è più leggero
+// e non genera codice extra a runtime.
 type FilterOption = 'TUTTI' | 'PENDING' | 'CHECKED_IN' | 'CHECKED_OUT' | 'COMPLETE' | 'CANCELED';
 
 /**
  * Lista completa delle prenotazioni dell'hotel con filtro per stato.
- * Usa un effect() per ricaricare automaticamente i dati quando l'utente
- * loggato è disponibile (il segnale potrebbe arrivare in ritardo rispetto
- * al render del componente, quindi non possiamo fare la chiamata nel costruttore
- * con un valore statico).
+ * Usa effect() per caricare i dati non appena l'utente loggato è disponibile:
+ * non possiamo farlo direttamente nel costruttore perché loggedUser() potrebbe
+ * essere ancora null (la risposta HTTP non è ancora arrivata).
  */
 @Component({
   selector: 'app-booking-list',
@@ -29,14 +30,18 @@ export class BookingList {
   bookings = signal<Booking[]>([]);
   activeFilter = signal<FilterOption>('TUTTI');
 
-  // computed() ricalcola automaticamente la lista filtrata ogni volta che
-  // bookings() o activeFilter() cambiano: non serve gestire manualmente l'aggiornamento.
+  // computed() ricalcola automaticamente ogni volta che bookings() o activeFilter() cambiano.
+  // Il [...this.bookings()] è lo spread operator: serve a copiare l'array prima di ordinarlo,
+  // perché sort() modifica l'array originale e Angular Signals non vuole mutazioni dirette.
+
+  // localCompare -> values returns a number indicating whether this string comes before,
+  // or after, or is the same as the given string in sort order
   filtered = computed(() => {
-    const f = this.activeFilter();
+    const filterOption = this.activeFilter();
     const sorted = [...this.bookings()].sort((a, b) =>
       String(b.checkIn).localeCompare(String(a.checkIn))
     );
-    return f === 'TUTTI' ? sorted : sorted.filter(b => b.status === f);
+    return filterOption === 'TUTTI' ? sorted : sorted.filter(b => b.status === filterOption);
   });
 
   readonly filters: { label: string; value: FilterOption }[] = [

@@ -1,12 +1,18 @@
+<!-- Card di una singola prenotazione, divisa in 3 colonne tramite CSS grid.
+     [class]="booking().status.toLowerCase()" applica dinamicamente la classe
+     CSS corrispondente allo stato (es. "pending", "checked_in") per colorare il testo. -->
 <div class="booking-card">
   <div class="booking-grid">
 
-    <!-- COLONNA 1: Dati ospite -->
+    <!-- COLONNA 1: Dati ospite con toggle privacy al click -->
     <div class="col-guest">
       <div class="guest-name">
         <i class="bi bi-person-fill guest-icon"></i>
         {{ booking().guest.firstName }} {{ booking().guest.lastName }}
       </div>
+
+      <!-- (click) chiama il metodo nel .ts che inverte il Signal ssnVisible.
+           @if nel template verifica il valore del Signal e mostra/nasconde il testo. -->
       <div class="guest-detail" (click)="toggleSsn()" style="cursor:pointer">
         @if (ssnVisible()) {
           {{ booking().guest.ssn }}
@@ -14,6 +20,7 @@
           Codice Fiscale
         }
       </div>
+
       <div class="guest-detail" (click)="toggleAddress()" style="cursor:pointer">
         @if (addressVisible()) {
           {{ booking().guest.address }}, {{ booking().guest.city }}
@@ -31,11 +38,14 @@
       </div>
       <div class="info-row">
         <span class="info-label">Check-in</span>
+        <!-- | date è una pipe Angular: formatta la data senza scrivere codice -->
         <span class="info-value">{{ booking().checkIn | date:'dd/MM/yy' }}</span>
       </div>
       <div class="info-row">
         <span class="info-label">Stato</span>
-        <span class="info-value status-text" [class]="booking().status.toLowerCase()">{{ getStatusText(booking().status) }}</span>
+        <span class="info-value status-text" [class]="booking().status.toLowerCase()">
+          {{ getStatusText(booking().status) }}
+        </span>
       </div>
       <div class="info-row">
         <span class="info-label">Check-out</span>
@@ -43,7 +53,9 @@
       </div>
     </div>
 
-    <!-- COLONNA 3: Azioni -->
+    <!-- COLONNA 3: Pulsanti di azione contestuali.
+         Ogni @if verifica lo stato della prenotazione e mostra solo il pulsante
+         appropriato: questo rispecchia la macchina a stati definita nel backend. -->
     <div class="col-actions">
 
       @if (booking().status === 'PENDING') {
@@ -53,6 +65,8 @@
       }
 
       @if (booking().status === 'CHECKED_IN') {
+        <!-- Il checkout è disponibile solo dal giorno di partenza in poi,
+             non prima: isFuture blocca il pulsante finché non è il momento. -->
         @if (isFuture(booking().checkOut)) {
           <span class="status-badge done">Ospite presente</span>
         }

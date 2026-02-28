@@ -1,6 +1,7 @@
 package com.generation.sbb.service;
 
 import com.generation.sbb.dto.HotelClosureDTO;
+import com.generation.sbb.mapper.HotelClosureMapper;
 import com.generation.sbb.model.Hotel;
 import com.generation.sbb.model.HotelClosure;
 import com.generation.sbb.repository.HotelClosureRepository;
@@ -28,11 +29,12 @@ public class HotelClosureService
     @Autowired
     private HotelRepository hotelRepository;
 
+    @Autowired
+    private HotelClosureMapper mapper;
+
     public List<HotelClosureDTO> findByHotelId(int hotelId)
     {
-        return repository.findByHotelId(hotelId).stream()
-                .map(this::toDTO)
-                .toList();
+        return mapper.toDTOs(repository.findByHotelId(hotelId));
     }
 
     public HotelClosureDTO save(HotelClosureDTO dto)
@@ -53,13 +55,10 @@ public class HotelClosureService
 
         Hotel hotel = hotelRepository.findById(dto.getHotelId())
                                         .orElseThrow(() -> new EntityNotFoundException("Hotel not found: " + dto.getHotelId()));
-        HotelClosure entity = new HotelClosure();
+        HotelClosure entity = mapper.toEntity(dto);
         entity.setHotel(hotel);
-        entity.setStartDate(dto.getStartDate());
-        entity.setEndDate(dto.getEndDate());
-        entity.setReason(dto.getReason());
         entity = repository.save(entity);
-        return toDTO(entity);
+        return mapper.toDTO(entity);
     }
 
     public void deleteById(int id)
@@ -78,16 +77,16 @@ public class HotelClosureService
      *   4. Range copre la parte finale             → anticipa endDate
      */
     @Transactional
-    public void reopenRange(int hotelId, LocalDate from, LocalDate to)
+    public void     reopenRange(int hotelId, LocalDate from, LocalDate to)
     {
         List<HotelClosure> overlapping = repository.findOverlapping(hotelId, from, to);
 
         for (HotelClosure c : overlapping)
         {
             // startsBefore: la chiusura inizia PRIMA del range da riaprire
-            //   → significa che esiste una "testa" da preservare (da c.startDate a from-1)
+            //    significa che esiste una "testa" da preservare (da c.startDate a from-1)
             // endsAfter: la chiusura finisce DOPO il range da riaprire
-            //   → significa che esiste una "coda" da preservare (da to+1 a c.endDate)
+            //    significa che esiste una "coda" da preservare (da to+1 a c.endDate)
             boolean startsBefore = c.getStartDate().isBefore(from);
             boolean endsAfter    = c.getEndDate().isAfter(to);
 
@@ -99,12 +98,12 @@ public class HotelClosureService
             // e si accorcia la closure esistente a sola testa (c.startDate → from-1).
             if (startsBefore && endsAfter)
             {
-                HotelClosure tail = new HotelClosure();
-                tail.setHotel(c.getHotel());
-                tail.setStartDate(to.plusDays(1));
-                tail.setEndDate(c.getEndDate());
-                tail.setReason(c.getReason());
-                repository.save(tail);
+                HotelClosure newClosure = new HotelClosure();
+                newClosure.setHotel(c.getHotel());
+                newClosure.setStartDate(to.plusDays(1));
+                newClosure.setEndDate(c.getEndDate());
+                newClosure.setReason(c.getReason());
+                repository.save(newClosure);
 
                 c.setEndDate(from.minusDays(1));
                 repository.save(c);
@@ -139,15 +138,5 @@ public class HotelClosureService
             }
         }
     }
-
-    private HotelClosureDTO toDTO(HotelClosure c)
-    {
-        HotelClosureDTO dto = new HotelClosureDTO();
-        dto.setId(c.getId());
-        dto.setHotelId(c.getHotel().getId());
-        dto.setStartDate(c.getStartDate());
-        dto.setEndDate(c.getEndDate());
-        dto.setReason(c.getReason());
-        return dto;
-    }
 }
+

@@ -1,3 +1,6 @@
+<!-- Form guidato a passi per la creazione di una prenotazione.
+     La visibilità di ogni sezione dipende da computed() e Signal nel .ts:
+     non c'è logica nel template, solo condizioni che leggono lo stato. -->
 <div class="w3-container w3-padding-large">
 
   <div class="booking-header-box">
@@ -7,21 +10,32 @@
     </div>
   </div>
 
+  <!-- #bookingForm="ngForm" crea un riferimento al form per accedere
+       a proprietà come bookingForm.invalid dal template stesso. -->
   <form class="booking-form" #bookingForm="ngForm" (ngSubmit)="submit()">
 
+    <!-- PASSO 1: Selezione ospite.
+         Gli output del componente figlio vengono intercettati qui con (evento)="metodo()".
+         guestSelected emette l'id, guestNotFound emette il nome digitato. -->
     <app-guest-picker
       (guestSelected)="onGuestSelected($event)"
       (guestNotFound)="onGuestNotFound($event)">
     </app-guest-picker>
 
+    <!-- Se l'ospite non è in lista, mostriamo InsertGuest per crearne uno.
+         Altrimenti procediamo con la selezione delle date. -->
     @if (showInsertGuest()) {
       <app-insert-guest (guestCreated)="onGuestCreated($event)"></app-insert-guest>
     } @else {
 
+      <!-- PASSO 2: Date di soggiorno (visibili solo dopo la selezione ospite) -->
       @if (guestSelected()) {
         <div class="form-row">
           <div class="form-group">
             <label>Check-in</label>
+            <!-- [min]="today" impedisce la selezione di date passate nel date picker.
+                 (change) invece di (input) perché il valore finale si ottiene
+                 solo dopo che l'utente ha confermato la data. -->
             <input type="date"
                    [min]="today"
                    [value]="checkIn()"
@@ -30,6 +44,8 @@
           </div>
           <div class="form-group">
             <label>Check-out</label>
+            <!-- [min]="minCheckOut()" viene da un computed() che garantisce
+                 sempre almeno un giorno dopo il checkIn. -->
             <input type="date"
                    [min]="minCheckOut()"
                    [value]="checkOut()"
@@ -38,11 +54,16 @@
           </div>
         </div>
 
+        <!-- PASSO 3: Selezione camera (visibile solo con date valide) -->
         @if (nights() > 0) {
+          <!-- nights() === 1 ? 'e' : 'i' è un operatore ternario inline nel template
+               per pluralizzare la parola "notte/notti". -->
           <div class="msg-info">
             {{ nights() }} nott{{ nights() === 1 ? 'e' : 'i' }}
           </div>
 
+          <!-- [checkIn] e [checkOut] passano le date come input() al figlio RoomPicker,
+               che si aggiorna automaticamente quando cambiano grazie al suo effect(). -->
           <app-room-picker
             [checkIn]="checkIn()"
             [checkOut]="checkOut()"
@@ -51,10 +72,15 @@
         }
       }
 
+      <!-- PASSO 4: Prezzo e note (visibili solo dopo la selezione camera) -->
       @if (selectedRoom()) {
         <div class="form-group">
           <label>Prezzo (€)</label>
-          <input type="number" name="price" [ngModel]="price()" (ngModelChange)="price.set($event)" required min="0" class="form-input">
+          <!-- [(ngModel)] è il two-way binding classico: [ngModel] legge il Signal,
+               (ngModelChange) aggiorna il Signal con il nuovo valore. -->
+          <input type="number" name="price"
+                 [ngModel]="price()" (ngModelChange)="price.set($event)"
+                 required min="0" class="form-input">
         </div>
 
         <div class="total-cost">
@@ -63,6 +89,8 @@
 
         <div class="form-group">
           <label>Note</label>
+          <!-- [(ngModel)]="form.notes" usa il two-way binding su un oggetto plain.
+               Funziona perché form non è un Signal: è un oggetto normale. -->
           <textarea name="notes" [(ngModel)]="form.notes" rows="2"
                     placeholder="Opzionale..." class="form-input"></textarea>
         </div>
@@ -75,6 +103,7 @@
         }
 
         <div class="form-actions">
+          <!-- [disabled] disabilita il pulsante se ospite o camera non sono selezionati. -->
           <button type="submit" class="btn-submit"
                   [disabled]="!guestSelected() || form.roomId === 0">
             Salva

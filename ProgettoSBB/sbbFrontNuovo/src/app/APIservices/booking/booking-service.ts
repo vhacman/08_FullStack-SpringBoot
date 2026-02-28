@@ -56,7 +56,14 @@ export class BookingService {
    * Crea una nuova prenotazione.
    * @param data dati della prenotazione (guest, room, date, prezzo, note)
    */
-  insert(data: { guestId: number; roomId: number; checkIn: string; checkOut: string; price: number; notes: string; cleaned: boolean }): Observable<void> {
-    return this.http.post<void>(this.apiURL, data);
-  }
+  insert(data: {
+        guestId: number;
+        roomId: number;
+        checkIn: string;
+        checkOut: string;
+        price: number;
+        notes: string;
+        cleaned: boolean }): Observable<void> {
+        return this.http.post<void>(this.apiURL, data);
+    }
 }

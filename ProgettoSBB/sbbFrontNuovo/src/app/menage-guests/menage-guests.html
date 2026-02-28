@@ -1,15 +1,19 @@
+<!-- Pagina Ospiti: header con titolo e pulsante, poi modal per l'inserimento.
+     [autoOpen]="true" viene passato a InsertGuest: il suo effect() lo riceve
+     e apre automaticamente il form senza che l'utente debba cliccare il toggle. -->
 <div class="w3-container" style="padding: 0 8px 8px; margin-top: 16px;">
 
   <div class="guests-header-box">
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-      <h2 class="page-title" style="margin: 0;">Gestione Ospiti</h2>
-      <button class="btn-new-guest" (click)="openModal()"> Nuovo Ospite</button>
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <h2 class="page-title" style="margin:0;">Gestione Ospiti</h2>
+      <button class="btn-new-guest" (click)="openModal()">Nuovo Ospite</button>
     </div>
   </div>
 
 </div>
 
-<!-- Modal Inserimento Ospite -->
+<!-- (click)="$event.stopPropagation()" sul contenuto del modal impedisce
+     che il click al suo interno propaghi fino all'overlay e chiuda il modal. -->
 @if (showModal()) {
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal-content w3-card-2" (click)="$event.stopPropagation()">

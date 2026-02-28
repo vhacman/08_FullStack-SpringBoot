@@ -1,4 +1,7 @@
-<!-- Bottone Nuova Prenotazione -->
+<!-- Homepage: barra azione in alto, poi due colonne affiancate per arrivi e partenze.
+     w3-row / w3-half sono classi di W3.CSS, una libreria CSS leggera
+     che ho usato per il layout a griglia senza scrivere flexbox da zero. -->
+
 <div class="new-booking-bar">
   <button class="btn-new-booking" (click)="openBookingModal()">
     <i class="bi bi-plus-lg"></i>
@@ -7,18 +10,17 @@
 </div>
 
 <div class="w3-row">
-
   <div class="w3-half">
     <app-todays-arrivals />
   </div>
-
   <div class="w3-half">
     <app-todays-departures />
   </div>
-
 </div>
 
-<!-- Modal Nuova Prenotazione -->
+<!-- Modal Nuova Prenotazione.
+     (click)="$event.stopPropagation()" sul contenuto interno blocca la propagazione
+     dell'evento al overlay: senza questo, cliccare dentro il modal lo chiuderebbe. -->
 @if (showBookingModal()) {
   <div class="modal-overlay" (click)="closeBookingModal()">
     <div class="modal-content w3-card-2" (click)="$event.stopPropagation()">

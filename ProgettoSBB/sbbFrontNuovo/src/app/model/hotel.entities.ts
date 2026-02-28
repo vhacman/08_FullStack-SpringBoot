@@ -74,7 +74,7 @@ export interface Booking
   notes    : string;
   status   : BookingStatus;
   price    : number;
-  // "cleaned" rimosso: lo stato di pulizia è ora room.status (TO_CLEAN / AVAILABLE).
+  // "Cleaned" rimosso: lo stato di pulizia è ora room.status (TO_CLEAN / AVAILABLE).
   // Tenerlo sulla prenotazione era semanticamente sbagliato: la pulizia è
   // una proprietà della camera, non di chi ci ha soggiornato.
 }

@@ -27,7 +27,10 @@ export class HotelClosureService {
    * @param dto periodo da chiudere con motivazione opzionale
    * @returns la closure salvata con id assegnato dal DB
    */
-  save(dto: { hotelId: number; startDate: string; endDate: string; reason: string }): Observable<HotelClosure> {
+  save(dto: { hotelId: number;
+    startDate: string;
+    endDate: string;
+    reason: string }): Observable<HotelClosure> {
     return this.http.post<HotelClosure>(this.apiURL, dto);
   }
 

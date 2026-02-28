@@ -182,9 +182,9 @@
             <h4 class="list-title">Guest prenotati</h4>
             @for (booking of dayBookings(); track booking.id) {
               <div class="booking-item">
-                <div class="booking-room">Camera {{ booking.room?.name }}</div>
+                <div class="booking-room">Camera {{ booking.room.name }}</div>
                 <div class="booking-dates">{{ booking.checkIn | date:'dd/MM' }} - {{ booking.checkOut | date:'dd/MM' }}</div>
-                <div class="booking-guest">{{ booking.guest?.firstName }} {{ booking.guest?.lastName }}</div>
+                <div class="booking-guest">{{ booking.guest.firstName }} {{ booking.guest.lastName }}</div>
               </div>
             }
           </div>

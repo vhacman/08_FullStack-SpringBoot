@@ -1,33 +1,40 @@
+<!-- Form collassabile per l'inserimento di un nuovo ospite.
+     Il toggle apri/chiudi avviene tramite il Signal formVisible nel .ts.
+     Quando autoOpen=true (passato dal padre), l'effect() lo apre automaticamente. -->
 <div class="w3-container w3-padding-large">
 
-  <!-- Header con icona -->
+  <!-- Header cliccabile per espandere/collassare il form -->
   <div class="guest-header-box" (click)="toggleForm()" style="cursor:pointer">
     <span class="chevron">
       @if (formVisible()) { ▲ } @else { ▼ }
     </span>
   </div>
 
-  <!-- Form -->
   @if (formVisible()) {
+    <!-- #guestForm="ngForm" permette di accedere a guestForm.invalid nel template
+         per disabilitare il pulsante Salva finché i campi required non sono compilati. -->
     <form class="guest-form" #guestForm="ngForm" (ngSubmit)="submit()">
 
       <div class="form-row">
         <div class="form-group">
           <label>Nome</label>
-          <input type="text" name="firstName" [(ngModel)]="guest.firstName" required
-                 placeholder="Mario" class="form-input">
+          <input type="text" name="firstName" [(ngModel)]="guest.firstName"
+                 required placeholder="Mario" class="form-input">
         </div>
         <div class="form-group">
           <label>Cognome</label>
-          <input type="text" name="lastName" [(ngModel)]="guest.lastName" required
-                 placeholder="Rossi" class="form-input">
+          <input type="text" name="lastName" [(ngModel)]="guest.lastName"
+                 required placeholder="Rossi" class="form-input">
         </div>
       </div>
 
       <div class="form-group">
         <label>Codice Fiscale</label>
-        <input type="text" name="ssn" [(ngModel)]="guest.ssn" required
-               minlength="16" maxlength="16"
+        <!-- minlength/maxlength validano la lunghezza lato template.
+             text-transform:uppercase mostra le lettere maiuscole durante la digitazione,
+             ma la conversione definitiva avviene lato backend prima del salvataggio. -->
+        <input type="text" name="ssn" [(ngModel)]="guest.ssn"
+               required minlength="16" maxlength="16"
                placeholder="RSSMRA80A01H501U" class="form-input"
                style="text-transform:uppercase">
       </div>
@@ -35,23 +42,23 @@
       <div class="form-row">
         <div class="form-group">
           <label>Data di nascita</label>
+          <!-- dob è opzionale (?) nell'interfaccia Guest, quindi non ha required -->
           <input type="date" name="dob" [(ngModel)]="guest.dob" class="form-input">
         </div>
       </div>
 
       <div class="form-group">
         <label>Indirizzo</label>
-        <input type="text" name="address" [(ngModel)]="guest.address" required
-               placeholder="Via Roma 1" class="form-input">
+        <input type="text" name="address" [(ngModel)]="guest.address"
+               required placeholder="Via Roma 1" class="form-input">
       </div>
 
       <div class="form-group">
         <label>Città</label>
-        <input type="text" name="city" [(ngModel)]="guest.city" required
-               placeholder="Milano" class="form-input">
+        <input type="text" name="city" [(ngModel)]="guest.city"
+               required placeholder="Milano" class="form-input">
       </div>
 
-      <!-- Feedback -->
       @if (success()) {
         <div class="msg-success">Ospite salvato con successo!</div>
       }
@@ -60,6 +67,8 @@
       }
 
       <div class="form-actions">
+        <!-- guestForm.invalid è true finché almeno un campo required è vuoto:
+             Angular lo aggiorna automaticamente ad ogni input. -->
         <button type="submit" class="btn-submit" [disabled]="guestForm.invalid">Salva</button>
         <button type="button" class="btn-reset" (click)="reset()">Reset</button>
       </div>

@@ -1,13 +1,13 @@
 import {RouterLink} from '@angular/router';
 import {TitleCasePipe} from '@angular/common';
 import {Component, computed, inject, signal} from '@angular/core';
-import {UserLogicService} from '../ComponentLogicService/user-logic-service';
+import { UserLogicService } from '../APIservices/user/user-logic-service';
 
 /**
- * Barra superiore dell'applicazione. Mostra nome hotel e utente loggato,
- * e gestisce il popup del profilo (toggle con click sull'icona utente).
- * userInfo è un computed() che costruisce la stringa "Nome Cognome"
- * solo quando loggedUser() non è null, evitando errori durante il caricamento.
+ * Barra superiore dell'applicazione. Mostra nome hotel e utente loggato
+ * e gestisce il popup del profilo con toggle al click.
+ * TitleCasePipe è una pipe Angular che capitalizza la prima lettera di ogni parola:
+ * invece di scrivere la logica a mano l'ho trovata già pronta nel framework.
  */
 @Component({
   selector: 'app-top-menu',
@@ -27,7 +27,14 @@ export class TopMenu {
     this.showProfile.update(v => !v);
   }
 
-  userInfo = computed(()=> this.loggedUser()==null ? "loading" : this.loggedUser()?.firstName+" "+this.loggedUser()?.lastName);
+  // computed() costruisce la stringa "Nome Cognome" reagendo al Signal loggedUser.
+  // Mentre l'utente non è ancora arrivato mostra "loading", evitando errori di null.
+  // Ho usato computed() invece di una proprietà normale perché si aggiorna
+  // automaticamente quando loggedUser() cambia, senza bisogno di chiamate manuali.
+  userInfo = computed(() => this.loggedUser() == null
+                                                  ? 'loading'
+                                                  : this.loggedUser()?.firstName + ' ' + this.loggedUser()?.lastName
+  );
 
 
 }

@@ -87,12 +87,12 @@ public class BookingAPI
     // ── Transizioni di stato ─────────────────────────────────────────────────
     // Usiamo endpoint dedicati invece di un unico PATCH /{id}/{status} per due motivi:
     // 1. Sicurezza: il client non può inviare un valore di status arbitrario,
-    //    solo le azioni esplicitamente previste dall'API.
+    //    solo le azioni esplicitamente previste dall'api.
     // 2. Chiarezza: ogni endpoint ha un nome che rispecchia l'azione di dominio,
     //    non un dettaglio implementativo (il nome dello stato).
     // Tutti restituiscono 204 No Content: l'operazione è riuscita ma non c'è
     // corpo da restituire (il frontend aggiorna il signal localmente).
-    // 400 Bad Request se la transizione non è consentita (es. checkout su PENDING).
+    // 400 Bad Request se la transizione non è consentita (es. Checkout su PENDING).
     // 404 Not Found se la prenotazione non esiste.
 
     // PENDING → CHECKED_IN  |  room → OCCUPIED

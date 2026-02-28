@@ -6,9 +6,6 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Utility per l'hashing delle password tramite MD5.
- * MD5 è scelto per semplicità didattica: in produzione si userebbe
- * BCrypt o Argon2, che includono un salt automatico e sono resistenti
- * agli attacchi a dizionario.
  */
 @Service
 public class PasswordHasher

@@ -14,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 /**
  * Servizio CRUD per la gestione delle camere.
  * Lo stato della camera (RoomStatus) non viene modificato qui:
- * è responsabilità esclusiva di BookingService aggiornarlo ad ogni
+ * è responsabilità esclusiva di BookingService aggiornarlo a ogni
  * transizione di prenotazione, per mantenere la coerenza tra i due.
  */
 @Service

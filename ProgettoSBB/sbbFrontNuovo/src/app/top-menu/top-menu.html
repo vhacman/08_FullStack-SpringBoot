@@ -1,12 +1,15 @@
+<!-- Barra superiore fissa (w3-top la ancora in cima alla pagina).
+     I dati dell'utente vengono da loggedUser() Signal: finché la risposta HTTP
+     non arriva, mostra "Caricamento..." invece di andare in errore su null. -->
 <div class="w3-top">
   <div class="navbar-main w3-card-2 w3-row">
 
-    <!-- Logo -->
+    <!-- Logo cliccabile che riporta alla home -->
     <div class="w3-col s2 m2 l2 logo-container">
       <img src="img/logo.png" routerLink="" class="logo-img" alt="SBB Logo" />
     </div>
 
-    <!-- Info utente (destra) -->
+    <!-- Blocco utente a destra: nome hotel e icona profilo -->
     <div class="w3-col s10 m10 l10 nav-right">
       <div class="user-block">
 
@@ -14,13 +17,15 @@
           {{ loggedUser() != null ? loggedUser()!.hotel.name : 'Caricamento...' }}
         </div>
 
+        <!-- (click) apre/chiude il popup profilo tramite il Signal showProfile -->
         <div class="user-info" (click)="toggleProfile()">
           <div class="user-details">
             <span class="user-name">{{ userInfo() }}</span>
+            <!-- | titlecase è la pipe TitleCase di Angular: capitalizza la prima lettera
+                 di ogni parola senza dover scrivere il metodo a mano. -->
             <span class="user-role">{{ loggedUser()?.role | titlecase }}</span>
           </div>
           <i class="bi bi-person-circle user-icon"></i>
-
         </div>
 
       </div>
@@ -29,9 +34,13 @@
   </div>
 </div>
 
+<!-- nav-spacer compensa l'altezza della navbar fissa (w3-top toglie la navbar
+     dal flusso del documento, quindi il contenuto sotto scivola su). -->
 <div class="nav-spacer"></div>
 
-<!-- Sezione Profilo Utente Popup -->
+<!-- Popup profilo utente: compare solo se showProfile() è true.
+     stopPropagation() blocca la propagazione del click all'esterno,
+     altrimenti qualsiasi click dentro il popup lo chiuderebbe. -->
 @if (showProfile()) {
   <div class="profile-popup w3-card-2" (click)="$event.stopPropagation()">
     <div class="profile-header">
@@ -47,6 +56,7 @@
         <span class="detail-label">Hotel:</span>
         <span class="detail-value">{{ loggedUser()?.hotel?.name }}</span>
       </div>
+      <!-- ?. è l'optional chaining: evita l'errore se loggedUser() è ancora null -->
       @if (loggedUser()?.hotel?.address) {
         <div class="detail-row">
           <span class="detail-label">Indirizzo:</span>
