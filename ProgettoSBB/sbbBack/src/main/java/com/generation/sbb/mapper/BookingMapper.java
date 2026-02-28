@@ -6,6 +6,15 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * Mapper MapStruct per la conversione Booking ↔ BookingDTO.
+ * MapStruct genera automaticamente il codice di mapping a compile-time:
+ * non serve scrivere manualmente i setter. Le annotazioni @Mapping
+ * gestiscono i casi in cui i nomi dei campi differiscono tra entità e DTO
+ * (es. guest.id → guestId e viceversa).
+ * componentModel = "spring" fa sì che il mapper sia un bean Spring,
+ * iniettabile normalmente con @Autowired.
+ */
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
 

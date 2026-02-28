@@ -7,6 +7,23 @@ import { RoomService } from '../APIservices/room/room-service';
 import { UserLogicService } from '../ComponentLogicService/user-logic-service';
 import { Booking, HotelClosure, Room } from '../model/hotel.entities';
 
+/**
+ * Calendario mensile interattivo per la gestione delle chiusure hotel.
+ *
+ * Funzionalità principali:
+ * - Visualizza occupazione giornaliera (camere libere / occupate / chiuse)
+ * - Click su un giorno → mostra dettaglio prenotazioni di quel giorno
+ * - Drag su più giorni → apre modal per chiudere o riaprire il range
+ * - Rimozione di un singolo giorno da una closure multi-giorno:
+ *   usa reopenRange(giorno, giorno) che spezza la closure nel backend
+ *
+ * calendarDays è un computed() che ricalcola tutta la griglia ogni volta
+ * che cambiano bookings, rooms, closures o il mese visualizzato.
+ * Non serve alcun aggiornamento manuale: è la reattività di Angular Signals.
+ */
+
+// Struttura dati per ogni cella del calendario. Viene calcolata da calendarDays()
+// e passata al template per decidere stile e contenuto di ogni giorno.
 interface CalendarDay {
   dateStr: string;
   day: number;
@@ -113,6 +130,9 @@ export class Calendar {
     return days;
   });
 
+  // Stato del drag: isDragging è true mentre il tasto è premuto,
+  // hasDragged diventa true solo se il mouse si è spostato su un altro giorno.
+  // La distinzione permette di separare click (dettaglio) da drag (chiusura range).
   private isDragging = false;
   private hasDragged = false;
   dragStart = signal<string | null>(null);
@@ -122,6 +142,7 @@ export class Calendar {
   pendingStart = signal<string | null>(null);
   pendingEnd = signal<string | null>(null);
   closureReason = signal('');
+  closureError = signal<string | null>(null);
 
   showReopenModal = signal(false);
 
@@ -273,13 +294,17 @@ export class Calendar {
     }).subscribe({
       next: newClosure => {
         this.closures.update(list => [...list, newClosure]);
+        this.closureError.set(null);
         this.showClosureModal.set(false);
       },
-      error: err => console.error('Errore salvataggio chiusura:', err),
+      error: () => {
+        this.closureError.set('Data/e selezionate non valide, prova con una data successiva alla data odierna e senza prenotazioni programmate.');
+      },
     });
   }
 
   cancelClosure(): void {
+    this.closureError.set(null);
     this.showClosureModal.set(false);
   }
 
@@ -305,15 +330,20 @@ export class Calendar {
   }
 
   confirmDelete(): void {
-    const c = this.closureToDelete();
-    if (!c?.id) return;
-    this.closureService.delete(c.id).subscribe({
+    const hotelId = this.currentHotelId();
+    const from = this.pendingStart();
+    const to = this.pendingEnd();
+    if (!hotelId || !from || !to) return;
+
+    this.closureService.reopenRange(hotelId, from, to).subscribe({
       next: () => {
-        this.closures.update(list => list.filter(x => x.id !== c.id));
+        this.closureService.findByHotel(hotelId).subscribe({
+          next: list => this.closures.set(list),
+        });
         this.showDeleteModal.set(false);
         this.closureToDelete.set(null);
       },
-      error: err => console.error('Errore eliminazione chiusura:', err),
+      error: err => console.error('Errore rimozione giorno chiusura:', err),
     });
   }
 
@@ -343,11 +373,20 @@ export class Calendar {
     const closure = this.closures().find(c => c.id === day.closureId);
     if (closure) {
       this.closureToDelete.set(closure);
+      this.pendingStart.set(day.dateStr);
+      this.pendingEnd.set(day.dateStr);
       this.showDayDetailModal.set(false);
       this.showDeleteModal.set(true);
     }
   }
 
+  /**
+   * Calcola la classe CSS della cella in base allo stato del giorno.
+   * L'ordine delle condizioni è importante: "selecting" (durante il drag)
+   * ha priorità su tutto, poi closed, poi l'occupazione.
+   * @param day dati del giorno da stilare
+   * @returns stringa di classi CSS da applicare alla cella
+   */
   getDayClass(day: CalendarDay): string {
     const isSelecting = this.selectionRange().has(day.dateStr);
     if (!day.isCurrentMonth) return 'day other-month';
@@ -359,6 +398,13 @@ export class Calendar {
     return 'day';
   }
 
+  /**
+   * Formatta una Date in stringa "YYYY-MM-DD" per confronti e come chiave.
+   * Uso questo formato perché è ordinabile lessicograficamente: due date
+   * si possono confrontare con semplici operatori < > senza conversioni.
+   * @param d data da formattare
+   * @returns stringa nel formato ISO YYYY-MM-DD
+   */
   private fmt(d: Date): string {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }

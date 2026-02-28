@@ -8,6 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Prenotazione che lega un ospite (Guest) a una camera (Room) per un dato periodo.
+ * Lo stato segue una macchina a stati rigida definita in BookingStatus:
+ * non è modificabile direttamente, solo tramite i metodi di BookingService.
+ * Ogni transizione aggiorna anche lo stato della camera associata (RoomStatus).
+ */
 @Entity
 @Data
 @NoArgsConstructor

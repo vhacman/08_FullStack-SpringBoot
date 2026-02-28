@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Hotel gestito dal sistema. A ogni hotel appartengono camere (Room) e utenti (User).
+ * Il sistema è multi-hotel: ogni receptionist è associato al proprio hotel
+ * e vede solo i dati di competenza.
+ */
 @Entity
 @Data
 @NoArgsConstructor

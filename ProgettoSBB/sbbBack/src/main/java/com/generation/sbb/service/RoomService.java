@@ -11,33 +11,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Servizio CRUD per la gestione delle camere.
+ * Lo stato della camera (RoomStatus) non viene modificato qui:
+ * è responsabilità esclusiva di BookingService aggiornarlo ad ogni
+ * transizione di prenotazione, per mantenere la coerenza tra i due.
+ */
 @Service
 @Validated
-public class RoomService {
-
+public class RoomService
+{
     @Autowired
     private RoomRepository roomRepository;
 
     @Autowired
     private RoomMapper roomMapper;
 
-    public List<RoomDTO> findAll() {
+    /** @return lista di tutte le camere di tutti gli hotel */
+    public List<RoomDTO> findAll()
+    {
         return roomMapper.toDTOs(roomRepository.findAll());
     }
 
-    public RoomDTO findById(Integer id) {
+    /**
+     * @param id identificativo della camera
+     * @return DTO della camera trovata
+     * @throws EntityNotFoundException se nessuna camera ha quell'id
+     */
+    public RoomDTO findById(Integer id)
+    {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Room not found with id: " + id));
         return roomMapper.toDTO(room);
     }
 
-    public RoomDTO save(@Valid RoomDTO roomDTO) {
+    /**
+     * Crea o aggiorna una camera. Se il DTO ha id > 0 aggiorna, altrimenti inserisce.
+     * @param roomDTO dati della camera (validati da @Valid)
+     * @return DTO della camera salvata con id assegnato dal DB
+     */
+    public RoomDTO save(@Valid RoomDTO roomDTO)
+    {
         Room room = roomMapper.toEntity(roomDTO);
         room = roomRepository.save(room);
         return roomMapper.toDTO(room);
     }
 
-    public void deleteById(Integer id) {
+    /**
+     * @param id identificativo della camera da eliminare
+     */
+    public void deleteById(Integer id)
+    {
         roomRepository.deleteById(id);
     }
 }

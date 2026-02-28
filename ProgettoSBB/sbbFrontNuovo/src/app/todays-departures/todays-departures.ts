@@ -4,6 +4,12 @@ import {BookingService} from '../APIservices/booking/booking-service';
 import {UserLogicService} from '../ComponentLogicService/user-logic-service';
 import {BookingRow} from '../booking-row/booking-row';
 
+/**
+ * Widget della homepage che mostra le partenze di oggi (checkOut = oggi).
+ * Distingue le prenotazioni ancora da gestire (CHECKED_IN o CHECKED_OUT)
+ * da quelle già completate (COMPLETE), permettendo al personale di sapere
+ * quali camere devono ancora essere pulite.
+ */
 @Component({
   selector: 'app-todays-departures',
   imports: [BookingRow],

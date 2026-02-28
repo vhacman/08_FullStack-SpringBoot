@@ -1,4 +1,5 @@
 <div class="w3-container" style="padding: 0 8px 24px; margin-top: 16px;">
+<div class="cal-wrapper">
 
   <!-- Header -->
   <div class="cal-header-box">
@@ -56,6 +57,7 @@
   </div>
 
 </div>
+</div>
 
 <!-- ── Modal: nuova chiusura ── -->
 @if (showClosureModal()) {
@@ -85,6 +87,9 @@
         </div>
       </div>
 
+      @if (closureError()) {
+        <p class="closure-error">{{ closureError() }}</p>
+      }
       <div class="modal-actions">
         <button class="btn-cancel" (click)="cancelClosure()">Annulla</button>
         <button class="btn-confirm" (click)="confirmClosure()">Conferma chiusura</button>
@@ -132,8 +137,10 @@
 
       <div class="modal-body">
         <p class="modal-info">
-          Rimuovere la chiusura del periodo
-          <strong>{{ closureToDelete()?.startDate }}</strong> → <strong>{{ closureToDelete()?.endDate }}</strong>?
+          Riaprire il giorno <strong>{{ pendingStart() }}</strong>?
+          @if (closureToDelete()?.startDate !== closureToDelete()?.endDate) {
+            <br><span style="font-size:0.78rem">La chiusura <strong>{{ closureToDelete()?.startDate }}</strong> → <strong>{{ closureToDelete()?.endDate }}</strong> verrà spezzata di conseguenza.</span>
+          }
           @if (closureToDelete()?.reason) {
             <br>Motivazione: <em>{{ closureToDelete()?.reason }}</em>
           }

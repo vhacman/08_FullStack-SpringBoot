@@ -4,8 +4,17 @@ import { BookingService } from '../APIservices/booking/booking-service';
 import { UserLogicService } from '../ComponentLogicService/user-logic-service';
 import { Booking } from '../model/hotel.entities';
 
+// Tipo locale che aggiunge 'TUTTI' ai valori di BookingStatus.
+// Serve per il filtro UI: non esiste nel backend, è solo un'opzione visiva.
 type FilterOption = 'TUTTI' | 'PENDING' | 'CHECKED_IN' | 'CHECKED_OUT' | 'COMPLETE' | 'CANCELED';
 
+/**
+ * Lista completa delle prenotazioni dell'hotel con filtro per stato.
+ * Usa un effect() per ricaricare automaticamente i dati quando l'utente
+ * loggato è disponibile (il segnale potrebbe arrivare in ritardo rispetto
+ * al render del componente, quindi non possiamo fare la chiamata nel costruttore
+ * con un valore statico).
+ */
 @Component({
   selector: 'app-booking-list',
   imports: [BookingRow],
@@ -20,6 +29,8 @@ export class BookingList {
   bookings = signal<Booking[]>([]);
   activeFilter = signal<FilterOption>('TUTTI');
 
+  // computed() ricalcola automaticamente la lista filtrata ogni volta che
+  // bookings() o activeFilter() cambiano: non serve gestire manualmente l'aggiornamento.
   filtered = computed(() => {
     const f = this.activeFilter();
     const sorted = [...this.bookings()].sort((a, b) =>
@@ -53,15 +64,21 @@ export class BookingList {
     });
   }
 
+  /**
+   * @param status filtro di cui contare le prenotazioni
+   * @returns numero di prenotazioni per quello stato (o totale se 'TUTTI')
+   */
   countFor(status: FilterOption): number {
     if (status === 'TUTTI') return this.bookings().length;
     return this.bookings().filter(b => b.status === status).length;
   }
 
+  /** @param f filtro da attivare */
   setFilter(f: FilterOption): void {
     this.activeFilter.set(f);
   }
 
+  /** Ricarica le prenotazioni dal server (es. dopo un'azione su una riga). */
   refresh(): void {
     const user = this.loggedUser();
     if (user && user.hotel?.id) {

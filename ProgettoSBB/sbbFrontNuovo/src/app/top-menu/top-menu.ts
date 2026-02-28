@@ -3,6 +3,12 @@ import {TitleCasePipe} from '@angular/common';
 import {Component, computed, inject, signal} from '@angular/core';
 import {UserLogicService} from '../ComponentLogicService/user-logic-service';
 
+/**
+ * Barra superiore dell'applicazione. Mostra nome hotel e utente loggato,
+ * e gestisce il popup del profilo (toggle con click sull'icona utente).
+ * userInfo è un computed() che costruisce la stringa "Nome Cognome"
+ * solo quando loggedUser() non è null, evitando errori durante il caricamento.
+ */
 @Component({
   selector: 'app-top-menu',
   imports: [RouterLink, TitleCasePipe],

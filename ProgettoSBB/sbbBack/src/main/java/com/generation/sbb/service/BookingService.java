@@ -10,7 +10,6 @@ import com.generation.sbb.repository.BookingRepository;
 import com.generation.sbb.repository.RoomRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Cuore del sistema: gestisce il ciclo di vita completo di una prenotazione.
+ * Oltre al CRUD base, espone metodi dedicati per ogni transizione di stato
+ * (acceptBooking, cancel, checkout, complete) che aggiornano atomicamente
+ * anche lo stato della camera associata tramite @Transactional.
+ * Questo approccio impedisce al client di impostare stati arbitrari:
+ * solo le transizioni previste dalla macchina a stati sono possibili.
+ */
 @Service
 @Validated
-public class BookingService {
-
+public class BookingService
+{
     @Autowired
     private BookingRepository bookingRepository;
 
@@ -33,29 +40,35 @@ public class BookingService {
     @Autowired
     private BookingMapper bookingMapper;
 
-    public List<BookingDTO> findTodaysDeparturesForHotel(int hotelId) {
+    public List<BookingDTO> findTodaysDeparturesForHotel(int hotelId)
+    {
         return bookingMapper.toDTOs(bookingRepository.findByCheckOutAndHotelId(LocalDate.now(), hotelId));
     }
 
-    public List<BookingDTO> findTodaysArrivalForHotel(int hotelId) {
+    public List<BookingDTO> findTodaysArrivalForHotel(int hotelId)
+    {
         return bookingMapper.toDTOs(bookingRepository.findByCheckInAndHotelId(LocalDate.now(), hotelId));
     }
 
-    public List<BookingDTO> findAll() {
+    public List<BookingDTO> findAll()
+    {
         return bookingMapper.toDTOs(bookingRepository.findAll());
     }
 
-    public List<BookingDTO> findByHotelId(int hotelId) {
+    public List<BookingDTO> findByHotelId(int hotelId)
+    {
         return bookingMapper.toDTOs(bookingRepository.findByRoomHotelId(hotelId));
     }
 
-    public BookingDTO findById(Integer id) {
+    public BookingDTO findById(Integer id)
+    {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + id));
         return bookingMapper.toDTO(booking);
     }
 
-    public BookingDTO save(@Valid BookingDTO bookingDTO) {
+    public BookingDTO save(@Valid BookingDTO bookingDTO)
+    {
         Booking booking = bookingMapper.toEntity(bookingDTO);
         // Se il DTO arriva senza status (caso tipico di creazione da frontend),
         // MapStruct chiama setStatus(null) sovrascrivendo il default dell'entità.
@@ -67,7 +80,8 @@ public class BookingService {
         return bookingMapper.toDTO(booking);
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(Integer id)
+    {
         bookingRepository.deleteById(id);
     }
 

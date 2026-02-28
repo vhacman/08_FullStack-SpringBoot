@@ -6,6 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Periodo di chiusura dichiarato per un hotel (ferie, ristrutturazione, ecc.).
+ * Il calendario nel frontend usa questi record per colorare le date chiuse
+ * e bloccare la creazione di prenotazioni su di esse.
+ * Più closure possono coesistere, ma non devono sovrapporsi: la logica
+ * di split/merge è gestita da HotelClosureService.reopenRange().
+ */
 @Entity
 @Data
 @NoArgsConstructor

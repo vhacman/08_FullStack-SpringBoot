@@ -9,58 +9,78 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller per la gestione delle prenotazioni.
+ * Oltre al CRUD base, espone endpoint PATCH dedicati per ogni transizione
+ * di stato della macchina a stati (checkin, cancel, checkout, complete).
+ * Questo approccio è preferibile a un singolo PATCH /{id}/status perché
+ * il client non può impostare stati arbitrari, solo le azioni previste.
+ */
 @RestController
 @RequestMapping("/sbb/api/bookings")
 @CrossOrigin(origins = "http://localhost:4200")
-public class BookingAPI {
-
+public class BookingAPI
+{
     @Autowired
     private BookingService service;
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody BookingDTO dto) {
-        try {
+    public ResponseEntity<Object> save(@RequestBody BookingDTO dto)
+    {
+        try
+        {
             dto = service.save(dto);
             return ResponseEntity.status(201).body(dto);
-        } catch (ConstraintViolationException e) {
+        }
+        catch (ConstraintViolationException e)
+        {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody BookingDTO dto) {
-        try {
+    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody BookingDTO dto)
+    {
+        try
+        {
             dto.setId(id);
             dto = service.save(dto);
             return ResponseEntity.ok(dto);
-        } catch (ConstraintViolationException e) {
+        }
+        catch (ConstraintViolationException e)
+        {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id)
+    {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public BookingDTO findById(@PathVariable int id) {
+    public BookingDTO findById(@PathVariable int id)
+    {
         return service.findById(id);
     }
 
     @GetMapping("/todaysarrivals/{hotelId}")
-    public List<BookingDTO> findTodaysArrivals(@PathVariable int hotelId) {
+    public List<BookingDTO> findTodaysArrivals(@PathVariable int hotelId)
+    {
         return service.findTodaysArrivalForHotel(hotelId);
     }
 
     @GetMapping("/hotel/{hotelId}")
-    public List<BookingDTO> findByHotel(@PathVariable int hotelId) {
+    public List<BookingDTO> findByHotel(@PathVariable int hotelId)
+    {
         return service.findByHotelId(hotelId);
     }
 
     @GetMapping("/todaysdepartures/{hotelId}")
-    public List<BookingDTO> findTodaysDepartures(@PathVariable int hotelId) {
+    public List<BookingDTO> findTodaysDepartures(@PathVariable int hotelId)
+    {
         return service.findTodaysDeparturesForHotel(hotelId);
     }
 
@@ -77,26 +97,38 @@ public class BookingAPI {
 
     // PENDING → CHECKED_IN  |  room → OCCUPIED
     @PatchMapping("/{id}/checkin")
-    public ResponseEntity<Void> checkIn(@PathVariable int id) {
-        try {
+    public ResponseEntity<Void> checkIn(@PathVariable int id)
+    {
+        try
+        {
             service.acceptBooking(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
+        }
+        catch (EntityNotFoundException e)
+        {
             return ResponseEntity.notFound().build();
-        } catch (IllegalStateException e) {
+        }
+        catch (IllegalStateException e)
+        {
             return ResponseEntity.badRequest().build();
         }
     }
 
     // PENDING → CANCELED
     @PatchMapping("/{id}/cancel")
-    public ResponseEntity<Void> cancel(@PathVariable int id) {
-        try {
+    public ResponseEntity<Void> cancel(@PathVariable int id)
+    {
+        try
+        {
             service.cancel(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
+        }
+        catch (EntityNotFoundException e)
+        {
             return ResponseEntity.notFound().build();
-        } catch (IllegalStateException e) {
+        }
+        catch (IllegalStateException e)
+        {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -104,13 +136,19 @@ public class BookingAPI {
     // CHECKED_IN → CHECKED_OUT  |  room → TO_CLEAN
     // Il service valida che la data odierna >= checkOut prima di procedere.
     @PatchMapping("/{id}/checkout")
-    public ResponseEntity<Void> checkout(@PathVariable int id) {
-        try {
+    public ResponseEntity<Void> checkout(@PathVariable int id)
+    {
+        try
+        {
             service.checkout(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
+        }
+        catch (EntityNotFoundException e)
+        {
             return ResponseEntity.notFound().build();
-        } catch (IllegalStateException e) {
+        }
+        catch (IllegalStateException e)
+        {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -118,13 +156,19 @@ public class BookingAPI {
     // CHECKED_OUT → COMPLETE  |  room → AVAILABLE + lastCleaned = oggi
     // Chiamato dal frontend quando il personale segna la camera come pulita.
     @PatchMapping("/{id}/complete")
-    public ResponseEntity<Void> complete(@PathVariable int id) {
-        try {
+    public ResponseEntity<Void> complete(@PathVariable int id)
+    {
+        try
+        {
             service.complete(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
+        }
+        catch (EntityNotFoundException e)
+        {
             return ResponseEntity.notFound().build();
-        } catch (IllegalStateException e) {
+        }
+        catch (IllegalStateException e)
+        {
             return ResponseEntity.badRequest().build();
         }
     }

@@ -8,6 +8,12 @@ import java.util.List;
 import java.time.LocalDate;
 
 
+/**
+ * Repository JPA per le prenotazioni. Estende JpaRepository che fornisce
+ * già le operazioni CRUD standard (save, findById, findAll, deleteById...).
+ * Le query personalizzate usano JPQL (@Query) per navigare le relazioni
+ * tra entità (Booking → Room → Hotel) senza scrivere SQL nativo.
+ */
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 

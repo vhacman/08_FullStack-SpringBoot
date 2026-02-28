@@ -4,6 +4,11 @@ import {BookingService} from '../APIservices/booking/booking-service';
 import {UserLogicService} from '../ComponentLogicService/user-logic-service';
 import {Booking} from '../model/hotel.entities';
 
+/**
+ * Widget della homepage che mostra le prenotazioni in arrivo oggi (checkIn = oggi).
+ * Separa i PENDING (da accettare) dai CHECKED_IN (già accolti) per dare
+ * una visione immediata di cosa manca ancora da fare.
+ */
 @Component({
   selector: 'app-todays-arrivals',
   imports: [BookingRow],

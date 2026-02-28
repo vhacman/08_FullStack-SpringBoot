@@ -9,6 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Ospite che soggiorna in hotel. Contiene i dati anagrafici necessari per la
+ * registrazione: nome, cognome, codice fiscale, data di nascita e residenza.
+ * Un ospite può avere più prenotazioni nel tempo (relazione gestita da Booking).
+ */
 @Entity
 @Data
 @NoArgsConstructor
