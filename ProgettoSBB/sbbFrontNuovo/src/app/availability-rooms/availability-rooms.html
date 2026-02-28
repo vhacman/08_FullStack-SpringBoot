@@ -4,11 +4,15 @@
     <h2>Stanze dell'Hotel</h2>
   </div>
 
+  <!-- Spinner durante il caricamento iniziale delle camere -->
   @if (loading()) {
     <div class="w3-center w3-padding">
       Caricamento...
     </div>
   } @else {
+
+    <!-- Chip di filtro: TUTTE / DISPONIBILI / OCCUPATE / DA PULIRE
+         countFor() mostra il numero di camere per ogni stato -->
     <div class="filter-chips">
       @for (f of filters; track f.value) {
         <button
@@ -21,10 +25,15 @@
       }
     </div>
 
+    <!-- Griglia delle camere filtrate -->
     <div class="rooms-grid">
       @for (room of filtered(); track room.id) {
+
+        <!-- getStatusClass() aggiunge una classe CSS colorata in base allo stato -->
         <div class="room-card w3-card-2" [class]="getStatusClass(room.status)">
           <div class="room-name">{{ room.name }}</div>
+
+          <!-- Badge colorato per lo stato della camera -->
           <div class="room-status">
             @switch (room.status) {
               @case ('AVAILABLE') {
@@ -38,8 +47,13 @@
               }
             }
           </div>
+
           <div class="room-description">{{ room.description }}</div>
           <div class="room-price">{{ room.basePrice }} €/notte</div>
+
+          <!-- Il pulsante "Prenota" appare solo se la camera è AVAILABLE.
+               hasActiveBooking() controlla se esiste già una prenotazione PENDING:
+               in quel caso mostra un avviso invece del pulsante. -->
           @if (room.status === 'AVAILABLE') {
             @if (hasActiveBooking(room.id!)) {
               <div class="booking-warning">
@@ -51,44 +65,54 @@
               </button>
             }
           }
+
         </div>
       }
     </div>
   }
 </div>
 
-<!-- Modal for Booking -->
+<!-- Modal di prenotazione: visibile solo quando showModal() è true.
+     Il click sull'overlay chiude il modal; stopPropagation() impedisce
+     che il click sul contenuto lo propaghi all'overlay e lo chiuda. -->
 @if (showModal()) {
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal-content w3-card-2" (click)="$event.stopPropagation()">
+
       <div class="modal-header">
         <h3>Prenotazione - {{ selectedRoom()?.name }}</h3>
         <button class="modal-close" (click)="closeModal()">&times;</button>
       </div>
 
       <div class="modal-body">
+
+        <!-- Messaggio di successo dopo il salvataggio -->
         @if (bookingSuccess()) {
           <div class="msg-success">
             Prenotazione salvata con successo!
           </div>
         } @else {
-          <!-- Guest Search -->
+
+          <!-- Step 1: cerca l'ospite. Se non trovato, appare il form di inserimento -->
           <div class="form-group">
             <label>Cerca Ospite</label>
             <app-guest-picker
-              (guestSelected)="onGuestSelected($event)"
+              (guestSelected)="onGuestReady($event)"
               (guestNotFound)="onGuestNotFound($event)">
             </app-guest-picker>
           </div>
 
           @if (showInsertGuest()) {
-            <app-insert-guest (guestCreated)="onGuestCreated($event)"></app-insert-guest>
+            <app-insert-guest (guestCreated)="onGuestReady($event)"></app-insert-guest>
           }
 
+          <!-- Step 2: date (visibile solo dopo aver selezionato un ospite) -->
           @if (guestId()) {
             <div class="form-row">
               <div class="form-group">
                 <label>Check-in</label>
+                <!-- $any($event.target).value: cast necessario perché Angular
+                     non conosce il tipo di $event.target nel template -->
                 <input type="date"
                        [value]="checkIn()"
                        (change)="onCheckInChange($any($event.target).value)"
@@ -103,13 +127,16 @@
               </div>
             </div>
 
+            <!-- Step 3: prezzo e note (visibili solo se le date formano almeno 1 notte) -->
             @if (nights > 0) {
               <div class="msg-info">
+                <!-- Plurale condizionale: "1 notte" / "2 notti" -->
                 {{ nights }} notte{{ nights === 1 ? '' : 'i' }}
               </div>
 
               <div class="form-group">
                 <label>Prezzo (€)</label>
+                <!-- ngModel in due direzioni: [ngModel] legge il Signal, (ngModelChange) lo aggiorna -->
                 <input type="number"
                        [ngModel]="price()"
                        (ngModelChange)="price.set($event)"

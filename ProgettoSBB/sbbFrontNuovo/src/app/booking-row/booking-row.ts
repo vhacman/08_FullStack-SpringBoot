@@ -17,36 +17,48 @@ import { BookingService } from '../APIservices/booking/booking-service';
 })
 export class BookingRow {
 
+  // SERVIZI
+  private bookingService = inject(BookingService);
+
+  // INPUT E OUTPUT
   // model() è diverso da input(): permette al padre di passare la prenotazione
-  // E al figlio di aggiornarla localmente quando cambia stato (es. dopo check-in).
+  // e al figlio di aggiornarla localmente quando cambia stato (es. dopo check-in).
   // Senza model(), dovrei emettere un evento e lasciare che il padre aggiorni i dati.
   booking      = model.required<Booking>();
   checkInDone  = output<Booking>();
   completeDone = output<Booking>();
 
-  private bookingService = inject(BookingService);
-
+  // STATO PRIVACY
   // Signals booleani per il toggle privacy: false = nascosto (default)
   ssnVisible     = signal(false);
   addressVisible = signal(false);
 
+  /** Mostra o nasconde il codice fiscale dell'ospite. */
   toggleSsn():     void { this.ssnVisible.update(v => !v);     }
+  /** Mostra o nasconde l'indirizzo dell'ospite. */
   toggleAddress(): void { this.addressVisible.update(v => !v); }
 
+  // LOGICA DATE
   // La data di oggi in formato YYYY-MM-DD: serve per confrontare le date
   // delle prenotazioni e decidere quali pulsanti mostrare (es. checkout
   // è disponibile solo dal giorno della partenza in poi).
   readonly today = new Date().toISOString().split('T')[0];
 
+  /** True se la data coincide con oggi. */
   isToday(date: any):  boolean { return String(date) === this.today; }
+  /** True se la data è già passata. */
   isPast(date: any):   boolean { return String(date) <   this.today; }
+  /** True se la data è nel futuro. */
   isFuture(date: any): boolean { return String(date) >   this.today; }
 
+  // AZIONI PRENOTAZIONE
   // Dopo ogni transizione di stato, aggiorno la prenotazione localmente
   // con lo spread operator { ...booking, status: nuovo } invece di ricaricare
   // dal server: è più veloce e non serve un'altra chiamata HTTP.
   // 'CHECKED_IN' as const dice a TypeScript che non è una stringa generica
   // ma esattamente quel letterale, così il tipo rimane BookingStatus.
+
+  /** Esegue il check-in: porta la prenotazione da PENDING a CHECKED_IN e notifica il padre. */
   acceptBooking(): void {
     const id = this.booking().id ?? 0;
     this.bookingService.acceptBooking(id).subscribe({
@@ -59,6 +71,7 @@ export class BookingRow {
     });
   }
 
+  /** Annulla la prenotazione: porta lo stato a CANCELED. */
   cancel(): void {
     const id = this.booking().id ?? 0;
     this.bookingService.cancel(id).subscribe({
@@ -69,6 +82,7 @@ export class BookingRow {
     });
   }
 
+  /** Esegue il check-out: porta la prenotazione da CHECKED_IN a CHECKED_OUT (camera da pulire). */
   checkout(): void {
     const id = this.booking().id ?? 0;
     this.bookingService.checkout(id).subscribe({
@@ -79,6 +93,7 @@ export class BookingRow {
     });
   }
 
+  /** Segna la prenotazione come COMPLETE (camera pulita e di nuovo disponibile) e notifica il padre. */
   complete(): void {
     const id = this.booking().id ?? 0;
     this.bookingService.complete(id).subscribe({
@@ -91,6 +106,7 @@ export class BookingRow {
     });
   }
 
+  // MAPPER STATO
   /** Mapper stato backend → testo italiano leggibile per l'interfaccia. */
   getStatusText(status: string): string {
     switch (status) {

@@ -7,12 +7,34 @@
   background-color: #d6eaf8;
 }
 
-.logo-container { display: flex; align-items: center; }
-.logo-img { height: 64px; cursor: pointer; transition: opacity 0.2s; }
-.logo-img:hover { opacity: 0.8; }
+.logo-container {
+  display: flex;
+  align-items: center;
+}
 
-.nav-right { display: flex; justify-content: flex-end; align-items: center; padding-right: 16px; }
-.user-block { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.logo-img {
+  height: 64px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.logo-img:hover {
+  opacity: 0.8;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 16px;
+}
+
+.user-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
 
 .hotel-name {
   font-family: 'IBM Plex Sans', sans-serif;
@@ -22,11 +44,36 @@
   letter-spacing: 0.04em;
 }
 
-.user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.user-icon { font-size: 28px; color: #1a3650; }
-.user-details { display: flex; flex-direction: column; align-items: flex-end; }
-.user-name { font-size: 0.88rem; font-weight: 700; color: #1a3650; line-height: 1.2; }
-.user-role { font-size: 0.72rem; color: #5a7a96; letter-spacing: 0.02em; }
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.user-icon {
+  font-size: 28px;
+  color: #1a3650;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.user-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1a3650;
+  line-height: 1.2;
+}
+
+.user-role {
+  font-size: 0.72rem;
+  color: #5a7a96;
+  letter-spacing: 0.02em;
+}
 
 .logout-btn {
   background: none;
@@ -39,10 +86,22 @@
   margin-left: 8px;
   transition: background-color 0.2s, color 0.2s;
 }
-.logout-btn:hover { background-color: #3a82c4; color: #fff; }
 
-.nav-spacer { margin-top: 80px; }
-.nav-center { display: flex; justify-content: center; align-items: center; }
+.logout-btn:hover {
+  background-color: #3a82c4;
+  color: #fff;
+}
+
+.nav-spacer {
+  margin-top: 80px;
+}
+
+.nav-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .nav-btn {
   background-color: #3a82c4;
   color: #fff;
@@ -56,7 +115,10 @@
   gap: 8px;
   transition: background-color 0.2s;
 }
-.nav-btn:hover { background-color: #2d6ca8; }
+
+.nav-btn:hover {
+  background-color: #2d6ca8;
+}
 
 .user-profile-section,
 .profile-popup {

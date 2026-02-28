@@ -27,6 +27,10 @@ export class TodaysArrivals
   checkedInBookings = signal<Booking[]>([]);
   checkedInExpanded = signal(false);
 
+  // L'effect si esegue automaticamente ogni volta che loggedUser() cambia.
+  // Appena il login va a buon fine e l'utente ha un hotel associato,
+  // triggera il primo caricamento dei dati. Usato solo nel costruttore
+  // perché deve partire una sola volta all'avvio del componente.
   constructor()
   {
     effect(() =>
@@ -39,6 +43,11 @@ export class TodaysArrivals
     });
   }
 
+  // Chiama il backend per ottenere tutte le prenotazioni con checkIn = oggi.
+  // Il backend restituisce un array misto: noi lo splittiamo in due Signal
+  // distinti con filter() lato frontend, così il template può mostrare
+  // le due liste separatamente senza una seconda chiamata HTTP.
+  // Privato perché è un dettaglio implementativo: dall'esterno si usa refresh().
   private loadBookings(hotelId: number): void
   {
     this.bookingService.getTodaysArrivals(hotelId).subscribe({
@@ -50,20 +59,26 @@ export class TodaysArrivals
     });
   }
 
-  // update() è l'alternativa a set() quando il nuovo valore dipende da quello vecchio.
-  // Riceve una funzione che prende il valore corrente e restituisce quello nuovo.
-  // Qui sposto la prenotazione dalla lista "da fare" a quella "già fatti" senza ricaricare dal server.
+  // Chiamato da BookingRow tramite output (checkInDone) quando il receptionist
+  // fa il check-in di un ospite. Aggiorna le due liste localmente senza
+  // ricaricare dal server: rimuove la prenotazione dai PENDING e la aggiunge
+  // ai CHECKED_IN. update() è usato al posto di set() perché il nuovo valore
+  // dipende da quello corrente (serve la lista attuale per filtrarla o estenderla).
   onCheckInDone(booking: Booking): void {
     this.bookings.update(list => list.filter(b => b.id !== booking.id));
     this.checkedInBookings.update(list => [...list, booking]);
   }
 
-  // Il toggle usa update() con v => !v: prende il booleano corrente e lo nega.
-  // È il modo idiomatico Angular per invertire un Signal booleano.
+  // Chiamato dal template sul click dell'header della sezione "già accolti".
+  // update(v => !v) è il modo idiomatico Angular Signals per invertire un booleano:
+  // prende il valore corrente e restituisce il suo opposto, senza bisogno di leggerlo prima.
   toggleCheckedIn(): void {
     this.checkedInExpanded.update(v => !v);
   }
 
+  // Chiamato dal pulsante di refresh nel template.
+  // Rilegge l'utente corrente dal Signal (potrebbe essere cambiato) e
+  // rilancia loadBookings() per aggiornare entrambe le liste dal server.
   refresh(): void
   {
     const user = this.loggedUser();

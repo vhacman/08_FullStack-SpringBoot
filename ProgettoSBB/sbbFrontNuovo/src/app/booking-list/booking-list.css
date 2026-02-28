@@ -14,27 +14,37 @@
   margin-bottom: 12px;
 }
 
-.refresh-btn { 
+.refresh-btn {
   background: linear-gradient(135deg, #3a82c4 0%, #2d6ca8 100%);
-  border: none; 
+  border: none;
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  cursor: pointer; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
-.refresh-btn i { font-size: 20px; color: white; }
-.refresh-btn:hover { 
-  opacity: 1; 
+
+.refresh-btn i {
+  font-size: 20px;
+  color: white;
+}
+
+.refresh-btn:hover {
+  opacity: 1;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.filter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
 
 .chip {
   display: flex;
@@ -50,19 +60,31 @@
   cursor: pointer;
   transition: background-color 0.15s, border-color 0.15s;
 }
-.chip:hover { background-color: #e3f0fb; border-color: #3a82c4; }
-.chip.active { background-color: #3a82c4; border-color: #3a82c4; color: #fff; }
+
+.chip:hover {
+  background-color: #e3f0fb;
+  border-color: #3a82c4;
+}
+
+.chip.active {
+  background-color: #3a82c4;
+  border-color: #3a82c4;
+  color: #fff;
+}
 
 .chip-count {
   font-size: 0.7rem;
   font-weight: 700;
-  background-color: rgba(0,0,0,0.08);
+  background-color: rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   padding: 1px 7px;
   min-width: 20px;
   text-align: center;
 }
-.chip.active .chip-count { background-color: rgba(255,255,255,0.25); }
+
+.chip.active .chip-count {
+  background-color: rgba(255, 255, 255, 0.25);
+}
 
 .bookings-list {
   max-height: 70vh;
@@ -73,10 +95,15 @@
   border-radius: 8px;
   padding: 8px;
   background-color: #fff;
-  box-shadow: 0 2px 8px rgba(58,130,196,0.10);
+  box-shadow: 0 2px 8px rgba(58, 130, 196, 0.10);
 }
+
 .bookings-list::-webkit-scrollbar { width: 6px; }
 .bookings-list::-webkit-scrollbar-track { background: #e3f0fb; }
 .bookings-list::-webkit-scrollbar-thumb { background-color: #3a82c4; border-radius: 4px; }
 
-.empty-state { background-color: #e3f0fb; border-color: #bcd8f0; color: #5a7a96; }
+.empty-state {
+  background-color: #e3f0fb;
+  border-color: #bcd8f0;
+  color: #5a7a96;
+}

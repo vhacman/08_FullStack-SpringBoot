@@ -18,6 +18,7 @@
          Gli output del componente figlio vengono intercettati qui con (evento)="metodo()".
          guestSelected emette l'id, guestNotFound emette il nome digitato. -->
     <app-guest-picker
+      [resetTrigger]="resetTrigger()"
       (guestSelected)="onGuestSelected($event)"
       (guestNotFound)="onGuestNotFound($event)">
     </app-guest-picker>
@@ -67,6 +68,7 @@
           <app-room-picker
             [checkIn]="checkIn()"
             [checkOut]="checkOut()"
+            [resetTrigger]="resetTrigger()"
             (roomSelected)="onRoomSelected($event)">
           </app-room-picker>
         }

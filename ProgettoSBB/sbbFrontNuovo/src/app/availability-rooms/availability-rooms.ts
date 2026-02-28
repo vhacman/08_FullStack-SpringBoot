@@ -23,16 +23,18 @@ type RoomFilter = 'TUTTI' | 'AVAILABLE' | 'OCCUPIED' | 'TO_CLEAN';
   styleUrl: './availability-rooms.css',
 })
 export class AvailabilityRooms {
+
+  // SERVIZI
   private roomService    = inject(RoomService);
   private bookingService = inject(BookingService);
   private userService    = inject(UserLogicService);
 
-  // --- stato camere e prenotazioni ---
+  // STATO CAMERE E PRENOTAZIONI
   rooms    = signal<Room[]>([]);
   bookings = signal<Booking[]>([]);
   loading  = signal(true);
 
-  // --- filtro attivo sulla lista ---
+  // FILTRI
   activeFilter = signal<RoomFilter>('TUTTI');
 
   filtered = computed(() => {
@@ -40,14 +42,19 @@ export class AvailabilityRooms {
     return f === 'TUTTI' ? this.rooms() : this.rooms().filter(r => r.status === f);
   });
 
-  readonly filters: { label: string; value: RoomFilter }[] = [
+  readonly filters: {
+    label: string;
+    value: RoomFilter }[] = [
     { label: 'Tutte',       value: 'TUTTI'     },
     { label: 'Disponibili', value: 'AVAILABLE' },
     { label: 'Occupate',    value: 'OCCUPIED'  },
     { label: 'Da pulire',   value: 'TO_CLEAN'  },
   ];
 
-  // --- stato del modal nuova prenotazione ---
+  // STATO MODAL NUOVA PRENOTAZIONE
+  // Un modal è una finestra che appare sopra la pagina principale per raccogliere
+  // input dall'utente senza cambiare schermata. Lo chiamiamo "modal" perché blocca
+  // l'interazione con il resto della pagina finché non viene chiuso o confermato.
   showModal       = signal(false);
   selectedRoom    = signal<Room | null>(null);
   guestId         = signal<number | null>(null);
@@ -61,6 +68,7 @@ export class AvailabilityRooms {
 
   readonly today = new Date().toISOString().split('T')[0];
 
+  // INIZIALIZZAZIONE
   constructor() {
     // effect() reagisce ogni volta che loggedUser() cambia.
     // Questo risolve il problema del timing: ngOnInit leggerebbe il Signal
@@ -85,6 +93,7 @@ export class AvailabilityRooms {
     });
   }
 
+  // LOGICA CAMERE
   /** Conta le camere per un dato stato (o tutte se TUTTI). */
   countFor(status: RoomFilter): number {
     if (status === 'TUTTI') return this.rooms().length;
@@ -119,6 +128,7 @@ export class AvailabilityRooms {
     }
   }
 
+  // GESTIONE MODAL
   /** Apre il modal precompilando date (oggi/domani) e prezzo base della camera. */
   openBookingModal(room: Room): void {
     this.selectedRoom.set(room);
@@ -145,8 +155,9 @@ export class AvailabilityRooms {
     this.bookingError.set('');
   }
 
-  /** Chiamato da GuestPicker quando l'ospite viene trovato e selezionato. */
-  onGuestSelected(id: number): void {
+  // GESTIONE OSPITE
+  /** Chiamato sia da GuestPicker (ospite trovato) sia da InsertGuest (ospite appena creato). */
+  onGuestReady(id: number): void {
     this.guestId.set(id);
     this.showInsertGuest.set(false);
   }
@@ -157,12 +168,7 @@ export class AvailabilityRooms {
     this.guestId.set(null);
   }
 
-  /** Chiamato da InsertGuest dopo la creazione: associa il nuovo ospite alla prenotazione. */
-  onGuestCreated(id: number): void {
-    this.showInsertGuest.set(false);
-    this.guestId.set(id);
-  }
-
+  // GESTIONE DATE E COSTO
   onCheckInChange(value: string): void {
     this.checkIn.set(value);
     // Se checkOut è prima o uguale al nuovo checkIn, lo sposta al giorno successivo
@@ -182,11 +188,12 @@ export class AvailabilityRooms {
     return differenceInDays(new Date(this.checkOut()), new Date(this.checkIn()));
   }
 
-  /** Costo totale = prezzo per notte × notti. */
+  /** Costo totale = prezzo per notte x notti. */
   get totalCost(): number {
     return this.price() * this.nights;
   }
 
+  // INVIO PRENOTAZIONE
   /** Invia la nuova prenotazione al backend. */
   submitBooking(): void {
     if (!this.guestId() || !this.selectedRoom()) {

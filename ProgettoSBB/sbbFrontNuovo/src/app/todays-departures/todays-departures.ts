@@ -23,9 +23,9 @@ export class TodaysDepartures {
   private userLogicService = inject(UserLogicService);
   loggedUser = this.userLogicService.loggedUser;
 
-  toCleanBookings = signal<Booking[]>([]);
-  cleanedBookings = signal<Booking[]>([]);
-  cleanedExpanded = signal(false);
+  toCleanBookings = signal<Booking[]>([]); // partenze ancora da gestire (camera da pulire)
+  cleanedBookings = signal<Booking[]>([]); // partenze già completate (camera pulita)
+  cleanedExpanded = signal(false);         // true = sezione completate visibile nel template
 
   constructor() {
     effect(() => {
@@ -36,6 +36,8 @@ export class TodaysDepartures {
     });
   }
 
+  /** Chiama il backend per le partenze di oggi e divide il risultato in due liste:
+   *  quelle ancora da gestire (CHECKED_IN/CHECKED_OUT) e quelle già completate (COMPLETE). */
   private loadBookings(hotelId: number): void {
     this.bookingService.getTodaysDepartures(hotelId).subscribe({
       next: (json) => {
@@ -46,17 +48,20 @@ export class TodaysDepartures {
     });
   }
 
-  // Stesso pattern di TodaysArrivals: update() sposta la prenotazione tra le due liste
-  // ottimisticamente, senza rinfrescare tutto dal server.
+  /** Chiamato da BookingRow quando una camera viene marcata come pulita (COMPLETE).
+   *  Sposta la prenotazione da toCleanBookings a cleanedBookings localmente,
+   *  senza ricaricare dal server: più veloce e senza chiamate HTTP inutili. */
   onCleanedDone(booking: Booking): void {
     this.toCleanBookings.update(list => list.filter(b => b.id !== booking.id));
     this.cleanedBookings.update(list => [...list, booking]);
   }
 
+  /** Espande o comprime la sezione delle partenze già completate nel template. */
   toggleCleaned(): void {
     this.cleanedExpanded.update(v => !v);
   }
 
+  /** Ricarica le partenze dal server: usato dal pulsante di aggiornamento manuale nel template. */
   refresh(): void {
     const user = this.loggedUser();
     if (user && user.hotel?.id) {

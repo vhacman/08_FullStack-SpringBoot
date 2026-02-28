@@ -40,6 +40,8 @@ export class InsertGuest {
   // invece di Signal singoli per ogni campo è più comodo con [(ngModel)].
   guest: Guest = this.emptyGuest();
 
+  /** Apre o chiude il form: se era visibile lo nasconde e viceversa.
+   *  Pulisce anche successo ed errore così il form si presenta sempre pulito. */
   toggleForm(): void {
     this.formVisible.update(v => !v);
     this.success.set(false);

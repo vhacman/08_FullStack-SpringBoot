@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GuestPicker } from '../guest-picker/guest-picker';
 import { RoomPicker } from '../room-picker/room-picker';
@@ -21,25 +21,23 @@ import { Room } from '../model/hotel.entities';
 })
 export class InsertBooking {
 
+  // SERVIZI
   private bookingService = inject(BookingService);
 
-  // viewChild() permette di ottenere un riferimento al componente figlio
-  // per chiamarne i metodi direttamente (es. reset() dopo il submit).
-  // È l'equivalente di @ViewChild con i decoratori classici.
-  private guestPicker = viewChild(GuestPicker);
-  private roomPicker  = viewChild(RoomPicker);
-
+  // COSTANTI E UTILITÀ DATE
   // today e getTomorrow() devono essere dichiarati PRIMA dei Signal che li usano:
   // TypeScript inizializza i campi della classe nell'ordine in cui appaiono,
   // quindi checkIn = signal(this.today) fallirebbe se today fosse più in basso.
   readonly today = new Date().toISOString().split('T')[0];
 
+  /** Restituisce la data di domani in formato YYYY-MM-DD. */
   private getTomorrow(): string {
     const d = new Date();
     d.setDate(d.getDate() + 1);
     return d.toISOString().split('T')[0];
   }
 
+  // STATO
   guestId      = signal<number | null>(null);
   selectedRoom = signal<Room | null>(null);
   checkIn      = signal<string>(this.today);
@@ -49,13 +47,18 @@ export class InsertBooking {
   showInsertGuest = signal(false);
   success         = signal<boolean>(false);
   errorMessage    = signal<string>('');
+  // Incrementato ogni volta che si vuole resettare i componenti figli:
+  // GuestPicker e RoomPicker osservano questo valore con un effect()
+  // e si azzerano automaticamente quando cambia, senza bisogno di viewChild().
+  resetTrigger    = signal(0);
 
-  // computed() derivato: true solo se guestId è un numero valido (non null e non 0).
-  // Usato nel template per mostrare/nascondere i passi successivi.
+  // COMPUTED
+  // true solo se guestId è un numero valido (non null e non 0):
+  // usato nel template per mostrare/nascondere i passi successivi.
   guestSelected = computed(() => this.guestId() !== null);
 
-  // minCheckOut è sempre il giorno dopo il checkIn: così l'input date nel template
-  // non permette fisicamente di selezionare una data di uscita precedente all'entrata.
+  // Sempre il giorno dopo checkIn: impedisce fisicamente di scegliere
+  // una data di uscita precedente a quella di entrata.
   minCheckOut = computed(() => {
     const date = new Date(this.checkIn());
     date.setDate(date.getDate() + 1);
@@ -68,10 +71,13 @@ export class InsertBooking {
   nights    = computed(() => differenceInDays(new Date(this.checkOut()), new Date(this.checkIn())));
   totalCost = computed(() => this.price() * this.nights());
 
+  // DATI FORM
   // form è un oggetto plain (non Signal) perché è legato a [(ngModel)]:
   // ngModel usa il two-way binding classico di Angular, non i Signal.
   form = { roomId: 0, notes: '' };
 
+  // GESTIONE OSPITE
+  /** Ospite trovato e selezionato dal picker: imposta l'id e resetta date e camera. */
   onGuestSelected(id: number): void {
     this.guestId.set(id);
     this.showInsertGuest.set(false);
@@ -80,11 +86,13 @@ export class InsertBooking {
     this.resetRoom();
   }
 
+  /** Ospite non trovato: apre il form di creazione. */
   onGuestNotFound(_name: string): void {
     this.showInsertGuest.set(true);
     this.guestId.set(null);
   }
 
+  /** Ospite appena creato: chiude il form di inserimento e procede come se fosse stato trovato. */
   onGuestCreated(id: number): void {
     this.showInsertGuest.set(false);
     this.guestId.set(id);
@@ -93,6 +101,8 @@ export class InsertBooking {
     this.resetRoom();
   }
 
+  // GESTIONE DATE
+  /** Aggiorna il check-in; se il check-out risulterebbe precedente, lo sposta al giorno dopo. */
   onCheckInChange(value: string): void {
     this.checkIn.set(value);
     if (this.checkOut() <= value) {
@@ -103,17 +113,22 @@ export class InsertBooking {
     this.resetRoom();
   }
 
+  /** Aggiorna il check-out e resetta la camera perché le disponibilità cambiano. */
   onCheckOutChange(value: string): void {
     this.checkOut.set(value);
     this.resetRoom();
   }
 
+  // GESTIONE CAMERA
+  /** Camera selezionata dal picker: salva id e preimposta il prezzo base. */
   onRoomSelected(room: Room): void {
     this.selectedRoom.set(room);
     this.form.roomId = room.id!;
     this.price.set(room.basePrice);
   }
 
+  // SUBMIT E RESET
+  /** Invia la prenotazione al backend e, in caso di successo, resetta il form. */
   submit(): void {
     this.bookingService.insert({
       guestId:  this.guestId()!,
@@ -136,12 +151,15 @@ export class InsertBooking {
     });
   }
 
+  /** Reset completo visibile dall'esterno: azzera tutto inclusi messaggi di stato. */
   reset(): void {
     this.resetForm();
     this.success.set(false);
     this.errorMessage.set('');
   }
 
+  /** Azzera tutti i campi e incrementa resetTrigger per notificare i figli
+   *  che devono azzerarsi, senza bisogno di un riferimento diretto a loro. */
   private resetForm(): void {
     this.guestId.set(null);
     this.checkIn.set(this.today);
@@ -149,13 +167,10 @@ export class InsertBooking {
     this.selectedRoom.set(null);
     this.price.set(0);
     this.form = { roomId: 0, notes: '' };
-    // Chiamo reset() sui componenti figli tramite viewChild():
-    // senza questo, GuestPicker e RoomPicker manterrebbero il loro stato interno
-    // anche dopo il submit, mostrando ancora i dati della prenotazione precedente.
-    this.guestPicker()?.reset();
-    this.roomPicker()?.reset();
+    this.resetTrigger.update(v => v + 1);
   }
 
+  /** Deseleziona la camera e azzera il prezzo: chiamato ogni volta che cambiano le date. */
   private resetRoom(): void {
     this.selectedRoom.set(null);
     this.form.roomId = 0;

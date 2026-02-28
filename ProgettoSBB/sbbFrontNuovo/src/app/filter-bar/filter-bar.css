@@ -4,7 +4,7 @@
   padding: 0 16px;
   background-color: #ffffff;
   border-bottom: 2px solid #bcd8f0;
-  box-shadow: 0 2px 6px rgba(58,130,196,0.08);
+  box-shadow: 0 2px 6px rgba(58, 130, 196, 0.08);
 }
 
 .tab {
@@ -20,5 +20,14 @@
   margin-bottom: -2px;
   transition: color 0.15s, border-color 0.15s;
 }
-.tab:hover { color: #3a82c4; border-bottom-color: #a8d4f5; }
-.tab.active { color: #1a3650; border-bottom-color: #3a82c4; font-weight: 700; }
+
+.tab:hover {
+  color: #3a82c4;
+  border-bottom-color: #a8d4f5;
+}
+
+.tab.active {
+  color: #1a3650;
+  border-bottom-color: #3a82c4;
+  font-weight: 700;
+}

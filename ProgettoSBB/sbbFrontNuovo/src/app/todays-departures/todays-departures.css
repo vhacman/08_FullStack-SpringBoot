@@ -1,44 +1,125 @@
-.page-title { font-family: 'IBM Plex Sans', sans-serif; font-weight: 700; font-size: 1.2rem; letter-spacing: 0.04em; color: #1a3650; }
-.empty-state { background-color: #e3f0fb; border-color: #bcd8f0; color: #5a7a96; }
+.page-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  color: #1a3650;
+}
 
-.departures-header-box { background-color: #e3f0fb; border: 1px solid #bcd8f0; border-radius: 6px; padding: 12px 16px; margin-bottom: 8px; }
+.empty-state {
+  background-color: #e3f0fb;
+  border-color: #bcd8f0;
+  color: #5a7a96;
+}
 
-.refresh-btn { 
+.departures-header-box {
+  background-color: #e3f0fb;
+  border: 1px solid #bcd8f0;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+
+.refresh-btn {
   background: linear-gradient(135deg, #3a82c4 0%, #2d6ca8 100%);
-  border: none; 
+  border: none;
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  cursor: pointer; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
-.refresh-btn i { font-size: 20px; color: white; }
-.refresh-btn:hover { 
-  opacity: 1; 
+
+.refresh-btn i {
+  font-size: 20px;
+  color: white;
+}
+
+.refresh-btn:hover {
+  opacity: 1;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.bookings-list { max-height: 400px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #3a82c4 #e3f0fb; border: 1px solid #bcd8f0; border-radius: 8px; padding: 8px; background-color: #fff; box-shadow: 0 2px 8px rgba(58,130,196,0.10); }
+.bookings-list {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #3a82c4 #e3f0fb;
+  border: 1px solid #bcd8f0;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(58, 130, 196, 0.10);
+}
+
 .bookings-list::-webkit-scrollbar { width: 6px; }
 .bookings-list::-webkit-scrollbar-track { background: #e3f0fb; }
 .bookings-list::-webkit-scrollbar-thumb { background-color: #3a82c4; border-radius: 4px; }
 
-.collapsible-section { margin-top: 16px; }
+.collapsible-section {
+  margin-top: 16px;
+}
 
-.collapsible-header { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 6px; cursor: pointer; user-select: none; font-family: 'IBM Plex Sans', sans-serif; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 8px; transition: opacity 0.15s; }
-.collapsible-header:hover { opacity: 0.85; }
-.collapsible-header.orange { background-color: #fff3e3; border: 1px solid #f0d0a0; color: #1a3650; }
-.collapsible-header .chevron { margin-left: auto; font-size: 0.75rem; }
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  transition: opacity 0.15s;
+}
 
-.count-badge { font-size: 0.65rem; font-weight: 700; border-radius: 10px; padding: 1px 8px; color: #fff; }
-.orange-badge { background-color: #e09030; }
+.collapsible-header:hover {
+  opacity: 0.85;
+}
 
-.expanded-list { max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #e09030 #fff3e3; border: 1px solid #f0d0a0; border-radius: 8px; padding: 8px; background-color: #fff; box-shadow: 0 2px 8px rgba(58,130,196,0.10); }
+.collapsible-header.orange {
+  background-color: #fff3e3;
+  border: 1px solid #f0d0a0;
+  color: #1a3650;
+}
+
+.collapsible-header .chevron {
+  margin-left: auto;
+  font-size: 0.75rem;
+}
+
+.count-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 8px;
+  color: #fff;
+}
+
+.orange-badge {
+  background-color: #e09030;
+}
+
+.expanded-list {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e09030 #fff3e3;
+  border: 1px solid #f0d0a0;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(58, 130, 196, 0.10);
+}
+
 .expanded-list::-webkit-scrollbar { width: 6px; }
 .expanded-list::-webkit-scrollbar-track { background: #fff3e3; }
 .expanded-list::-webkit-scrollbar-thumb { background-color: #e09030; border-radius: 4px; }

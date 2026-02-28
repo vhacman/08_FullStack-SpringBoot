@@ -13,4 +13,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './filter-bar.html',
   styleUrl: './filter-bar.css',
 })
-export class FilterBar {}
+export class FilterBar {
+
+}

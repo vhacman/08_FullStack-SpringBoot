@@ -13,7 +13,10 @@
   min-height: 72px;
 }
 
-.col-guest, .col-booking { border-right: 1px solid #e3f0fb; }
+.col-guest,
+.col-booking {
+  border-right: 1px solid #e3f0fb;
+}
 
 .col-guest {
   padding: 10px 12px;
@@ -34,7 +37,11 @@
   gap: 6px;
 }
 
-.guest-icon { font-size: 20px; color: #5a7a96; opacity: 0.7; }
+.guest-icon {
+  font-size: 20px;
+  color: #5a7a96;
+  opacity: 0.7;
+}
 
 .guest-detail {
   font-size: 0.68rem;
@@ -51,7 +58,11 @@
   width: fit-content;
   transition: color 0.15s, border-color 0.15s;
 }
-.guest-detail:hover { color: #3a82c4; border-color: #3a82c4; }
+
+.guest-detail:hover {
+  color: #3a82c4;
+  border-color: #3a82c4;
+}
 
 .col-booking {
   padding: 10px 12px;
@@ -61,7 +72,12 @@
   gap: 5px;
 }
 
-.info-row { display: flex; align-items: baseline; gap: 8px; }
+.info-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
 .info-label {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.65rem;
@@ -70,13 +86,19 @@
   white-space: nowrap;
   min-width: 72px;
 }
-.info-value { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.75rem; font-weight: 600; color: #1a3650; }
 
-.status-text.pending { color: #e09030; }
+.info-value {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1a3650;
+}
+
+.status-text.pending    { color: #e09030; }
 .status-text.checked_in { color: #2e9e6a; }
 .status-text.checked_out { color: #e09030; }
-.status-text.complete { color: #2e9e6a; }
-.status-text.canceled { color: #c0392b; }
+.status-text.complete   { color: #2e9e6a; }
+.status-text.canceled   { color: #c0392b; }
 
 .col-actions {
   padding: 8px 10px;

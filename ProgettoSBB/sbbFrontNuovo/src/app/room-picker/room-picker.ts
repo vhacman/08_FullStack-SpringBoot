@@ -26,8 +26,11 @@ export class RoomPicker {
   // input() crea un Signal in sola lettura alimentato dal componente padre.
   // Quando il padre aggiorna checkIn o checkOut, l'effect() qui sotto
   // si attiva automaticamente e rilancia la ricerca.
-  checkIn  = input<string | null>(null);
-  checkOut = input<string | null>(null);
+  checkIn      = input<string | null>(null);
+  checkOut     = input<string | null>(null);
+  // Stesso meccanismo di GuestPicker: quando il padre incrementa questo valore,
+  // l'effect() qui sotto resetta la camera selezionata.
+  resetTrigger = input<number>(0);
 
   // output() è il canale di comunicazione inverso: dal figlio al padre.
   // Il padre si iscrive con (roomSelected)="onRoomSelected($event)" nel template.
@@ -40,22 +43,19 @@ export class RoomPicker {
   constructor() {
     // Questo effect() reagisce a tre Signal contemporaneamente: checkIn, checkOut e loggedUser.
     // Ogni volta che uno dei tre cambia, Angular riesegue automaticamente il blocco.
-    // { allowSignalWrites: true } è necessario perché dentro l'effect scriviamo su altri Signal
-    // (rooms, searched, selectedRoom): senza questa opzione Angular lancerebbe un errore
-    // per prevenire cicli infiniti accidentali.
     effect(() => {
-      const ci      = this.checkIn();
-      const co      = this.checkOut();
-      const user    = this.userLogicService.loggedUser();
-      const hotelId = user?.hotel?.id;
+      const checkIn  = this.checkIn();
+      const checkOut = this.checkOut();
+      const user     = this.userLogicService.loggedUser();
+      const hotelId  = user?.hotel?.id;
 
-      if (!ci || !co || !hotelId) {
+      if (!checkIn || !checkOut || !hotelId) {
         this.rooms.set([]);
         this.searched.set(false);
         return;
       }
 
-      this.roomService.getFreeRooms(hotelId, ci, co).subscribe({
+      this.roomService.getFreeRooms(hotelId, checkIn, checkOut).subscribe({
         next: result => {
           this.rooms.set(result ?? []);
           this.searched.set(true);
@@ -67,7 +67,12 @@ export class RoomPicker {
           this.searched.set(true);
         }
       });
-    }, { allowSignalWrites: true });
+    });
+
+    effect(() => {
+      this.resetTrigger();
+      this.selectedRoom.set(null);
+    });
   }
 
   // emit() invia l'evento al padre. È l'equivalente di un evento DOM custom:

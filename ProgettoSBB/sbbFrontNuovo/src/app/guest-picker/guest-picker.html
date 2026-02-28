@@ -11,16 +11,13 @@
            [value]="guestInput()"
            (input)="onGuestInput($any($event.target).value)"
            (focus)="showDropdown.set(true)"
-           (blur)="onGuestBlur()"
+           (blur)="showDropdown.set(false)"
            placeholder="Cerca per nome o cognome..."
            class="form-input"
            autocomplete="off">
 
     @if (showDropdown() && filteredGuests().length > 0) {
       <div class="autocomplete-dropdown">
-        <!-- (mousedown) invece di (click): il mousedown si attiva PRIMA che
-             l'input perda il focus (blur), così selectGuest() viene chiamato
-             prima che il dropdown venga chiuso da onGuestBlur(). -->
         @for (g of filteredGuests(); track g.id) {
           <div class="autocomplete-item" (mousedown)="selectGuest(g)">
             {{ g.lastName }} {{ g.firstName }}

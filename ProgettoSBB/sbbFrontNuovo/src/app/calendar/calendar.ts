@@ -29,15 +29,15 @@ import { CalendarDay } from '../model/calendar.model';
 })
 export class Calendar {
 
-  // ── DIPENDENZE ────────────────────────────────────────────────────────────────
+  // DIPENDENZE
   // inject() è il modo moderno di Angular per iniettare servizi senza costruttore
   // con parametri. Ho preferito inject() perché rende esplicito cosa usa il componente.
-  private bookingService   = inject(BookingService);    // chiamate HTTP per le prenotazioni
-  private roomService      = inject(RoomService);       // chiamate HTTP per le camere
+  private bookingService   = inject(BookingService);      // chiamate HTTP per le prenotazioni
+  private roomService      = inject(RoomService);         // chiamate HTTP per le camere
   private closureService   = inject(HotelClosureService); // chiamate HTTP per le chiusure
-  private userLogicService = inject(UserLogicService);  // fornisce l'utente loggato tramite Signal
+  private userLogicService = inject(UserLogicService);    // fornisce l'utente loggato tramite Signal
 
-  // ── COSTANTI ──────────────────────────────────────────────────────────────────
+  // COSTANTI
   // monthNames è usato da monthLabel() (computed) per costruire la stringa "Gennaio 2025".
   // weekDays è usato nel template con @for per disegnare l'intestazione Lun Mar Mer...
   // Sono readonly perché non cambiano mai: sono dati di configurazione, non stato.
@@ -47,7 +47,7 @@ export class Calendar {
   ];
   readonly weekDays = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
 
-  // ── STATO DATI ─────────────────────────────────────────────────────────────────
+  // STATO DATI
   // Questi tre Signal contengono i dati grezzi arrivati dal backend.
   // Vengono scritti da loadData() e letti da calendarDays() e dayBookings() (computed).
   // Ogni volta che uno di questi Signal cambia, i computed che lo leggono si ricalcolano.
@@ -73,14 +73,14 @@ export class Calendar {
   // È private perché il template non lo usa mai direttamente.
   private currentHotelId = signal<number | null>(null);
 
-  // ── STATO NAVIGAZIONE ──────────────────────────────────────────────────────────
+  // STATO NAVIGAZIONE
   // viewDate è la data che rappresenta il mese correntemente visualizzato.
   // Viene letta da monthLabel() per mostrare "Gennaio 2025" nell'header,
   // e da calendarDays() per sapere quali giorni costruire nella griglia.
   // Viene scritta da prevMonth(), nextMonth(), goToToday().
   viewDate = signal<Date>(new Date());
 
-  // ── STATO DRAG ─────────────────────────────────────────────────────────────────
+  // STATO DRAG
   // Gestisce la selezione di un range di giorni tramite click-e-trascina.
 
   // isDragging e hasDragged sono variabili plain (non Signal) perché cambiano
@@ -101,12 +101,11 @@ export class Calendar {
   // Aggiornata in tempo reale da onDayMouseEnter(). Letta da selectionRange e onDocumentMouseUp().
   dragEnd = signal<string | null>(null);
 
-  // ── STATO MODAL CHIUSURA ───────────────────────────────────────────────────────
+  // STATO MODAL CHIUSURA
   // Un modal è una finestra di dialogo che appare sopra il contenuto della pagina,
   // bloccando l'interazione con il resto finché l'utente non conferma o annulla.
   // In Angular non esiste un componente modal built-in: si simula con un @if nel template
   // che mostra/nasconde un div con sfondo semi-trasparente (overlay) in base a un Signal booleano.
-  //
   // Questo gruppo gestisce il modal che appare quando si seleziona un range senza chiusure.
 
   // showClosureModal: controlla se il modal di nuova chiusura è visibile nel template.
@@ -131,7 +130,7 @@ export class Calendar {
   // descrittivo dal blocco error: di confirmClosure() in caso di errore HTTP.
   closureError = signal<string | null>(null);
 
-  // ── STATO MODAL RIAPERTURA ─────────────────────────────────────────────────────
+  // STATO MODAL RIAPERTURA
   // Questo modal appare quando il range selezionato contiene almeno un giorno chiuso.
   // Non ha stato aggiuntivo: usa pendingStart/pendingEnd già definiti sopra.
 
@@ -140,7 +139,7 @@ export class Calendar {
   // Messo a false da cancelReopen() e confirmReopen() (dopo l'operazione).
   showReopenModal = signal<boolean>(false);
 
-  // ── STATO MODAL RIMOZIONE SINGOLO GIORNO ──────────────────────────────────────
+  // STATO MODAL RIMOZIONE SINGOLO GIORNO
   // Questo modal appare quando si clicca "Rimuovi chiusura" nel modal dettaglio giorno.
   // Permette di rimuovere un singolo giorno da una closure che potrebbe coprire più giorni,
   // spezzandola nel backend tramite reopenRange(giorno, giorno).
@@ -154,7 +153,7 @@ export class Calendar {
   // e la motivazione. Scritta da openDeleteForDay(), resettata a null da confirmDelete() e cancelDelete().
   closureToDelete = signal<HotelClosure | null>(null);
 
-  // ── STATO MODAL DETTAGLIO GIORNO ──────────────────────────────────────────────
+  // STATO MODAL DETTAGLIO GIORNO
   // Questo modal appare quando si fa click (senza drag) su un singolo giorno.
   // Mostra quante camere sono occupate, elenca le prenotazioni, e offre i pulsanti
   // per aprire il modal chiusura o il modal rimozione chiusura.
@@ -170,7 +169,7 @@ export class Calendar {
   // Scritto da onDocumentMouseUp(), resettato a null da closeDayDetailModal().
   selectedDay = signal<CalendarDay | null>(null);
 
-  // ── COMPUTED ──────────────────────────────────────────────────────────────────
+  // COMPUTED
   // I computed() sono valori derivati che si ricalcolano automaticamente quando
   // uno dei Signal che leggono cambia. Non devono essere aggiornati a mano.
 
@@ -200,8 +199,14 @@ export class Calendar {
     const vd       = this.viewDate();
     const year     = vd.getFullYear();
     const month    = vd.getMonth();
-    const today    = this.fmt(new Date());
     const total    = rooms.length;
+
+    // Converte una Date in "YYYY-MM-DD" usando getFullYear/Month/Date (orario locale).
+    // Non uso toISOString() perché converte in UTC e sfasa la data per chi è in UTC+2.
+    const toDateStr = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    const today = toDateStr(new Date());
 
     // Solo le prenotazioni in questi stati contano come "occupazione di una camera".
     // CHECKED_OUT e CANCELLED non devono colorare il calendario.
@@ -211,7 +216,7 @@ export class Calendar {
     // La definisco qui dentro computed() così ha accesso a bookings, closures, total
     // senza doverli passare come parametri ogni volta.
     const buildDay = (date: Date, isCurrentMonth: boolean): CalendarDay => {
-      const dateStr = this.fmt(date);
+      const dateStr = toDateStr(date);
 
       // Costruisco un Set di id-camera occupate in questo giorno.
       // Uso un Set (invece di un contatore) per evitare di contare due volte
@@ -297,9 +302,7 @@ export class Calendar {
   // selectionRange: l'insieme delle date evidenziate durante il drag.
   // Usata da getDayClass() per applicare la classe CSS 'selecting' alle celle
   // incluse nel trascinamento, dando il feedback visivo in tempo reale.
-  //
-  // Ho usato Set<string> invece di Array perché getDayClass() chiama .has() per ogni cella:
-  // con un Array sarebbe O(n) per cella, con un Set è O(1).
+
   // Il confronto s <= e funziona perché le date sono "YYYY-MM-DD": l'ordinamento
   // lessicografico coincide con quello cronologico per questo formato.
   // [from, to] = s <= e ? [s, e] : [e, s] gestisce il caso in cui l'utente trascini
@@ -309,17 +312,19 @@ export class Calendar {
     const e = this.dragEnd();
     if (!s) return new Set();
     const [from, to] = s <= (e ?? s) ? [s, e ?? s] : [e ?? s, s];
+    const toDateStr = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const set = new Set<string>();
     const cur = new Date(from);
     const end = new Date(to);
     while (cur <= end) {
-      set.add(this.fmt(cur));
+      set.add(toDateStr(cur));
       cur.setDate(cur.getDate() + 1);
     }
     return set;
   });
 
-  // ── COSTRUTTORE ───────────────────────────────────────────────────────────────
+  // COSTRUTTORE
   // Uso effect() invece di ngOnInit() perché userLogicService.loggedUser() è un Signal
   // che vale null al primo render (l'utente non è ancora arrivato dall'HTTP).
   // Con ngOnInit() chiamerei loadData(null) e tutto fallirebbe.
@@ -335,7 +340,7 @@ export class Calendar {
     });
   }
 
-  // ── CARICAMENTO DATI ──────────────────────────────────────────────────────────
+  // CARICAMENTO DATI
 
   // loadData: carica in parallelo prenotazioni, camere e chiusure dal backend.
   // È private perché viene chiamata solo dal costruttore (via effect) e non dall'esterno.
@@ -358,7 +363,7 @@ export class Calendar {
     });
   }
 
-  // ── NAVIGAZIONE MESE ─────────────────────────────────────────────────────────
+  // NAVIGAZIONE MESE
 
   // prevMonth / nextMonth: spostano il calendario di un mese indietro o avanti.
   // Creo una nuova Date (new Date(this.viewDate())) per non mutare l'oggetto già nel Signal.
@@ -385,7 +390,7 @@ export class Calendar {
     this.viewDate.set(new Date());
   }
 
-  // ── GESTIONE DRAG ─────────────────────────────────────────────────────────────
+  // GESTIONE DRAG
 
   // onDayMouseDown: si attiva quando il tasto del mouse viene premuto su una cella.
   // event.preventDefault() serve a impedire che il browser avvii la selezione del testo
@@ -475,7 +480,7 @@ export class Calendar {
     this.hasDragged = false;
   }
 
-  // ── AZIONI MODAL CHIUSURA ─────────────────────────────────────────────────────
+  // AZIONI MODAL CHIUSURA
 
   // confirmClosure: invia la nuova chiusura al backend e aggiorna il Signal closures.
   // Invece di ricaricare tutte le chiusure con una nuova GET, aggiungo direttamente
@@ -514,7 +519,7 @@ export class Calendar {
     this.showClosureModal.set(false);
   }
 
-  // ── AZIONI MODAL RIAPERTURA ───────────────────────────────────────────────────
+  // AZIONI MODAL RIAPERTURA
 
   // confirmReopen: chiama il backend per riaprire il range selezionato.
   // Il backend gestisce la logica di "spezzare" le closure che si sovrappongono al range:
@@ -548,7 +553,7 @@ export class Calendar {
     this.showReopenModal.set(false);
   }
 
-  // ── AZIONI MODAL RIMOZIONE SINGOLO GIORNO ────────────────────────────────────
+  // AZIONI MODAL RIMOZIONE SINGOLO GIORNO
 
   // confirmDelete: rimuove un singolo giorno da una closure esistente.
   // Usa la stessa API di confirmReopen (reopenRange) ma con from === to === un solo giorno.
@@ -581,7 +586,7 @@ export class Calendar {
     this.closureToDelete.set(null);
   }
 
-  // ── AZIONI MODAL DETTAGLIO GIORNO ─────────────────────────────────────────────
+  // AZIONI MODAL DETTAGLIO GIORNO
 
   // closeDayDetailModal: chiude il modal dettaglio e deseleziona il giorno.
   // Resettare selectedDay a null fa tornare dayBookings() a [] immediatamente,
@@ -623,20 +628,12 @@ export class Calendar {
     }
   }
 
-  // ── UTILITY ───────────────────────────────────────────────────────────────────
+  // UTILITY
 
-  /**
-   * getDayClass: restituisce la stringa di classi CSS per ogni cella del calendario.
-   * Chiamata dal [class]="getDayClass(day)" nel template per ogni cella @for.
-   *
-   * L'ordine delle condizioni è deliberato:
-   * 1. other-month: giorni del mese precedente/successivo (grigio, non interattivi)
-   * 2. selecting: in corso di drag (evidenziatura blu)
-   * 3. closed: giorno chiuso (colore chiusura)
-   * 4. full: tutte le camere occupate (rosso)
-   * 5. partial: alcune camere occupate (giallo)
-   * 6. day: disponibile (verde o neutro)
-   */
+  // getDayClass: restituisce la stringa di classi CSS per ogni cella del calendario.
+  // Chiamata dal [class]="getDayClass(day)" nel template per ogni cella @for.
+  // L'ordine delle condizioni è deliberato: "selecting" (durante drag) ha priorità su tutto,
+  // poi closed, poi l'occupazione.
   getDayClass(day: CalendarDay): string {
     const isSelecting = this.selectionRange().has(day.dateStr);
     if (!day.isCurrentMonth)                    return 'day other-month';
@@ -646,19 +643,5 @@ export class Calendar {
     if (day.occupiedRooms >= day.totalRooms)    return 'day full';
     if (day.occupiedRooms > 0)                  return 'day partial';
     return 'day';
-  }
-
-  /**
-   * fmt: formatta una Date in stringa "YYYY-MM-DD".
-   * È private perché usata solo internamente (buildDay, selectionRange, prevMonth...).
-   *
-   * Uso questo formato invece di toISOString() perché toISOString() converte in UTC:
-   * se l'utente è in un fuso orario UTC+2 e crea una Date("2025-01-15"),
-   * toISOString() potrebbe restituire "2025-01-14T22:00:00Z", quindi la data sbaglia.
-   * Con getFullYear()/getMonth()/getDate() lavoro sempre in orario locale.
-   * padStart(2, '0') aggiunge lo zero iniziale per i mesi e giorni a una cifra (es. "01", "09").
-   */
-  private fmt(d: Date): string {
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 }
