@@ -1,4 +1,4 @@
-import { Component, inject, signal, output } from '@angular/core';
+import { Component, effect, inject, input, signal, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GuestService } from '../APIservices/guest/guest-service';
 import { Guest } from '../model/hotel.entities';
@@ -12,11 +12,18 @@ import { Guest } from '../model/hotel.entities';
 export class InsertGuest {
   private guestService = inject(GuestService);
 
+  // Se true, il form viene aperto automaticamente (utile quando InsertGuest è in un modal)
+  autoOpen = input(false);
+
   guestCreated = output<number>();
 
   formVisible = signal(false);
   success     = signal(false);
   errorMsg    = signal('');
+
+  constructor() {
+    effect(() => { if (this.autoOpen()) this.formVisible.set(true); });
+  }
 
   guest: Guest = this.emptyGuest();
 

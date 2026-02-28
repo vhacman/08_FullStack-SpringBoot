@@ -1,0 +1,24 @@
+.filter-bar {
+  display: flex;
+  gap: 2px;
+  padding: 0 16px;
+  background-color: #ffffff;
+  border-bottom: 2px solid #bcd8f0;
+  box-shadow: 0 2px 6px rgba(58,130,196,0.08);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 11px 22px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #5a7a96;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab:hover { color: #3a82c4; border-bottom-color: #a8d4f5; }
+.tab.active { color: #1a3650; border-bottom-color: #3a82c4; font-weight: 700; }

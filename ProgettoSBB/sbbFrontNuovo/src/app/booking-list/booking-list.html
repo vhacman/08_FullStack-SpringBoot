@@ -1,0 +1,38 @@
+<div class="w3-container" style="padding: 0 8px 8px; margin-top: 16px;">
+
+  <div class="list-header-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <h2 class="page-title" style="margin: 0;">Prenotazioni</h2>
+      <button class="refresh-btn" (click)="refresh()" title="Aggiorna">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Filtri per stato -->
+  <div class="filter-chips">
+    @for (f of filters; track f.value) {
+      <button
+        class="chip"
+        [class.active]="activeFilter() === f.value"
+        (click)="setFilter(f.value)">
+        {{ f.label }}
+        <span class="chip-count">{{ countFor(f.value) }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Lista prenotazioni -->
+  <div class="bookings-list">
+    @if (filtered().length === 0) {
+      <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
+        <p>Nessuna prenotazione trovata.</p>
+      </div>
+    }
+    @for (booking of filtered(); track booking.id) {
+      <app-booking-row [booking]="booking"></app-booking-row>
+    }
+  </div>
+
+</div>

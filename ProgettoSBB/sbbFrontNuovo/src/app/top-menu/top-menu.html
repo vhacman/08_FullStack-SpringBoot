@@ -1,36 +1,26 @@
 <div class="w3-top">
-  <div class="navbar-main w3-card-2 w3-sand w3-row">
+  <div class="navbar-main w3-card-2 w3-row">
 
     <!-- Logo -->
     <div class="w3-col s2 m2 l2 logo-container">
       <img src="img/logo.png" routerLink="" class="logo-img" alt="SBB Logo" />
     </div>
 
-    <!-- Spazio centrale -->
-    <div class="w3-col s6 m6 l6 nav-center">
-      <button routerLink="/rooms" class="nav-btn">
-        <i class="fa fa-bed"></i> Stanze
-      </button>
-    </div>
-
     <!-- Info utente (destra) -->
-    <div class="w3-col s4 m4 l4 nav-right">
+    <div class="w3-col s10 m10 l10 nav-right">
       <div class="user-block">
 
         <div class="hotel-name">
-          <i class="fa fa-building-o"></i>
           {{ loggedUser() != null ? loggedUser()!.hotel.name : 'Caricamento...' }}
         </div>
 
-        <div class="user-info">
+        <div class="user-info" (click)="toggleProfile()">
           <div class="user-details">
             <span class="user-name">{{ userInfo() }}</span>
             <span class="user-role">{{ loggedUser()?.role | titlecase }}</span>
           </div>
-          <img src="img/iconaProfilo.png" class="user-icon" alt="profilo" />
-          <button class="logout-btn">
-            <i class="fa fa-sign-out"></i> LogOut
-          </button>
+          <i class="bi bi-person-circle user-icon"></i>
+
         </div>
 
       </div>
@@ -40,3 +30,34 @@
 </div>
 
 <div class="nav-spacer"></div>
+
+<!-- Sezione Profilo Utente Popup -->
+@if (showProfile()) {
+  <div class="profile-popup w3-card-2" (click)="$event.stopPropagation()">
+    <div class="profile-header">
+      <i class="bi bi-person-circle profile-avatar"></i>
+      <div class="profile-info">
+        <h3>{{ userInfo() }}</h3>
+        <span class="profile-role">{{ loggedUser()?.role | titlecase }}</span>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-row">
+        <span class="detail-label">Hotel:</span>
+        <span class="detail-value">{{ loggedUser()?.hotel?.name }}</span>
+      </div>
+      @if (loggedUser()?.hotel?.address) {
+        <div class="detail-row">
+          <span class="detail-label">Indirizzo:</span>
+          <span class="detail-value">{{ loggedUser()?.hotel?.address }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="profile-actions">
+      <button class="btn-modern btn-edit"><i class="bi bi-pencil-square"></i></button>
+      <button class="btn-modern btn-logout"><i class="bi bi-box-arrow-right"></i></button>
+    </div>
+  </div>
+}

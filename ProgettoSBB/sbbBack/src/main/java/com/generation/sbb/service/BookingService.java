@@ -46,7 +46,7 @@ public class BookingService {
     }
 
     public List<BookingDTO> findByHotelId(int hotelId) {
-        return bookingMapper.toDTOs(bookingRepository.findByHotelId(hotelId));
+        return bookingMapper.toDTOs(bookingRepository.findByRoomHotelId(hotelId));
     }
 
     public BookingDTO findById(Integer id) {

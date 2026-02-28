@@ -1,27 +1,20 @@
-/* ── Card container ── */
 .booking-card {
-  background-color: #fdf6f0;
-  border: 1px solid #e0d0c0;
-  border-left: 5px solid #b5451b;
+  background-color: #fff;
+  border: 1px solid #bcd8f0;
+  border-left: 4px solid #3a82c4;
   border-radius: 6px;
   margin-bottom: 8px;
   overflow: hidden;
 }
 
-/* ── Grid: 3 colonne ── */
 .booking-grid {
   display: grid;
   grid-template-columns: 2fr 2fr 1fr;
   min-height: 72px;
 }
 
-/* ── Separatori verticali tra colonne ── */
-.col-guest,
-.col-booking {
-  border-right: 1px solid #e0d0c0;
-}
+.col-guest, .col-booking { border-right: 1px solid #e3f0fb; }
 
-/* ── COLONNA 1: Dati ospite ── */
 .col-guest {
   padding: 10px 12px;
   display: flex;
@@ -33,45 +26,33 @@
 .guest-name {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.88rem;
-  font-weight: 600;
-  color: #3e2010;
+  font-weight: 700;
+  color: #1a3650;
   text-transform: capitalize;
-  letter-spacing: 0.03em;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.guest-icon {
-  width: 30px;
-  height: 30px;
-  opacity: 0.6;
-  flex-shrink: 0;
-  object-fit: contain;
-}
+.guest-icon { font-size: 20px; color: #5a7a96; opacity: 0.7; }
 
 .guest-detail {
   font-size: 0.68rem;
-  color: #5a3010;
+  color: #5a7a96;
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 5px;
-  border: 1px solid #d4c4b0;
+  border: 1px solid #bcd8f0;
   border-radius: 4px;
-  padding: 3px 7px;
+  padding: 2px 7px;
   cursor: pointer;
   width: fit-content;
   transition: color 0.15s, border-color 0.15s;
 }
+.guest-detail:hover { color: #3a82c4; border-color: #3a82c4; }
 
-.guest-detail:hover {
-  color: #b5451b;
-  border-color: #b5451b;
-}
-
-/* ── COLONNA 2: Info prenotazione ── */
 .col-booking {
   padding: 10px 12px;
   display: flex;
@@ -80,74 +61,82 @@
   gap: 5px;
 }
 
-.info-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
+.info-row { display: flex; align-items: baseline; gap: 8px; }
 .info-label {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.65rem;
   font-weight: 600;
-  color: #7a5030;
+  color: #5a7a96;
   white-space: nowrap;
-  min-width: 80px;
+  min-width: 72px;
 }
+.info-value { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.75rem; font-weight: 600; color: #1a3650; }
 
-.info-value {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #1a0a00;
-}
+.status-text.pending { color: #e09030; }
+.status-text.checked_in { color: #2e9e6a; }
+.status-text.checked_out { color: #e09030; }
+.status-text.complete { color: #2e9e6a; }
+.status-text.canceled { color: #c0392b; }
 
-/* ── COLONNA 3: Azioni ── */
 .col-actions {
   padding: 8px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 8px;
 }
 
-.action-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.btn-icon {
-  background: none;
-  border: none;
-  padding: 2px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.btn-icon:hover {
-  transform: scale(1.08);
-}
-
-.btn-icon img,
-.status-icon {
+.btn-modern {
   width: 44px;
   height: 44px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-.action-label {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.58rem;
+.btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-modern i {
+  font-size: 22px;
+  color: white;
+}
+
+.btn-checkin {
+  background: linear-gradient(135deg, #2e9e6a 0%, #27ae60 100%);
+}
+
+.btn-checkout {
+  background: linear-gradient(135deg, #e09030 0%, #d68910 100%);
+}
+
+.btn-clean {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #5a3010;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
-.action-label.done {
-  color: #2e7d32;
+.status-badge.done,
+.status-badge.success {
+  background: linear-gradient(135deg, #2e9e6a 0%, #27ae60 100%);
+  color: white;
 }
 
-.action-label.warn {
-  color: #b5451b;
+.status-badge.warn {
+  background: linear-gradient(135deg, #e09030 0%, #d68910 100%);
+  color: white;
 }

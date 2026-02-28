@@ -1,4 +1,4 @@
-import {Component, inject, model, output, signal} from '@angular/core';
+import {Component, model, output, signal, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Booking} from '../model/hotel.entities';
 import {BookingService} from '../APIservices/booking/booking-service';
@@ -13,7 +13,7 @@ export class BookingRow {
   booking = model.required<Booking>();
   checkInDone  = output<Booking>();
   completeDone = output<Booking>();
-  bookingService = inject(BookingService);
+  private bookingService = inject(BookingService);
 
   ssnVisible = signal(false);
   addressVisible = signal(false);
@@ -28,19 +28,14 @@ export class BookingRow {
 
   readonly today = new Date().toISOString().split('T')[0];
 
-  // Confronto stringhe invece di oggetti Date: "2026-02-26" === "2026-02-26".
-  // Funziona perché il formato ISO YYYY-MM-DD è ordinabile lessicograficamente,
-  // quindi < e > funzionano correttamente anche come stringhe.
   isToday(date: any): boolean {
     return String(date) === this.today;
   }
 
-  // Uso < tra stringhe ISO: "2026-02-25" < "2026-02-26" è true → la data è nel passato.
   isPast(date: any): boolean {
     return String(date) < this.today;
   }
 
-  // Più chiaro di !isToday() && !isPast() - una data è sempre oggi/passato/futuro
   isFuture(date: any): boolean {
     return String(date) > this.today;
   }
@@ -89,5 +84,16 @@ export class BookingRow {
       },
       error: err => console.error('Errore complete:', err)
     });
+  }
+
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'PENDING': return 'In attesa';
+      case 'CHECKED_IN': return 'Ospite presente';
+      case 'CHECKED_OUT': return 'Da pulire';
+      case 'COMPLETE': return 'Disponibile';
+      case 'CANCELED': return 'Cancellata';
+      default: return status;
+    }
   }
 }

@@ -1,10 +1,10 @@
 :host {
   display: block;
-  padding: 2px 16px;
+  padding: 6px 16px;
   text-align: center;
-  background-color: #fdf0e0;
-  border-top: 1px solid #d4c4b0;
-  color: #5a3010;
-  font-size: 0.8rem;
+  background-color: #e3f0fb;
+  border-top: 1px solid #bcd8f0;
+  color: #5a7a96;
+  font-size: 0.78rem;
   width: 100%;
 }

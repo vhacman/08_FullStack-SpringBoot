@@ -4,11 +4,10 @@
     <!-- COLONNA 1: Dati ospite -->
     <div class="col-guest">
       <div class="guest-name">
-        <img src="img/clienteIcon.png" alt="ospite" class="guest-icon">
+        <i class="bi bi-person-fill guest-icon"></i>
         {{ booking().guest.firstName }} {{ booking().guest.lastName }}
       </div>
       <div class="guest-detail" (click)="toggleSsn()" style="cursor:pointer">
-        <i class="fa fa-id-card-o"></i>
         @if (ssnVisible()) {
           {{ booking().guest.ssn }}
         } @else {
@@ -16,7 +15,6 @@
         }
       </div>
       <div class="guest-detail" (click)="toggleAddress()" style="cursor:pointer">
-        <i class="fa fa-map-marker"></i>
         @if (addressVisible()) {
           {{ booking().guest.address }}, {{ booking().guest.city }}
         } @else {
@@ -28,15 +26,19 @@
     <!-- COLONNA 2: Info prenotazione -->
     <div class="col-booking">
       <div class="info-row">
-        <span class="info-label"><i class="fa fa-bed"></i> Camera</span>
+        <span class="info-label">Camera</span>
         <span class="info-value">{{ booking().room.name }}</span>
       </div>
       <div class="info-row">
-        <span class="info-label"><i class="fa fa-sign-in"></i> Check-in</span>
+        <span class="info-label">Check-in</span>
         <span class="info-value">{{ booking().checkIn | date:'dd/MM/yy' }}</span>
       </div>
       <div class="info-row">
-        <span class="info-label"><i class="fa fa-sign-out"></i> Check-out</span>
+        <span class="info-label">Stato</span>
+        <span class="info-value status-text" [class]="booking().status.toLowerCase()">{{ getStatusText(booking().status) }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Check-out</span>
         <span class="info-value">{{ booking().checkOut | date:'dd/MM/yy' }}</span>
       </div>
     </div>
@@ -45,45 +47,30 @@
     <div class="col-actions">
 
       @if (booking().status === 'PENDING') {
-        <div class="action-item">
-          <button class="btn-icon" (click)="acceptBooking()" title="Check-in">
-            <img src="img/checkInIcona.png" alt="Check-in">
-          </button>
-          <span class="action-label">Check in</span>
-        </div>
+        <button class="btn-modern btn-checkin" (click)="acceptBooking()" title="Check-in">
+          <i class="bi bi-box-arrow-in-right"></i>
+        </button>
       }
 
       @if (booking().status === 'CHECKED_IN') {
         @if (isFuture(booking().checkOut)) {
-          <div class="action-item">
-            <img src="img/checkedInIcona.png" alt="Checked in" class="status-icon">
-            <span class="action-label done">Checked in</span>
-          </div>
+          <span class="status-badge done">Ospite presente</span>
         }
         @if (isToday(booking().checkOut) || isPast(booking().checkOut)) {
-          <div class="action-item">
-<button class="btn-icon" (click)="checkout()" title="Check-out">
-              <img src="img/checkOutIcona.png" alt="Check-out">
-            </button>
-            <span class="action-label warn">Check out</span>
-          </div>
+          <button class="btn-modern btn-checkout" (click)="checkout()" title="Check-out">
+            <i class="bi bi-box-arrow-left"></i>
+          </button>
         }
       }
 
       @if (booking().status === 'CHECKED_OUT') {
-        <div class="action-item">
-          <button class="btn-icon" (click)="complete()" title="Pulizie eseguite">
-            <img src="img/toCleanIcon.png" alt="Esegui pulizie">
-          </button>
-          <span class="action-label warn">Da pulire</span>
-        </div>
+        <button class="btn-modern btn-clean" (click)="complete()" title="Pulizie eseguite">
+          <i class="bi bi-stars"></i>
+        </button>
       }
 
       @if (booking().status === 'COMPLETE') {
-        <div class="action-item">
-          <img src="img/cleanedIcona.png" alt="Camera pulita" class="status-icon">
-          <span class="action-label done">Disponibile</span>
-        </div>
+        <span class="status-badge success">Disponibile</span>
       }
 
     </div>

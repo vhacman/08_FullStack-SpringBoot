@@ -1,21 +1,32 @@
+<!-- Bottone Nuova Prenotazione -->
+<div class="new-booking-bar">
+  <button class="btn-new-booking" (click)="openBookingModal()">
+    <i class="bi bi-plus-lg"></i>
+    Inserisci Nuova Prenotazione
+  </button>
+</div>
+
 <div class="w3-row">
 
-  <div class="w3-third">
+  <div class="w3-half">
     <app-todays-arrivals />
   </div>
 
-  <div class="w3-third">
+  <div class="w3-half">
     <app-todays-departures />
   </div>
 
-  <div class="w3-third">
-    <div class="operations-box">
-      <div class="operations-title">
-        <i class="fa fa-cogs"></i> Operazioni Possibili
+</div>
+
+<!-- Modal Nuova Prenotazione -->
+@if (showBookingModal()) {
+  <div class="modal-overlay" (click)="closeBookingModal()">
+    <div class="modal-content w3-card-2" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span>Nuova Prenotazione</span>
+        <button class="modal-close" (click)="closeBookingModal()">&times;</button>
       </div>
-      <app-insert-guest />
       <app-insert-booking />
     </div>
   </div>
-
-</div>
+}

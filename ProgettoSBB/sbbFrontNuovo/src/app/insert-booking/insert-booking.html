@@ -2,18 +2,18 @@
 
   <div class="booking-header-box">
     <div style="display:flex; align-items:center; gap:12px;">
-      <img src="img/iconaInsertGuest.png" alt="Inserisci prenotazione" class="header-icon">
+      <i class="bi bi-calendar-plus header-icon"></i>
       <h2 class="page-title" style="margin:0;">Nuova Prenotazione</h2>
     </div>
   </div>
 
   <form class="booking-form" #bookingForm="ngForm" (ngSubmit)="submit()">
 
-    <app-guest-picker 
+    <app-guest-picker
       (guestSelected)="onGuestSelected($event)"
       (guestNotFound)="onGuestNotFound($event)">
     </app-guest-picker>
-    
+
     @if (showInsertGuest()) {
       <app-insert-guest (guestCreated)="onGuestCreated($event)"></app-insert-guest>
     } @else {
@@ -21,7 +21,7 @@
       @if (guestSelected()) {
         <div class="form-row">
           <div class="form-group">
-            <label><i class="fa fa-sign-in"></i> Check-in</label>
+            <label>Check-in</label>
             <input type="date"
                    [min]="today"
                    [value]="checkIn()"
@@ -29,7 +29,7 @@
                    class="form-input">
           </div>
           <div class="form-group">
-            <label><i class="fa fa-sign-out"></i> Check-out</label>
+            <label>Check-out</label>
             <input type="date"
                    [min]="minCheckOut()"
                    [value]="checkOut()"
@@ -40,7 +40,7 @@
 
         @if (nights() > 0) {
           <div class="msg-info">
-            <i class="fa fa-moon-o"></i> {{ nights() }} nott{{ nights() === 1 ? 'e' : 'i' }}
+            {{ nights() }} nott{{ nights() === 1 ? 'e' : 'i' }}
           </div>
 
           <app-room-picker
@@ -68,24 +68,18 @@
         </div>
 
         @if (success()) {
-          <div class="msg-success">
-            <i class="fa fa-check-circle"></i> Prenotazione salvata con successo!
-          </div>
+          <div class="msg-success">Prenotazione salvata con successo!</div>
         }
         @if (errorMessage()) {
-          <div class="msg-error">
-            <i class="fa fa-exclamation-circle"></i> {{ errorMessage() }}
-          </div>
+          <div class="msg-error">{{ errorMessage() }}</div>
         }
 
         <div class="form-actions">
           <button type="submit" class="btn-submit"
                   [disabled]="!guestSelected() || form.roomId === 0">
-            <i class="fa fa-save"></i> Salva
+            Salva
           </button>
-          <button type="button" class="btn-reset" (click)="reset()">
-            <i class="fa fa-undo"></i> Reset
-          </button>
+          <button type="button" class="btn-reset" (click)="reset()">Reset</button>
         </div>
       }
     }

@@ -1,0 +1,200 @@
+<div class="w3-container" style="padding: 0 8px 24px; margin-top: 16px;">
+
+  <!-- Header -->
+  <div class="cal-header-box">
+
+    <!-- Navigazione mese -->
+    <div class="month-nav">
+      <h3 class="calendar-subtitle">Calendario</h3>
+      <div class="month-row">
+        <button class="nav-arrow" (click)="prevMonth()">&#8249;</button>
+        <span class="month-label">{{ monthLabel() }}</span>
+        <button class="nav-arrow" (click)="nextMonth()">&#8250;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legenda -->
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot full"></span> Tutto esaurito</span>
+    <span class="legend-item"><span class="legend-dot partial"></span> Parzialmente occupato</span>
+    <span class="legend-item"><span class="legend-dot free"></span> Disponibile</span>
+    <span class="legend-item"><span class="legend-dot closed"></span> Hotel chiuso</span>
+  </div>
+
+  <!-- Istruzione uso -->
+  <p class="usage-hint">
+    Clicca o trascina le date per segnare un periodo di chiusura.
+    Clicca su una data già chiusa per rimuoverla.
+  </p>
+
+  <!-- Griglia calendario -->
+  <div class="calendar-grid">
+
+    <!-- Intestazione giorni -->
+    @for (wd of weekDays; track wd) {
+      <div class="weekday-header">{{ wd }}</div>
+    }
+
+    <!-- Celle giorni -->
+    @for (day of calendarDays(); track day.dateStr) {
+      <div
+        [class]="getDayClass(day)"
+        [class.today]="day.isToday"
+        (mousedown)="onDayMouseDown(day, $event)"
+        (mouseenter)="onDayMouseEnter(day)"
+      >
+        <span class="day-number">{{ day.day }}</span>
+        @if (day.isClosed) {
+          <span class="closed-label">Chiuso</span>
+        } @else if (day.isCurrentMonth && day.totalRooms > 0 && day.occupiedRooms > 0) {
+          <span class="occ-label">{{ day.occupiedRooms }}/{{ day.totalRooms }}</span>
+        }
+      </div>
+    }
+
+  </div>
+
+</div>
+
+<!-- ── Modal: nuova chiusura ── -->
+@if (showClosureModal()) {
+  <div class="modal-overlay" (mousedown)="cancelClosure()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Chiudi Hotel</span>
+        <button class="modal-close" (click)="cancelClosure()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-info">
+          Periodo selezionato:
+          <strong>{{ pendingStart() }}</strong> → <strong>{{ pendingEnd() }}</strong>
+        </p>
+        <div class="form-group">
+          <label for="closure-reason">Motivazione (opzionale)</label>
+          <input
+            id="closure-reason"
+            class="form-input"
+            type="text"
+            placeholder="Es. Ristrutturazione, Ferie…"
+            [value]="closureReason()"
+            (input)="closureReason.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelClosure()">Annulla</button>
+        <button class="btn-confirm" (click)="confirmClosure()">Conferma chiusura</button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ── Modal: riapri range ── -->
+@if (showReopenModal()) {
+  <div class="modal-overlay" (mousedown)="cancelReopen()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Riapri Dates</span>
+        <button class="modal-close" (click)="cancelReopen()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-info">
+          Riaprire il periodo
+          <strong>{{ pendingStart() }}</strong> → <strong>{{ pendingEnd() }}</strong>?
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelReopen()">Annulla</button>
+        <button class="btn-confirm" (click)="confirmReopen()">Riapri</button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ── Modal: elimina chiusura ── -->
+@if (showDeleteModal()) {
+  <div class="modal-overlay" (mousedown)="cancelDelete()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Rimuovi Chiusura</span>
+        <button class="modal-close" (click)="cancelDelete()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-info">
+          Rimuovere la chiusura del periodo
+          <strong>{{ closureToDelete()?.startDate }}</strong> → <strong>{{ closureToDelete()?.endDate }}</strong>?
+          @if (closureToDelete()?.reason) {
+            <br>Motivazione: <em>{{ closureToDelete()?.reason }}</em>
+          }
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelDelete()">Annulla</button>
+        <button class="btn-danger" (click)="confirmDelete()">Rimuovi chiusura</button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ── Modal: dettaglio giorno ── -->
+@if (showDayDetailModal()) {
+  <div class="modal-overlay" (mousedown)="closeDayDetailModal()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Dettagli {{ selectedDay()?.dateStr }}</span>
+        <button class="modal-close" (click)="closeDayDetailModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="day-summary">
+          <span class="summary-item">
+            <span class="summary-label">Prenotazioni:</span>
+            <span class="summary-value">{{ dayBookings().length }} / {{ selectedDay()?.totalRooms }}</span>
+          </span>
+          @if (selectedDay()?.isClosed) {
+            <span class="summary-badge closed-badge">Hotel Chiuso</span>
+          }
+        </div>
+
+        @if (dayBookings().length > 0) {
+          <div class="bookings-list">
+            <h4 class="list-title">Guest prenotati</h4>
+            @for (booking of dayBookings(); track booking.id) {
+              <div class="booking-item">
+                <div class="booking-room">Camera {{ booking.room?.name }}</div>
+                <div class="booking-dates">{{ booking.checkIn | date:'dd/MM' }} - {{ booking.checkOut | date:'dd/MM' }}</div>
+                <div class="booking-guest">{{ booking.guest?.firstName }} {{ booking.guest?.lastName }}</div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-bookings">Nessuna prenotazione per questo giorno</p>
+        }
+
+        <div class="closure-action">
+          @if (selectedDay()?.isClosed) {
+            <p class="closure-info">L'hotel è chiuso in questo giorno</p>
+            <button class="btn-confirm" (click)="openDeleteForDay()">Rimuovi chiusura</button>
+          } @else {
+            <button class="btn-confirm" (click)="openClosureForDay()">Chiudi hotel per questo giorno</button>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+}

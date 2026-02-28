@@ -1,44 +1,10 @@
-.room-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 10px;
-  margin: 10px 0;
-}
+.room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 10px 0; }
 
-.room-card {
-  border: 1px solid #d4c4b0;
-  border-radius: 4px;
-  padding: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: #fff;
-}
+.room-card { border: 1px solid #bcd8f0; border-radius: 6px; padding: 10px; cursor: pointer; transition: all 0.2s; background: #fff; }
+.room-card:hover { border-color: #3a82c4; background: #e3f0fb; }
+.room-card.selected { border-color: #3a82c4; background: #e3f0fb; }
+.room-card .room-name { font-weight: 700; font-size: 0.85rem; color: #1a3650; margin-bottom: 4px; }
+.room-card .room-price { color: #3a82c4; font-weight: 700; font-size: 0.88rem; }
+.room-card .room-desc { font-size: 0.75rem; color: #5a7a96; margin-top: 4px; }
 
-.room-card:hover {
-  border-color: #b5451b;
-  background: #fdf0e0;
-}
-
-.room-card.selected {
-  border-color: #b5451b;
-  background: #fdf0e0;
-}
-
-.room-card .room-name {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #5a3010;
-  margin-bottom: 4px;
-}
-
-.room-card .room-price {
-  color: #b5451b;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.room-card .room-desc {
-  font-size: 0.75rem;
-  color: #7a5030;
-  margin-top: 4px;
-}
+.msg-empty { font-size: 0.78rem; font-weight: 600; color: #5a7a96; background-color: #e3f0fb; border: 1px solid #bcd8f0; border-radius: 4px; padding: 8px 12px; }

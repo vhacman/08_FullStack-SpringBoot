@@ -18,6 +18,10 @@ export class BookingService {
     return this.http.get<Booking[]>(`${this.apiURL}/todaysdepartures/${id}`);
   }
 
+  getByHotel(hotelId: number): Observable<Booking[]> {
+    return this.http.get<Booking[]>(`${this.apiURL}/hotel/${hotelId}`);
+  }
+
   // PENDING → CHECKED_IN  |  room → OCCUPIED
   acceptBooking(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiURL}/${id}/checkin`, null);

@@ -1,0 +1,23 @@
+<div class="w3-container" style="padding: 0 8px 8px; margin-top: 16px;">
+
+  <div class="guests-header-box">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <h2 class="page-title" style="margin: 0;">Gestione Ospiti</h2>
+      <button class="btn-new-guest" (click)="openModal()"> Nuovo Ospite</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Inserimento Ospite -->
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content w3-card-2" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span>Nuovo Ospite</span>
+        <button class="modal-close" (click)="closeModal()">&times;</button>
+      </div>
+      <app-insert-guest [autoOpen]="true" (guestCreated)="onGuestCreated($event)" />
+    </div>
+  </div>
+}

@@ -2,11 +2,9 @@
 
   <div class="arrivals-header-box">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-      <h2 class="page-title" style="margin: 0;">
-        <i class="fa fa-calendar-check-o"></i> Arrivi di Oggi
-      </h2>
+      <h2 class="page-title" style="margin: 0;">Arrivi di Oggi</h2>
       <button class="refresh-btn" (click)="refresh()" title="Aggiorna">
-        <img src="img/iconaRefresh.png" alt="Aggiorna">
+        <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
   </div>
@@ -14,7 +12,7 @@
   <!-- Stato vuoto -->
   @if (bookings().length === 0 && checkedInBookings().length === 0) {
     <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
-      <p><i class="fa fa-info-circle"></i> Nessun arrivo previsto per oggi.</p>
+      <p>Nessun arrivo previsto per oggi.</p>
     </div>
   }
 
@@ -35,10 +33,9 @@
     <div class="collapsible-section">
 
       <div class="collapsible-header green" (click)="toggleCheckedIn()">
-        <i class="fa fa-check-circle"></i>
         <span>Checked In</span>
         <span class="count-badge green-badge">{{ checkedInBookings().length }}</span>
-        <i class="fa chevron" [class.fa-chevron-down]="!checkedInExpanded()" [class.fa-chevron-up]="checkedInExpanded()"></i>
+        <span class="chevron">@if (checkedInExpanded()) { ▲ } @else { ▼ }</span>
       </div>
 
       @if (checkedInExpanded()) {

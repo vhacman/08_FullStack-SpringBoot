@@ -91,6 +91,20 @@ export interface Hotel
 }
 
 /**
+ * Rappresenta un periodo di chiusura hotel (es. ferie, ristrutturazione).
+ * Il calendario mostra queste date con uno stile "chiuso" e impedisce
+ * di associarle a nuove prenotazioni.
+ */
+export interface HotelClosure
+{
+  id?        : number;
+  hotelId    : number;
+  startDate  : string;   // "YYYY-MM-DD"
+  endDate    : string;   // "YYYY-MM-DD"
+  reason?    : string;
+}
+
+/**
  * Rappresenta un utente autenticato nel sistema, associato a un hotel.
  */
 export interface User

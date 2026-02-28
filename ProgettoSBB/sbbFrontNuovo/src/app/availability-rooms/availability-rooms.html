@@ -1,0 +1,146 @@
+<div class="w3-container w3-padding-large">
+  <div class="page-header">
+    <i class="bi bi-door-open header-icon"></i>
+    <h2>Stanze dell'Hotel</h2>
+  </div>
+
+  @if (loading()) {
+    <div class="w3-center w3-padding">
+      Caricamento...
+    </div>
+  } @else {
+    <div class="filter-chips">
+      @for (f of filters; track f.value) {
+        <button
+          class="chip"
+          [class.active]="activeFilter() === f.value"
+          (click)="setFilter(f.value)">
+          {{ f.label }}
+          <span class="chip-count">{{ countFor(f.value) }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="rooms-grid">
+      @for (room of filtered(); track room.id) {
+        <div class="room-card w3-card-2" [class]="getStatusClass(room.status)">
+          <div class="room-name">{{ room.name }}</div>
+          <div class="room-status">
+            @switch (room.status) {
+              @case ('AVAILABLE') {
+                <span class="badge badge-available">Disponibile</span>
+              }
+              @case ('OCCUPIED') {
+                <span class="badge badge-occupied">Occupata</span>
+              }
+              @case ('TO_CLEAN') {
+                <span class="badge badge-to-clean">Da pulire</span>
+              }
+            }
+          </div>
+          <div class="room-description">{{ room.description }}</div>
+          <div class="room-price">{{ room.basePrice }} €/notte</div>
+          @if (room.status === 'AVAILABLE') {
+            @if (hasActiveBooking(room.id!)) {
+              <div class="booking-warning">
+                Prenotazione per questa stanza non ancora check-in
+              </div>
+            } @else {
+              <button class="btn-book" (click)="openBookingModal(room)">
+                Prenota
+              </button>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Modal for Booking -->
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content w3-card-2" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Prenotazione - {{ selectedRoom()?.name }}</h3>
+        <button class="modal-close" (click)="closeModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        @if (bookingSuccess()) {
+          <div class="msg-success">
+            Prenotazione salvata con successo!
+          </div>
+        } @else {
+          <!-- Guest Search -->
+          <div class="form-group">
+            <label>Cerca Ospite</label>
+            <app-guest-picker
+              (guestSelected)="onGuestSelected($event)"
+              (guestNotFound)="onGuestNotFound($event)">
+            </app-guest-picker>
+          </div>
+
+          @if (showInsertGuest()) {
+            <app-insert-guest (guestCreated)="onGuestCreated($event)"></app-insert-guest>
+          }
+
+          @if (guestId()) {
+            <div class="form-row">
+              <div class="form-group">
+                <label>Check-in</label>
+                <input type="date"
+                       [value]="checkIn()"
+                       (change)="onCheckInChange($any($event.target).value)"
+                       class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Check-out</label>
+                <input type="date"
+                       [value]="checkOut()"
+                       (change)="onCheckOutChange($any($event.target).value)"
+                       class="form-input">
+              </div>
+            </div>
+
+            @if (nights > 0) {
+              <div class="msg-info">
+                {{ nights }} notte{{ nights === 1 ? '' : 'i' }}
+              </div>
+
+              <div class="form-group">
+                <label>Prezzo (€)</label>
+                <input type="number"
+                       [ngModel]="price()"
+                       (ngModelChange)="price.set($event)"
+                       class="form-input">
+              </div>
+
+              <div class="total-cost">
+                TOTAL: {{ totalCost }} €
+              </div>
+
+              <div class="form-group">
+                <label>Note</label>
+                <textarea [ngModel]="notes()"
+                          (ngModelChange)="notes.set($event)"
+                          rows="2"
+                          placeholder="Opzionale..."
+                          class="form-input"></textarea>
+              </div>
+
+              @if (bookingError()) {
+                <div class="msg-error">{{ bookingError() }}</div>
+              }
+
+              <div class="form-actions">
+                <button class="btn-submit" (click)="submitBooking()">Salva</button>
+                <button class="btn-reset" (click)="closeModal()">Annulla</button>
+              </div>
+            }
+          }
+        }
+      </div>
+    </div>
+  </div>
+}

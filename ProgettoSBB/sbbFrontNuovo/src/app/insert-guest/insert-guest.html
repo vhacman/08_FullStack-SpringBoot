@@ -2,14 +2,9 @@
 
   <!-- Header con icona -->
   <div class="guest-header-box" (click)="toggleForm()" style="cursor:pointer">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <img src="img/iconaInsertGuest.png" alt="Inserisci ospite" class="header-icon">
-      <h2 class="page-title" style="margin:0;">Inserisci Ospite</h2>
-    </div>
-    <i class="fa chevron"
-       [class.fa-chevron-down]="!formVisible()"
-       [class.fa-chevron-up]="formVisible()">
-    </i>
+    <span class="chevron">
+      @if (formVisible()) { ▲ } @else { ▼ }
+    </span>
   </div>
 
   <!-- Form -->
@@ -58,23 +53,15 @@
 
       <!-- Feedback -->
       @if (success()) {
-        <div class="msg-success">
-          <i class="fa fa-check-circle"></i> Ospite salvato con successo!
-        </div>
+        <div class="msg-success">Ospite salvato con successo!</div>
       }
       @if (errorMsg()) {
-        <div class="msg-error">
-          <i class="fa fa-exclamation-circle"></i> {{ errorMsg() }}
-        </div>
+        <div class="msg-error">{{ errorMsg() }}</div>
       }
 
       <div class="form-actions">
-        <button type="submit" class="btn-submit" [disabled]="guestForm.invalid">
-          <i class="fa fa-save"></i> Salva
-        </button>
-        <button type="button" class="btn-reset" (click)="reset()">
-          <i class="fa fa-undo"></i> Reset
-        </button>
+        <button type="submit" class="btn-submit" [disabled]="guestForm.invalid">Salva</button>
+        <button type="button" class="btn-reset" (click)="reset()">Reset</button>
       </div>
 
     </form>

@@ -1,5 +1,5 @@
-import { Component, inject, signal, computed, output } from '@angular/core';
-import { GuestLogicService } from '../ComponentLogicService/guest-logic-service';
+import { Component, inject, signal, computed, output, effect } from '@angular/core';
+import { GuestService } from '../APIservices/guest/guest-service';
 import { Guest } from '../model/hotel.entities';
 
 @Component({
@@ -10,24 +10,37 @@ import { Guest } from '../model/hotel.entities';
 })
 export class GuestPicker {
 
-  private guestLogicService = inject(GuestLogicService);
+  private guestService = inject(GuestService);
+
+  guests = signal<Guest[]>([]);
 
   guestSelected = output<number>();
   guestNotFound = output<string>();
 
-  // Solo stato UI: testo digitato e visibilità dropdown
-  guestInput   = signal('');
+  guestInput = signal('');
   showDropdown = signal(false);
 
-  // La logica di filtraggio vive nel service; il componente delega
-  filteredGuests = computed(() => this.guestLogicService.filter(this.guestInput()));
+  filteredGuests = computed(() => {
+    const s = this.guestInput().toLowerCase().trim();
+    if (!s) return this.guests();
+    return this.guests().filter(g =>
+      g.firstName.toLowerCase().includes(s) ||
+      g.lastName.toLowerCase().includes(s)
+    );
+  });
+
+  constructor() {
+    this.guestService.findAll().subscribe({
+      next: g => this.guests.set(g),
+      error: err => console.error('Errore caricamento ospiti:', err)
+    });
+  }
 
   onGuestInput(value: string): void {
     this.guestInput.set(value);
     this.guestSelected.emit(0);
     this.showDropdown.set(true);
     
-    // Se l'utente ha digitato qualcosa e non ci sono risultati, emetti evento
     if (value.trim().length > 0 && this.filteredGuests().length === 0) {
       this.guestNotFound.emit(value);
     }
@@ -40,11 +53,9 @@ export class GuestPicker {
   }
 
   onGuestBlur(): void {
-    // Timeout: lascia il tempo al mousedown sull'item di scattare prima del blur
     setTimeout(() => this.showDropdown.set(false), 150);
   }
 
-  // Chiamato dal padre tramite viewChild per azzerare il campo
   reset(): void {
     this.guestInput.set('');
     this.showDropdown.set(false);

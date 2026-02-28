@@ -11,13 +11,13 @@ import {BookingRow} from '../booking-row/booking-row';
   styleUrl: './todays-departures.css',
 })
 export class TodaysDepartures {
-  private bookingService   = inject(BookingService);
+  private bookingService = inject(BookingService);
   private userLogicService = inject(UserLogicService);
   loggedUser = this.userLogicService.loggedUser;
 
-  toCleanBookings  = signal<Booking[]>([]);
-  cleanedBookings  = signal<Booking[]>([]);
-  cleanedExpanded  = signal(false);
+  toCleanBookings = signal<Booking[]>([]);
+  cleanedBookings = signal<Booking[]>([]);
+  cleanedExpanded = signal(false);
 
   constructor() {
     effect(() => {

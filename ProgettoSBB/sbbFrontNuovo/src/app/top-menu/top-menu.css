@@ -1,117 +1,51 @@
-/* Container della Navbar */
 .navbar-main {
-  border-top: 6px solid #7b1a1a;
+  border-top: 5px solid #3a82c4;
   display: flex;
   align-items: center;
-  min-height: 85px;
-  padding: 0 15px;
+  min-height: 80px;
+  padding: 0 16px;
+  background-color: #d6eaf8;
 }
 
-/* Gestione Logo */
-.logo-container {
-  display: flex;
-  align-items: center;
-}
+.logo-container { display: flex; align-items: center; }
+.logo-img { height: 64px; cursor: pointer; transition: opacity 0.2s; }
+.logo-img:hover { opacity: 0.8; }
 
-.logo-img {
-  height: 70px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
+.nav-right { display: flex; justify-content: flex-end; align-items: center; padding-right: 16px; }
+.user-block { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 
-.logo-img:hover {
-  opacity: 0.8;
-}
-
-/* Blocco destra: spinge tutto a destra */
-.nav-right {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding-right: 16px;
-}
-
-/* Wrapper interno: hotel-name centrato sulla riga sotto */
-.user-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Nome struttura */
 .hotel-name {
   font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #607d8b;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a3650;
   letter-spacing: 0.04em;
 }
 
-/* Riga utente: icona + testo */
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.user-icon {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.user-name {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #3e2723;
-  line-height: 1.2;
-}
-
-.user-role {
-  font-size: 0.72rem;
-  color: #888;
-  letter-spacing: 0.02em;
-}
+.user-info { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.user-icon { font-size: 28px; color: #1a3650; }
+.user-details { display: flex; flex-direction: column; align-items: flex-end; }
+.user-name { font-size: 0.88rem; font-weight: 700; color: #1a3650; line-height: 1.2; }
+.user-role { font-size: 0.72rem; color: #5a7a96; letter-spacing: 0.02em; }
 
 .logout-btn {
   background: none;
-  border: 1px solid #b5451b;
+  border: 1px solid #3a82c4;
   border-radius: 4px;
-  color: #b5451b;
+  color: #1a3650;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 4px 12px;
   font-size: 0.8rem;
-  margin-left: 6px;
+  margin-left: 8px;
   transition: background-color 0.2s, color 0.2s;
 }
+.logout-btn:hover { background-color: #3a82c4; color: #fff; }
 
-.logout-btn:hover {
-  background-color: #b5451b;
-  color: #fff;
-}
-
-/* Spaziatore */
-.nav-spacer {
-  margin-top: 85px;
-}
-
-/* Centro navigazione */
-.nav-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
+.nav-spacer { margin-top: 80px; }
+.nav-center { display: flex; justify-content: center; align-items: center; }
 .nav-btn {
-  background-color: #7b1a1a;
-  color: white;
+  background-color: #3a82c4;
+  color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
@@ -122,7 +56,102 @@
   gap: 8px;
   transition: background-color 0.2s;
 }
+.nav-btn:hover { background-color: #2d6ca8; }
 
-.nav-btn:hover {
-  background-color: #a52a2a;
+.user-profile-section,
+.profile-popup {
+  position: absolute;
+  right: 20px;
+  top: 85px;
+  width: 320px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-avatar {
+  font-size: 56px;
+  color: #3a82c4;
+}
+
+.profile-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1a3650;
+}
+
+.profile-role {
+  font-size: 0.9rem;
+  color: #5a7a96;
+}
+
+.profile-details {
+  margin-bottom: 20px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #1a3650;
+}
+
+.detail-value {
+  color: #5a7a96;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.profile-btn {
+  padding: 8px 16px;
+}
+
+.btn-modern {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-modern i {
+  font-size: 20px;
+  color: white;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #3a82c4 0%, #2d6ca8 100%);
+}
+
+.btn-logout {
+  background: linear-gradient(135deg, #c94040 0%, #a83030 100%);
 }
