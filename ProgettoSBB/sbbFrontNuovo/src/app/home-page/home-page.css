@@ -43,9 +43,8 @@
   background-color: #fff;
   border-radius: 10px;
   width: 90%;
-  max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 700px;
+  min-height: 300px;
   border: 1px solid #bcd8f0;
   box-shadow: 0 8px 24px rgba(58, 130, 196, 0.18);
 }

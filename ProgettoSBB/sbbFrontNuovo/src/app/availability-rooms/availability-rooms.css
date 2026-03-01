@@ -176,8 +176,7 @@
   border-radius: 10px;
   width: 90%;
   max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
+  min-height: 400px;
   border: 1px solid #bcd8f0;
   box-shadow: 0 8px 24px rgba(58, 130, 196, 0.18);
 }

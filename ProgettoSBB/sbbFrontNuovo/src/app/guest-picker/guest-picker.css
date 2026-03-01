@@ -36,7 +36,7 @@
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(58, 130, 196, 0.15);
   z-index: 200;
-  max-height: 200px;
+  max-height: 320px;
   overflow-y: auto;
 }
 
