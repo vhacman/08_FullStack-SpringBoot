@@ -1,16 +1,11 @@
-import { Component, inject, signal, input, output, effect } from '@angular/core';
-import { RoomService } from '../APIservices/room/room-service';
-import { UserLogicService } from '../APIservices/user/user-logic-service';
-import { Room } from '../model/hotel.entities';
+import {Component, inject, signal, input, output, effect} from '@angular/core';
+import {RoomService} from '../APIservices/room/room-service';
+import {UserLogicService} from '../APIservices/user/user-logic-service';
+import {Room} from '../model/hotel.entities';
 
 /**
- * Componente figlio che mostra le camere disponibili per un dato periodo.
- * Riceve checkIn e checkOut dal componente padre tramite input(),
- * e comunica la camera scelta al padre tramite output().
- * Cercando come passare dati tra componenti in Angular ho trovato due approcci:
- * il classico @Input/@Output con decoratori, e il più recente input()/output()
- * basato su Signals (Angular 17+): ho usato quest'ultimo perché si integra
- * meglio con il resto del codice reattivo.
+ * Mostra le camere libere per un dato periodo.
+ * Comunica col padre tramite input() (date in entrata) e output() (camera scelta in uscita).
  */
 @Component({
   selector: 'app-room-picker',
@@ -18,71 +13,86 @@ import { Room } from '../model/hotel.entities';
   templateUrl: './room-picker.html',
   styleUrl: './room-picker.css',
 })
-export class RoomPicker {
+export class RoomPicker
+{
 
   private roomService = inject(RoomService);
   private userLogicService = inject(UserLogicService);
 
-  // input() crea un Signal in sola lettura alimentato dal componente padre.
-  // Quando il padre aggiorna checkIn o checkOut, l'effect() qui sotto
-  // si attiva automaticamente e rilancia la ricerca.
-  checkIn      = input<string | null>(null);
-  checkOut     = input<string | null>(null);
-  // Stesso meccanismo di GuestPicker: quando il padre incrementa questo valore,
-  // l'effect() qui sotto resetta la camera selezionata.
-  resetTrigger = input<number>(0);
+  // input() = Signal in sola lettura alimentato dal padre; quando cambia, l'effect() rilancia la ricerca.
+  checkIn = input<string | null>(null);
+  checkOut = input<string | null>(null);
+  resetTrigger = input<number>(0); // il padre lo incrementa per resettare la selezione
 
-  // output() è il canale di comunicazione inverso: dal figlio al padre.
-  // Il padre si iscrive con (roomSelected)="onRoomSelected($event)" nel template.
-  roomSelected = output<Room>();
+  roomSelected = output<Room>(); // output() = canale figlio → padre
 
-  rooms        = signal<Room[]>([]);
-  searched     = signal(false);
+  rooms = signal<Room[]>([]);
+  searched = signal(false);  // true dopo la prima risposta HTTP: evita il flash vuoto iniziale
   selectedRoom = signal<Room | null>(null);
 
-  constructor() {
-    // Questo effect() reagisce a tre Signal contemporaneamente: checkIn, checkOut e loggedUser.
-    // Ogni volta che uno dei tre cambia, Angular riesegue automaticamente il blocco.
-    effect(() => {
-      const checkIn  = this.checkIn();
+  constructor()
+  {
+    // effect() si ri-esegue automaticamente ogni volta che uno dei Signal letti cambia.
+    // Qui leggiamo checkIn, checkOut e loggedUser: se uno qualsiasi di questi cambia
+    // (es. l'utente modifica la data di check-out), Angular riesegue tutto il blocco.
+    effect(() =>
+    {
+      const checkIn = this.checkIn();
       const checkOut = this.checkOut();
-      const user     = this.userLogicService.loggedUser();
-      const hotelId  = user?.hotel?.id;
+      const hotelId = this.userLogicService.loggedUser()?.hotel?.id;
 
-      if (!checkIn || !checkOut || !hotelId) {
+      // Guard: se non abbiamo ancora tutti e tre i valori necessari per la ricerca,
+      // svuotiamo la lista (per non mostrare risultati vecchi) e usciamo subito.
+      // searched viene rimesso a false così il template nasconde la sezione finché
+      // non arriva una risposta valida.
+      if (!checkIn || !checkOut || !hotelId)
+      {
         this.rooms.set([]);
         this.searched.set(false);
         return;
       }
 
+      // Abbiamo tutto: chiediamo al backend le camere libere per questo hotel e questo periodo.
       this.roomService.getFreeRooms(hotelId, checkIn, checkOut).subscribe({
-        next: result => {
+        next: result =>
+        {
+          // result ?? [] gestisce il caso (improbabile) in cui il backend risponda con null.
           this.rooms.set(result ?? []);
+          // searched = true sblocca il template: da ora mostra la lista o il messaggio "nessuna camera".
           this.searched.set(true);
+          // Resettiamo la selezione perché le date sono cambiate: la camera precedente
+          // potrebbe non essere più disponibile nel nuovo periodo.
           this.selectedRoom.set(null);
         },
-        error: err => {
+        error: err =>
+        {
           console.error('Errore ricerca camere:', err);
+          // In caso di errore HTTP mostriamo comunque la sezione (searched = true)
+          // con lista vuota, così l'utente vede "nessuna camera" invece di uno schermo bloccato.
           this.rooms.set([]);
           this.searched.set(true);
         }
       });
     });
 
-    effect(() => {
+    // Secondo effect separato: scopo unico, resettare la selezione quando il padre lo chiede.
+    effect(() =>
+    {
       this.resetTrigger();
       this.selectedRoom.set(null);
     });
   }
 
-  // emit() invia l'evento al padre. È l'equivalente di un evento DOM custom:
-  // il padre lo ascolta nel template e riceve la camera selezionata.
-  select(room: Room): void {
+  // Salva la camera scelta e la comunica al padre tramite emit().
+  select(room: Room): void
+  {
     this.selectedRoom.set(room);
     this.roomSelected.emit(room);
   }
 
-  reset(): void {
+  // Deseleziona senza ricaricare: le camere rimangono, solo la selezione sparisce.
+  reset(): void
+  {
     this.selectedRoom.set(null);
   }
 }

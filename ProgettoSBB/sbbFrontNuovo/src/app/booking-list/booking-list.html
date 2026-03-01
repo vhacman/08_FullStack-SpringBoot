@@ -3,14 +3,18 @@
   <div class="list-header-box">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <h2 class="page-title" style="margin: 0;">Prenotazioni</h2>
+      <!-- Pulsante di aggiornamento manuale: richiama loadBookings() dal server
+           per sincronizzare la lista se altri operatori hanno fatto modifiche. -->
       <button class="refresh-btn" (click)="refresh()" title="Aggiorna">
         <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
   </div>
 
-
-  <!-- Filtri per stato -->
+  <!-- Chip di filtro per stato.
+       @for itera l'array statico filters[] definito nel .ts.
+       [class.active] aggiunge la classe "active" solo al chip selezionato:
+       Angular lo ricalcola ogni volta che activeFilter() cambia. -->
   <div class="filter-chips">
     @for (f of filters; track f.value) {
       <button
@@ -18,18 +22,23 @@
         [class.active]="activeFilter() === f.value"
         (click)="setFilter(f.value)">
         {{ f.label }}
+        <!-- countFor() conta le prenotazioni per quello stato nel Signal bookings().
+             Si ricalcola automaticamente ogni volta che bookings() cambia. -->
         <span class="chip-count">{{ countFor(f.value) }}</span>
       </button>
     }
   </div>
 
-  <!-- Lista prenotazioni -->
+  <!-- Lista prenotazioni filtrate e ordinate dal computed() "filtered" nel .ts.
+       filtered() restituisce già l'array corretto: il template non fa nessuna logica. -->
   <div class="bookings-list">
     @if (filtered().length === 0) {
       <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
         <p>Nessuna prenotazione trovata.</p>
       </div>
     }
+    <!-- track booking.id permette ad Angular di identificare ogni card:
+         se la lista si aggiorna, rende solo le card cambiate invece di ricrearle tutte. -->
     @for (booking of filtered(); track booking.id) {
       <app-booking-row [booking]="booking"></app-booking-row>
     }

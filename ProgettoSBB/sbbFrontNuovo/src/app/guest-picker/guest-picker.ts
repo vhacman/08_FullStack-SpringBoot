@@ -22,8 +22,8 @@ export class GuestPicker {
   // STATO
   // La lista completa viene caricata una volta sola nel costruttore.
   // Il filtro poi avviene lato client su questa lista, senza altre chiamate HTTP.
-  guests       = signal<Guest[]>([]);
-  guestInput   = signal('');
+  guests = signal<Guest[]>([]);
+  guestInput = signal('');
   showDropdown = signal(false);
 
   // INPUT
@@ -51,7 +51,7 @@ export class GuestPicker {
   // INIZIALIZZAZIONE
   constructor() {
     this.guestService.findAll().subscribe({
-      next:  g   => this.guests.set(g),
+      next: g => this.guests.set(g),
       error: err => console.error('Errore caricamento ospiti:', err)
     });
 

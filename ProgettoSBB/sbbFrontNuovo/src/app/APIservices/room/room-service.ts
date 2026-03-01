@@ -14,8 +14,8 @@ import { Room } from '../../model/hotel.entities';
 })
 export class RoomService {
 
-  private http      = inject(HttpClient);
-  private apiURL    = 'http://localhost:8080/sbb/api/rooms';
+  private http = inject(HttpClient);
+  private apiURL = 'http://localhost:8080/sbb/api/rooms';
   private hotelsURL = 'http://localhost:8080/sbb/api/hotels';
 
   /** @returns tutte le camere registrate nel sistema */

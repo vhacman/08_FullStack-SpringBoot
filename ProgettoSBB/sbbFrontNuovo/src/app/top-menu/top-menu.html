@@ -17,7 +17,7 @@
           {{ loggedUser() != null ? loggedUser()!.hotel.name : 'Caricamento...' }}
         </div>
 
-        <!-- (click) apre/chiude il popup profilo tramite il Signal showProfile -->
+        <!-- Gab: (click) apre/chiude il popup profilo tramite il Signal showProfile -->
         <div class="user-info" (click)="toggleProfile()">
           <div class="user-details">
             <span class="user-name">{{ userInfo() }}</span>
@@ -38,7 +38,7 @@
      dal flusso del documento, quindi il contenuto sotto scivola su). -->
 <div class="nav-spacer"></div>
 
-<!-- Popup profilo utente: compare solo se showProfile() è true.
+<!--Gab:  Popup profilo utente: compare solo se showProfile() è true.
      stopPropagation() blocca la propagazione del click all'esterno,
      altrimenti qualsiasi click dentro il popup lo chiuderebbe. -->
 @if (showProfile()) {
@@ -65,6 +65,7 @@
       }
     </div>
 
+    <!-- Gab: icone bootstrap -->
     <div class="profile-actions">
       <button class="btn-modern btn-edit"><i class="bi bi-pencil-square"></i></button>
       <button class="btn-modern btn-logout"><i class="bi bi-box-arrow-right"></i></button>

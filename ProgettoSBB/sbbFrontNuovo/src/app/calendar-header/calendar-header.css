@@ -1,0 +1,96 @@
+.cal-header-box {
+  background-color: #fff;
+  border: 1px solid #bcd8f0;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.month-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.calendar-subtitle {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1a3650;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+.month-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+.nav-arrow {
+  background: none;
+  border: 1px solid #bcd8f0;
+  border-radius: 4px;
+  color: #5a7a96;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.nav-arrow:hover {
+  background-color: #e3f0fb;
+  border-color: #3a82c4;
+}
+
+.month-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a3650;
+  min-width: 180px;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  padding: 0 2px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.78rem;
+  color: #5a7a96;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.legend-dot.full    { background-color: #f0b8b8; }
+.legend-dot.partial { background-color: #f0d0a0; }
+.legend-dot.free    { background-color: #a8dfc5; }
+.legend-dot.closed  { background-color: #f0b8b8; border: 1px solid #c94040; }
+
+.usage-hint {
+  font-size: 0.75rem;
+  color: #5a7a96;
+  margin: 0 0 10px;
+  padding: 0 2px;
+}

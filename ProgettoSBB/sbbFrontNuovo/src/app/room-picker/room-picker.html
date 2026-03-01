@@ -1,5 +1,7 @@
-<!-- RoomPicker: mostra le camere libere come cards selezionabili;
-     il padre riceve solo l'evento (roomSelected) -->
+<!-- RoomPicker: mostra le camere libere come cards selezionabili.
+     Il padre riceve solo l'evento (roomSelected) con la camera scelta.
+     searched() diventa true dopo la prima chiamata HTTP: prima non mostriamo nulla
+     (né la lista né il messaggio "nessuna camera") per evitare il flash vuoto iniziale. -->
 @if (searched()) {
   @if (rooms().length === 0) {
     <div class="msg-empty">
@@ -8,11 +10,16 @@
   } @else {
     <div class="room-grid">
       @for (room of rooms(); track room.id) {
+        <!-- [class.selected] aggiunge la classe "selected" solo alla card
+             della camera correntemente scelta, senza logica aggiuntiva nel .ts.
+             selectedRoom()?.id === room.id è la condizione: si ricalcola
+             automaticamente ogni volta che selectedRoom() cambia. -->
         <div class="room-card"
              [class.selected]="selectedRoom()?.id === room.id"
              (click)="select(room)">
           <div class="room-name">{{ room.name }}</div>
           <div class="room-price">€ {{ room.basePrice }}</div>
+          <!-- @if con description evita di renderizzare il div se il campo è vuoto. -->
           @if (room.description) {
             <div class="room-desc">{{ room.description }}</div>
           }

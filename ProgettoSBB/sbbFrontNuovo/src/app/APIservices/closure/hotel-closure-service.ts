@@ -13,7 +13,7 @@ import { HotelClosure } from '../../model/hotel.entities';
   providedIn: 'root',
 })
 export class HotelClosureService {
-  private http   = inject(HttpClient);
+  private http = inject(HttpClient);
   private apiURL = 'http://localhost:8080/sbb/api/closures';
 
   /** @returns tutti i periodi di chiusura registrati per l'hotel */
@@ -27,10 +27,12 @@ export class HotelClosureService {
    * @param dto periodo da chiudere con motivazione opzionale
    * @returns la closure salvata con id assegnato dal DB
    */
-  save(dto: { hotelId: number;
+  save(dto: {
+    hotelId:   number;
     startDate: string;
-    endDate: string;
-    reason: string }): Observable<HotelClosure> {
+    endDate:   string;
+    reason:    string;
+  }): Observable<HotelClosure> {
     return this.http.post<HotelClosure>(this.apiURL, dto);
   }
 

@@ -1,7 +1,7 @@
 import {Component, effect, inject, signal} from '@angular/core';
 import {BookingRow} from '../booking-row/booking-row';
 import {BookingService} from '../APIservices/booking/booking-service';
-import { UserLogicService } from '../APIservices/user/user-logic-service';
+import {UserLogicService} from '../APIservices/user/user-logic-service';
 import {Booking} from '../model/hotel.entities';
 
 /**
@@ -33,11 +33,9 @@ export class TodaysArrivals
   // perché deve partire una sola volta all'avvio del componente.
   constructor()
   {
-    effect(() =>
-    {
+    effect(() => {
       let user = this.loggedUser();
-      if (user && user.hotel?.id)
-      {
+      if (user && user.hotel?.id) {
         this.loadBookings(user.hotel.id);
       }
     });
@@ -51,7 +49,8 @@ export class TodaysArrivals
   private loadBookings(hotelId: number): void
   {
     this.bookingService.getTodaysArrivals(hotelId).subscribe({
-      next: (json) => {
+      next: (json) =>
+      {
         this.bookings.set(json.filter(b => b.status === 'PENDING'));
         this.checkedInBookings.set(json.filter(b => b.status === 'CHECKED_IN'));
       },
@@ -64,7 +63,8 @@ export class TodaysArrivals
   // ricaricare dal server: rimuove la prenotazione dai PENDING e la aggiunge
   // ai CHECKED_IN. update() è usato al posto di set() perché il nuovo valore
   // dipende da quello corrente (serve la lista attuale per filtrarla o estenderla).
-  onCheckInDone(booking: Booking): void {
+  onCheckInDone(booking: Booking): void
+  {
     this.bookings.update(list => list.filter(b => b.id !== booking.id));
     this.checkedInBookings.update(list => [...list, booking]);
   }
@@ -72,7 +72,8 @@ export class TodaysArrivals
   // Chiamato dal template sul click dell'header della sezione "già accolti".
   // update(v => !v) è il modo idiomatico Angular Signals per invertire un booleano:
   // prende il valore corrente e restituisce il suo opposto, senza bisogno di leggerlo prima.
-  toggleCheckedIn(): void {
+  toggleCheckedIn(): void
+  {
     this.checkedInExpanded.update(v => !v);
   }
 
@@ -82,8 +83,7 @@ export class TodaysArrivals
   refresh(): void
   {
     const user = this.loggedUser();
-    if (user && user.hotel?.id)
-    {
+    if (user && user.hotel?.id) {
       this.loadBookings(user.hotel.id);
     }
   }

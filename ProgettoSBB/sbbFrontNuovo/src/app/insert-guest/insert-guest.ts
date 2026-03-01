@@ -1,7 +1,7 @@
-import { Component, effect, inject, input, signal, output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { GuestService } from '../APIservices/guest/guest-service';
-import { Guest } from '../model/hotel.entities';
+import {Component, effect, inject, input, signal, output} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {GuestService} from '../APIservices/guest/guest-service';
+import {Guest} from '../model/hotel.entities';
 
 /**
  * Form per la registrazione di un nuovo ospite nel sistema.
@@ -29,8 +29,8 @@ export class InsertGuest {
   guestCreated = output<number>();
 
   formVisible = signal(false);
-  success     = signal(false);
-  errorMsg    = signal('');
+  success = signal(false);
+  errorMsg = signal('');
 
   constructor() {
     effect(() => { if (this.autoOpen()) this.formVisible.set(true); });
@@ -49,6 +49,10 @@ export class InsertGuest {
   }
 
   submit(): void {
+    // Chiamo il backend con i dati del form. Se va a buon fine:
+    // - mostro il messaggio di successo
+    // - emetto l'id del nuovo ospite al padre (per usarlo subito nella prenotazione)
+    // - azzero il form per permettere un eventuale inserimento successivo
     this.guestService.insert(this.guest).subscribe({
       next: (createdGuest) => {
         this.success.set(true);
@@ -64,6 +68,8 @@ export class InsertGuest {
   }
 
   reset(): void {
+    // Ripristina il form allo stato iniziale senza chiuderlo:
+    // utile se l'utente vuole correggere i dati senza dover riaprire il toggle.
     this.guest = this.emptyGuest();
     this.success.set(false);
     this.errorMsg.set('');
@@ -73,6 +79,6 @@ export class InsertGuest {
   // Preferisco un metodo al posto di un letterale ripetuto: se i campi
   // dell'interfaccia Guest cambiano, devo aggiornare solo qui.
   private emptyGuest(): Guest {
-    return { firstName: '', lastName: '', ssn: '', address: '', city: '' };
+    return {firstName: '', lastName: '', ssn: '', address: '', city: ''};
   }
 }

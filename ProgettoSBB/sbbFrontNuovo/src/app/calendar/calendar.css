@@ -1,3 +1,4 @@
+/* Stili del layout principale: il resto è nei CSS dei componenti figli */
 :host {
   display: block;
   background-color: #fff;

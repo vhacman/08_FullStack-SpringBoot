@@ -1,7 +1,7 @@
-import { Component, signal } from '@angular/core';
-import { TodaysArrivals } from '../todays-arrivals/todays-arrivals';
-import { TodaysDepartures } from '../todays-departures/todays-departures';
-import { InsertBooking } from '../insert-booking/insert-booking';
+import {Component, signal} from '@angular/core';
+import {TodaysArrivals} from '../todays-arrivals/todays-arrivals';
+import {TodaysDepartures} from '../todays-departures/todays-departures';
+import {InsertBooking} from '../insert-booking/insert-booking';
 
 /**
  * Homepage dell'applicazione: mostra gli arrivi e le partenze di oggi
@@ -16,8 +16,11 @@ import { InsertBooking } from '../insert-booking/insert-booking';
   styleUrl: './home-page.css',
 })
 export class HomePage {
+  // Il Signal controlla la visibilità del modal nel template con @if(showBookingModal()).
+  // Usiamo due metodi separati (open/close) invece di un toggle perché il template
+  // ha bisogno di chiamare esplicitamente la chiusura da più punti (pulsante X, overlay).
   showBookingModal = signal(false);
 
-  openBookingModal():  void { this.showBookingModal.set(true);  }
+  openBookingModal(): void { this.showBookingModal.set(true); }
   closeBookingModal(): void { this.showBookingModal.set(false); }
 }

@@ -13,7 +13,8 @@ import { Booking } from '../../model/hotel.entities';
 @Injectable({
   providedIn: 'root',
 })
-export class BookingService {
+export class BookingService
+{
   private http = inject(HttpClient);
   private apiURL = 'http://localhost:8080/sbb/api/bookings';
 
@@ -57,13 +58,14 @@ export class BookingService {
    * @param data dati della prenotazione (guest, room, date, prezzo, note)
    */
   insert(data: {
-        guestId: number;
-        roomId: number;
-        checkIn: string;
-        checkOut: string;
-        price: number;
-        notes: string;
-        cleaned: boolean }): Observable<void> {
-        return this.http.post<void>(this.apiURL, data);
-    }
+    guestId:  number;
+    roomId:   number;
+    checkIn:  string;
+    checkOut: string;
+    price:    number;
+    notes:    string;
+    cleaned:  boolean;
+  }): Observable<void> {
+    return this.http.post<void>(this.apiURL, data);
+  }
 }

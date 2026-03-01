@@ -3,23 +3,33 @@
   <div class="arrivals-header-box">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <h2 class="page-title" style="margin: 0;">Arrivi di Oggi</h2>
+      <!-- (click)="refresh()" richiama loadBookings() dal server:
+           utile se un altro operatore ha modificato qualcosa nel frattempo. -->
       <button class="refresh-btn" (click)="refresh()" title="Aggiorna">
         <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
   </div>
 
-  <!-- Stato vuoto -->
+  <!-- Stato vuoto: mostrato solo se entrambe le liste sono vuote.
+       Controlliamo sia bookings() che checkedInBookings() perché
+       potrebbe non esserci nessun PENDING ma ci sono già dei CHECKED_IN. -->
   @if (bookings().length === 0 && checkedInBookings().length === 0) {
     <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
       <p>Nessun arrivo previsto per oggi.</p>
     </div>
   }
 
-  <!-- Lista Arrivi in attesa di check-in -->
+  <!-- Lista arrivi in attesa di check-in (status = PENDING).
+       @for itera il Signal bookings(); track booking.id dice ad Angular
+       quale chiave usare per identificare ogni elemento nella lista:
+       evita che ricrei tutti i DOM node ad ogni aggiornamento. -->
   @if (bookings().length > 0) {
     <div class="bookings-list">
       @for (booking of bookings(); track booking.id) {
+        <!-- (checkInDone) è l'output di BookingRow: viene emesso quando l'operatore
+             fa il check-in. Il padre lo intercetta per spostare la card
+             dalla lista PENDING a quella CHECKED_IN senza ricaricare tutto. -->
         <app-booking-row [booking]="booking" (checkInDone)="onCheckInDone($event)"></app-booking-row>
       }
     </div>
@@ -27,20 +37,29 @@
 
 </div>
 
-<!-- Sezione Checked In separata -->
+<!-- Sezione "Checked In" collassabile: separata visivamente dalla lista principale.
+     Appare solo se esiste almeno una prenotazione già accettata oggi. -->
 @if (checkedInBookings().length > 0) {
   <div class="checked-in-section" style="padding: 0 8px 8px; margin-top: 16px;">
     <div class="collapsible-section">
 
+      <!-- Header cliccabile: (click)="toggleCheckedIn()" inverte il Signal
+           checkedInExpanded, che controlla il @if sotto. -->
       <div class="collapsible-header green" (click)="toggleCheckedIn()">
         <span>Checked In</span>
+        <!-- Il badge mostra quante prenotazioni sono già state accettate. -->
         <span class="count-badge green-badge">{{ checkedInBookings().length }}</span>
+        <!-- Freccia che cambia direzione in base allo stato espanso/collassato. -->
         <span class="chevron">@if (checkedInExpanded()) { ▲ } @else { ▼ }</span>
       </div>
 
+      <!-- La lista viene renderizzata solo se la sezione è espansa:
+           questo evita di creare DOM inutile quando la sezione è chiusa. -->
       @if (checkedInExpanded()) {
         <div class="expanded-list">
           @for (b of checkedInBookings(); track b.id) {
+            <!-- Nessun output (checkInDone): gli ospiti già CHECKED_IN
+                 non hanno il pulsante check-in nella card. -->
             <app-booking-row [booking]="b"></app-booking-row>
           }
         </div>

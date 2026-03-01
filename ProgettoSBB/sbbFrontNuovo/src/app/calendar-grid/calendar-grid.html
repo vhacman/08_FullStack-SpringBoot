@@ -1,0 +1,29 @@
+<!-- Griglia 7 colonne: intestazione giorni + celle del mese -->
+<div class="calendar-grid">
+
+  <!-- Intestazione giorni della settimana -->
+  @for (wd of weekDays; track wd) {
+    <div class="weekday-header">{{ wd }}</div>
+  }
+
+  <!-- Celle giorni: la classe CSS è calcolata da getDayClass() in base allo stato
+       (oggi, chiuso, occupato, in selezione drag). mousedown avvia il drag,
+       mouseenter lo aggiorna in tempo reale. mouseup è gestito da @HostListener
+       sull'intero documento per catturare il rilascio ovunque. -->
+  @for (day of calendarDays(); track day.dateStr) {
+    <div
+      [class]="getDayClass(day)"
+      [class.today]="day.isToday"
+      (mousedown)="onDayMouseDown(day, $event)"
+      (mouseenter)="onDayMouseEnter(day)"
+    >
+      <span class="day-number">{{ day.day }}</span>
+      @if (day.isClosed) {
+        <span class="closed-label">Chiuso</span>
+      } @else if (day.isCurrentMonth && day.totalRooms > 0 && day.occupiedRooms > 0) {
+        <span class="occ-label">{{ day.occupiedRooms }}/{{ day.totalRooms }}</span>
+      }
+    </div>
+  }
+
+</div>

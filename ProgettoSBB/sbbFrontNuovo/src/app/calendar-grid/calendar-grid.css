@@ -1,0 +1,72 @@
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  user-select: none;
+}
+
+.weekday-header {
+  text-align: center;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #5a7a96;
+  text-transform: uppercase;
+  padding: 6px 0;
+}
+
+.day {
+  min-height: 60px;
+  border-radius: 6px;
+  border: 1px solid #bcd8f0;
+  background-color: #fff;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.day:hover             { box-shadow: 0 0 0 2px #a8d4f5; }
+.day.other-month       { background-color: #f5f9fe; border-color: #dceef8; cursor: default; }
+.day.other-month:hover { box-shadow: none; }
+.day.today             { border: 2px solid #3a82c4; }
+.day.partial           { background-color: #fff8ee; border-color: #f0d0a0; }
+.day.full              { background-color: #fff0f0; border-color: #f0b8b8; }
+.day.selecting         { background-color: #dbeeff; border-color: #3a82c4; }
+.day.closed            { background-color: #fff0f0; border-color: #f0b8b8; }
+
+.day-number {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a3650;
+  line-height: 1;
+}
+
+.day.other-month .day-number { color: #b0c8e0; }
+.day.today       .day-number { color: #3a82c4; font-weight: 700; }
+
+.occ-label {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #5a7a96;
+  background-color: rgba(58, 130, 196, 0.08);
+  border-radius: 8px;
+  padding: 1px 5px;
+}
+
+.day.full    .occ-label { color: #c94040; background-color: rgba(201, 64, 64, 0.10); }
+.day.partial .occ-label { color: #e09030; background-color: rgba(224, 144, 48, 0.10); }
+
+.closed-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #c94040;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

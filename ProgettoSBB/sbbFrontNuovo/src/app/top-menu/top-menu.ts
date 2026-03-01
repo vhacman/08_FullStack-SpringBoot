@@ -1,7 +1,7 @@
 import {RouterLink} from '@angular/router';
 import {TitleCasePipe} from '@angular/common';
 import {Component, computed, inject, signal} from '@angular/core';
-import { UserLogicService } from '../APIservices/user/user-logic-service';
+import {UserLogicService} from '../APIservices/user/user-logic-service';
 
 /**
  * Barra superiore dell'applicazione. Mostra nome hotel e utente loggato
@@ -21,20 +21,19 @@ export class TopMenu {
 
   loggedUser = this.userLogicService.loggedUser;
 
+  // showProfile controlla la visibilità del popup nel template con @if(showProfile()).
   showProfile = signal(false);
 
   toggleProfile() {
+    // Inverte il booleano: se il popup era visibile lo chiude, altrimenti lo apre.
+    // update(v => !v) è il modo idiomatico Signals per il toggle senza leggere prima il valore.
     this.showProfile.update(v => !v);
   }
 
   // computed() costruisce la stringa "Nome Cognome" reagendo al Signal loggedUser.
   // Mentre l'utente non è ancora arrivato mostra "loading", evitando errori di null.
-  // Ho usato computed() invece di una proprietà normale perché si aggiorna
-  // automaticamente quando loggedUser() cambia, senza bisogno di chiamate manuali.
   userInfo = computed(() => this.loggedUser() == null
-                                                  ? 'loading'
-                                                  : this.loggedUser()?.firstName + ' ' + this.loggedUser()?.lastName
+    ? 'loading'
+    : this.loggedUser()?.firstName + ' ' + this.loggedUser()?.lastName
   );
-
-
 }

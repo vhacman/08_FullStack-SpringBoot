@@ -22,7 +22,8 @@ type FilterOption = 'TUTTI' | 'PENDING' | 'CHECKED_IN' | 'CHECKED_OUT' | 'COMPLE
   templateUrl: './booking-list.html',
   styleUrl: './booking-list.css',
 })
-export class BookingList {
+export class BookingList
+{
   private bookingService = inject(BookingService);
   private userLogicService = inject(UserLogicService);
   private loggedUser = this.userLogicService.loggedUser;
@@ -36,7 +37,8 @@ export class BookingList {
 
   // localCompare -> values returns a number indicating whether this string comes before,
   // or after, or is the same as the given string in sort order
-  filtered = computed(() => {
+  filtered = computed(() =>
+  {
     const filterOption = this.activeFilter();
     const sorted = [...this.bookings()].sort((a, b) =>
       String(b.checkIn).localeCompare(String(a.checkIn))
@@ -44,7 +46,8 @@ export class BookingList {
     return filterOption === 'TUTTI' ? sorted : sorted.filter(b => b.status === filterOption);
   });
 
-  readonly filters: { label: string; value: FilterOption }[] = [
+  readonly filters: { label: string; value: FilterOption }[] =
+  [
     { label: 'Tutti', value: 'TUTTI' },
     { label: 'In attesa', value: 'PENDING' },
     { label: 'Check-in', value: 'CHECKED_IN' },
@@ -53,8 +56,10 @@ export class BookingList {
     { label: 'Cancellate', value: 'CANCELED' },
   ];
 
-  constructor() {
-    effect(() => {
+  constructor()
+  {
+    effect(() =>
+    {
       const user = this.loggedUser();
       if (user && user.hotel?.id) {
         this.loadBookings(user.hotel.id);
@@ -62,7 +67,8 @@ export class BookingList {
     });
   }
 
-  private loadBookings(hotelId: number): void {
+  private loadBookings(hotelId: number): void
+  {
     this.bookingService.getByHotel(hotelId).subscribe({
       next: list => this.bookings.set(list),
       error: err => console.error('Errore caricamento prenotazioni:', err),
@@ -73,18 +79,21 @@ export class BookingList {
    * @param status filtro di cui contare le prenotazioni
    * @returns numero di prenotazioni per quello stato (o totale se 'TUTTI')
    */
-  countFor(status: FilterOption): number {
+  countFor(status: FilterOption): number
+  {
     if (status === 'TUTTI') return this.bookings().length;
     return this.bookings().filter(b => b.status === status).length;
   }
 
   /** @param f filtro da attivare */
-  setFilter(f: FilterOption): void {
+  setFilter(f: FilterOption): void
+  {
     this.activeFilter.set(f);
   }
 
   /** Ricarica le prenotazioni dal server (es. dopo un'azione su una riga). */
-  refresh(): void {
+  refresh(): void
+  {
     const user = this.loggedUser();
     if (user && user.hotel?.id) {
       this.loadBookings(user.hotel.id);

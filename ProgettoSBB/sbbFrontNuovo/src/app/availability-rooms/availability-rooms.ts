@@ -22,29 +22,26 @@ type RoomFilter = 'TUTTI' | 'AVAILABLE' | 'OCCUPIED' | 'TO_CLEAN';
   templateUrl: './availability-rooms.html',
   styleUrl: './availability-rooms.css',
 })
-export class AvailabilityRooms {
-
+export class AvailabilityRooms
+{
   // SERVIZI
-  private roomService    = inject(RoomService);
+  private roomService = inject(RoomService);
   private bookingService = inject(BookingService);
-  private userService    = inject(UserLogicService);
-
+  private userService = inject(UserLogicService);
   // STATO CAMERE E PRENOTAZIONI
-  rooms    = signal<Room[]>([]);
+  rooms = signal<Room[]>([]);
   bookings = signal<Booking[]>([]);
-  loading  = signal(true);
-
+  loading = signal(true);
   // FILTRI
   activeFilter = signal<RoomFilter>('TUTTI');
-
-  filtered = computed(() => {
+  filtered = computed(() =>
+  {
     const f = this.activeFilter();
     return f === 'TUTTI' ? this.rooms() : this.rooms().filter(r => r.status === f);
   });
 
-  readonly filters: {
-    label: string;
-    value: RoomFilter }[] = [
+  readonly filters: { label: string; value: RoomFilter }[] =
+  [
     { label: 'Tutte',       value: 'TUTTI'     },
     { label: 'Disponibili', value: 'AVAILABLE' },
     { label: 'Occupate',    value: 'OCCUPIED'  },
@@ -55,31 +52,33 @@ export class AvailabilityRooms {
   // Un modal è una finestra che appare sopra la pagina principale per raccogliere
   // input dall'utente senza cambiare schermata. Lo chiamiamo "modal" perché blocca
   // l'interazione con il resto della pagina finché non viene chiuso o confermato.
-  showModal       = signal(false);
-  selectedRoom    = signal<Room | null>(null);
-  guestId         = signal<number | null>(null);
-  checkIn         = signal<string>('');
-  checkOut        = signal<string>('');
-  price           = signal<number>(0);
-  notes           = signal<string>('');
+  showModal = signal(false);
+  selectedRoom = signal<Room | null>(null);
+  guestId = signal<number | null>(null);
+  checkIn = signal<string>('');
+  checkOut = signal<string>('');
+  price = signal<number>(0);
+  notes = signal<string>('');
   showInsertGuest = signal(false);
-  bookingSuccess  = signal(false);
-  bookingError    = signal<string>('');
+  bookingSuccess = signal(false);
+  bookingError = signal<string>('');
 
   readonly today = new Date().toISOString().split('T')[0];
 
   // INIZIALIZZAZIONE
-  constructor() {
+  constructor()
+  {
     // effect() reagisce ogni volta che loggedUser() cambia.
     // Questo risolve il problema del timing: ngOnInit leggerebbe il Signal
     // una volta sola, quasi sempre quando è ancora null (HTTP non tornata).
     // Con effect() invece carichiamo i dati non appena l'utente è disponibile.
-    effect(() => {
+    effect(() =>
+    {
       const hotelId = this.userService.loggedUser()?.hotel?.id;
       if (!hotelId) return;
-
       this.roomService.findAll().subscribe({
-        next: rooms => {
+        next: rooms =>
+        {
           this.rooms.set(rooms.filter(r => r.hotelId === hotelId));
           this.loading.set(false);
         },
@@ -87,7 +86,7 @@ export class AvailabilityRooms {
       });
 
       this.bookingService.getByHotel(hotelId).subscribe({
-        next:  bookings => this.bookings.set(bookings),
+        next: bookings => this.bookings.set(bookings),
         error: err => console.error('Errore caricamento prenotazioni', err)
       });
     });
@@ -95,8 +94,10 @@ export class AvailabilityRooms {
 
   // LOGICA CAMERE
   /** Conta le camere per un dato stato (o tutte se TUTTI). */
-  countFor(status: RoomFilter): number {
-    if (status === 'TUTTI') return this.rooms().length;
+  countFor(status: RoomFilter): number
+  {
+    if (status === 'TUTTI')
+      return this.rooms().length;
     return this.rooms().filter(r => r.status === status).length;
   }
 
@@ -105,7 +106,8 @@ export class AvailabilityRooms {
   }
 
   /** True se la camera ha almeno una prenotazione attiva (non conclusa né annullata). */
-  hasActiveBooking(roomId: number): boolean {
+  hasActiveBooking(roomId: number): boolean
+  {
     return this.bookings().some(b =>
       b.room?.id === roomId &&
       b.status !== 'COMPLETE' &&

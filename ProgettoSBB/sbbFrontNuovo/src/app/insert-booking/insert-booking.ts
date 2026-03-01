@@ -38,19 +38,19 @@ export class InsertBooking {
   }
 
   // STATO
-  guestId      = signal<number | null>(null);
+  guestId = signal<number | null>(null);
   selectedRoom = signal<Room | null>(null);
-  checkIn      = signal<string>(this.today);
-  checkOut     = signal<string>(this.getTomorrow());
-  price        = signal<number>(0);
+  checkIn = signal<string>(this.today);
+  checkOut = signal<string>(this.getTomorrow());
+  price = signal<number>(0);
 
   showInsertGuest = signal(false);
-  success         = signal<boolean>(false);
-  errorMessage    = signal<string>('');
+  success = signal<boolean>(false);
+  errorMessage = signal<string>('');
   // Incrementato ogni volta che si vuole resettare i componenti figli:
   // GuestPicker e RoomPicker osservano questo valore con un effect()
   // e si azzerano automaticamente quando cambia, senza bisogno di viewChild().
-  resetTrigger    = signal(0);
+  resetTrigger = signal(0);
 
   // COMPUTED
   // true solo se guestId è un numero valido (non null e non 0):

@@ -1,6 +1,4 @@
-<!-- Pagina Ospiti: header con titolo e pulsante, poi modal per l'inserimento.
-     [autoOpen]="true" viene passato a InsertGuest: il suo effect() lo riceve
-     e apre automaticamente il form senza che l'utente debba cliccare il toggle. -->
+<!--Pagina Ospiti: header con titolo e pulsante, lista ospiti, poi modal per l'inserimento. -->
 <div class="w3-container" style="padding: 0 8px 8px; margin-top: 16px;">
 
   <div class="guests-header-box">
@@ -10,10 +8,49 @@
     </div>
   </div>
 
+  <!-- Stato vuoto -->
+  @if (guests().length === 0) {
+    <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
+      <p>Nessun ospite registrato.</p>
+    </div>
+  }
+
+  <!-- Lista ospiti: @for itera il Signal guests() aggiornato da loadGuests().
+       Viene ricaricato automaticamente dopo ogni nuova creazione. -->
+  <div class="guests-list">
+    @for (guest of guests(); track guest.id) {
+      <div class="guest-card w3-card-2">
+        <div class="guest-name">
+          <i class="bi bi-person-fill"></i>
+          {{ guest.lastName }} {{ guest.firstName }}
+        </div>
+        <div class="guest-card-body">
+          <div class="guest-details">
+            <span class="guest-detail-item">
+              <span class="detail-label">CF</span>
+              <span class="detail-value">{{ guest.ssn }}</span>
+            </span>
+            <span class="guest-detail-item">
+              <span class="detail-label">Città</span>
+              <span class="detail-value">{{ guest.city }}</span>
+            </span>
+            <span class="guest-detail-item">
+              <span class="detail-label">Indirizzo</span>
+              <span class="detail-value">{{ guest.address }}</span>
+            </span>
+          </div>
+          <!-- requestDelete() non elimina subito: imposta guestToDelete e apre il popup. -->
+          <button class="btn-delete" (click)="requestDelete(guest)" title="Rimuovi ospite">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
 </div>
 
-<!-- (click)="$event.stopPropagation()" sul contenuto del modal impedisce
-     che il click al suo interno propaghi fino all'overlay e chiuda il modal. -->
+<!-- Modal di inserimento ospite. -->
 @if (showModal()) {
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal-content w3-card-2" (click)="$event.stopPropagation()">
@@ -22,6 +59,28 @@
         <button class="modal-close" (click)="closeModal()">&times;</button>
       </div>
       <app-insert-guest [autoOpen]="true" (guestCreated)="onGuestCreated($event)" />
+    </div>
+  </div>
+}
+
+<!-- Popup di conferma eliminazione.
+     guestToDelete() è non-null solo quando l'utente ha cliccato il cestino:
+     il @if lo rende visibile solo in quel momento. -->
+@if (guestToDelete()) {
+  <div class="modal-overlay" (click)="cancelDelete()">
+    <div class="confirm-box w3-card-2" (click)="$event.stopPropagation()">
+      <p class="confirm-title">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        Eliminare ospite?
+      </p>
+      <p class="confirm-body">
+        <strong>{{ guestToDelete()!.lastName }} {{ guestToDelete()!.firstName }}</strong>
+        potrebbe avere prenotazioni collegate che verranno eliminate insieme all'ospite.
+      </p>
+      <div class="confirm-actions">
+        <button class="btn-cancel-confirm" (click)="cancelDelete()">Annulla</button>
+        <button class="btn-confirm-delete" (click)="confirmDelete()">Elimina</button>
+      </div>
     </div>
   </div>
 }

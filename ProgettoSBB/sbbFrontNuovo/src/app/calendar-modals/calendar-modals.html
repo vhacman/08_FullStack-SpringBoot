@@ -1,0 +1,146 @@
+<!-- ── Modal: nuova chiusura ── -->
+@if (showClosureModal()) {
+  <div class="modal-overlay" (mousedown)="cancelClosure.emit()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Chiudi Hotel</span>
+        <button class="modal-close" (click)="cancelClosure.emit()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-info">
+          Periodo selezionato:
+          <strong>{{ pendingStart() }}</strong> → <strong>{{ pendingEnd() }}</strong>
+        </p>
+        <div class="form-group">
+          <label for="closure-reason">Motivazione (opzionale)</label>
+          <input
+            id="closure-reason"
+            class="form-input"
+            type="text"
+            placeholder="Es. Ristrutturazione, Ferie…"
+            [value]="closureReason()"
+            (input)="closureReasonChange.emit($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      @if (closureError()) {
+        <p class="closure-error">{{ closureError() }}</p>
+      }
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelClosure.emit()">Annulla</button>
+        <button class="btn-confirm" (click)="confirmClosure.emit()">Conferma chiusura</button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ── Modal: riapri range ── -->
+@if (showReopenModal()) {
+  <div class="modal-overlay" (mousedown)="cancelReopen.emit()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Riapri Dates</span>
+        <button class="modal-close" (click)="cancelReopen.emit()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-info">
+          Riaprire il periodo
+          <strong>{{ pendingStart() }}</strong> → <strong>{{ pendingEnd() }}</strong>?
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelReopen.emit()">Annulla</button>
+        <button class="btn-confirm" (click)="confirmReopen.emit()">Riapri</button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ── Modal: elimina chiusura ── -->
+@if (showDeleteModal()) {
+  <div class="modal-overlay" (mousedown)="cancelDelete.emit()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Rimuovi Chiusura</span>
+        <button class="modal-close" (click)="cancelDelete.emit()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-info">
+          Riaprire il giorno <strong>{{ pendingStart() }}</strong>?
+          @if (closureToDelete()?.startDate !== closureToDelete()?.endDate) {
+            <br><span style="font-size:0.78rem">La chiusura <strong>{{ closureToDelete()?.startDate }}</strong> → <strong>{{ closureToDelete()?.endDate }}</strong> verrà spezzata di conseguenza.</span>
+          }
+          @if (closureToDelete()?.reason) {
+            <br>Motivazione: <em>{{ closureToDelete()?.reason }}</em>
+          }
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cancelDelete.emit()">Annulla</button>
+        <button class="btn-danger" (click)="confirmDelete.emit()">Rimuovi chiusura</button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- ── Modal: dettaglio giorno ── -->
+@if (showDayDetailModal()) {
+  <div class="modal-overlay" (mousedown)="closeDayDetailModal.emit()">
+    <div class="modal-box" (mousedown)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <span class="modal-title">Dettagli {{ selectedDay()?.dateStr }}</span>
+        <button class="modal-close" (click)="closeDayDetailModal.emit()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="day-summary">
+          <span class="summary-item">
+            <span class="summary-label">Prenotazioni:</span>
+            <span class="summary-value">{{ dayBookings().length }} / {{ selectedDay()?.totalRooms }}</span>
+          </span>
+          @if (selectedDay()?.isClosed) {
+            <span class="summary-badge closed-badge">Hotel Chiuso</span>
+          }
+        </div>
+
+        @if (dayBookings().length > 0) {
+          <div class="bookings-list">
+            <h4 class="list-title">Guest prenotati</h4>
+            @for (booking of dayBookings(); track booking.id) {
+              <div class="booking-item">
+                <div class="booking-room">Camera {{ booking.room.name }}</div>
+                <div class="booking-dates">{{ booking.checkIn | date:'dd/MM' }} - {{ booking.checkOut | date:'dd/MM' }}</div>
+                <div class="booking-guest">{{ booking.guest.firstName }} {{ booking.guest.lastName }}</div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-bookings">Nessuna prenotazione per questo giorno</p>
+        }
+
+        <div class="closure-action">
+          @if (selectedDay()?.isClosed) {
+            <p class="closure-info">L'hotel è chiuso in questo giorno</p>
+            <button class="btn-confirm" (click)="openDeleteForDay.emit()">Rimuovi chiusura</button>
+          } @else {
+            <button class="btn-confirm" (click)="openClosureForDay.emit()">Chiudi hotel per questo giorno</button>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+}

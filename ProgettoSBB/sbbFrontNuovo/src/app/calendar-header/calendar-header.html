@@ -1,0 +1,23 @@
+<!-- Barra superiore: navigazione mese, legenda, hint d'uso -->
+<div class="cal-header-box">
+  <div class="month-nav">
+    <h3 class="calendar-subtitle">Calendario</h3>
+    <div class="month-row">
+      <button class="nav-arrow" (click)="prevMonth.emit()">&#8249;</button>
+      <span class="month-label">{{ monthLabel() }}</span>
+      <button class="nav-arrow" (click)="nextMonth.emit()">&#8250;</button>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot full"></span> Tutto esaurito</span>
+  <span class="legend-item"><span class="legend-dot partial"></span> Parzialmente occupato</span>
+  <span class="legend-item"><span class="legend-dot free"></span> Disponibile</span>
+  <span class="legend-item"><span class="legend-dot closed"></span> Hotel chiuso</span>
+</div>
+
+<p class="usage-hint">
+  Clicca o trascina le date per segnare un periodo di chiusura.
+  Clicca su una data già chiusa per rimuoverla.
+</p>

@@ -1,0 +1,81 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(26, 54, 80, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background-color: #fff;
+  border: 1px solid #bcd8f0;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 24px rgba(58, 130, 196, 0.18);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background-color: #e3f0fb;
+  border-bottom: 1px solid #bcd8f0;
+  border-radius: 10px 10px 0 0;
+}
+
+.modal-title  { font-family: 'IBM Plex Sans', sans-serif; font-weight: 700; font-size: 1rem; color: #1a3650; }
+.modal-close  { background: none; border: none; font-size: 1.4rem; line-height: 1; cursor: pointer; color: #5a7a96; padding: 0 4px; transition: color 0.15s; }
+.modal-close:hover { color: #1a3650; }
+
+.modal-body   { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.modal-info   { font-size: 0.85rem; color: #5a7a96; font-family: 'IBM Plex Sans', sans-serif; }
+.modal-info strong { color: #1a3650; }
+
+.form-group       { display: flex; flex-direction: column; gap: 4px; }
+.form-group label { font-size: 0.7rem; font-weight: 700; color: #5a7a96; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.form-input {
+  border: 1px solid #bcd8f0;
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  color: #1a3650;
+  background-color: #f8fbff;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.form-input:focus { border-color: #3a82c4; }
+
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 18px; border-top: 1px solid #e3f0fb; }
+.closure-error { font-size: 0.82rem; color: #c94040; background-color: #fff0f0; border: 1px solid #f0b8b8; border-radius: 4px; padding: 8px 14px; margin: 0 18px 4px; }
+
+.btn-confirm       { background-color: #3a82c4; color: #fff; border: none; border-radius: 4px; padding: 7px 18px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+.btn-confirm:hover { background-color: #2d6ca8; }
+.btn-danger        { background-color: #c94040; color: #fff; border: none; border-radius: 4px; padding: 7px 18px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+.btn-danger:hover  { background-color: #a83030; }
+.btn-cancel        { background: none; border: 1px solid #bcd8f0; border-radius: 4px; color: #5a7a96; padding: 7px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+.btn-cancel:hover  { border-color: #3a82c4; color: #1a3650; }
+
+.day-summary   { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background-color: #fff; border-radius: 6px; margin-bottom: 12px; }
+.summary-item  { display: flex; gap: 8px; font-family: 'IBM Plex Sans', sans-serif; }
+.summary-label { font-size: 0.8rem; color: #5a7a96; }
+.summary-value { font-size: 0.85rem; font-weight: 700; color: #1a3650; }
+.summary-badge { font-size: 0.65rem; font-weight: 700; border-radius: 10px; padding: 2px 10px; color: #fff; }
+.closed-badge  { background-color: #c94040; }
+
+.bookings-list { margin-bottom: 14px; }
+.list-title    { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.75rem; font-weight: 700; color: #5a7a96; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; }
+.booking-item  { padding: 8px 10px; border: 1px solid #bcd8f0; border-radius: 6px; margin-bottom: 6px; background-color: #f8fbff; }
+.booking-room  { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.82rem; font-weight: 700; color: #1a3650; }
+.booking-dates { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.72rem; color: #5a7a96; }
+.booking-guest { font-family: 'IBM Plex Sans', sans-serif; font-size: 0.78rem; color: #3a82c4; font-weight: 600; }
+.no-bookings   { font-size: 0.85rem; color: #5a7a96; font-style: italic; margin: 0 0 14px; }
+
+.closure-action { border-top: 1px solid #e3f0fb; padding-top: 14px; text-align: center; }
+.closure-info   { font-size: 0.8rem; color: #c94040; margin: 0 0 10px; }

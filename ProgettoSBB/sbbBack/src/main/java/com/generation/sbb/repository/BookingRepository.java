@@ -2,6 +2,7 @@ package com.generation.sbb.repository;
 
 import com.generation.sbb.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -28,5 +29,18 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findByCheckOutAndHotelId(LocalDate checkOut, int hotelId);
 
     List<Booking> findByRoomHotelId(int hotelId);
+    //      Gab 01/03/26
+    // inserita perche aggiunta lista di guest al front end visibile nella sezione ospiti
+    // con possibilità di rimuovere un ospite dalla lista.
+    // Soft delete: invece di rimuovere le righe dal DB, imposta deleted = true.
+    // In questo modo le prenotazioni restano come traccia storica ma non compaiono
+    // più nelle query normali (filtrate da @SQLRestriction su Booking).
+    // @Modifying è necessario perché senza di esso Spring Data JPA assume che ogni
+    // @Query sia una SELECT e lancia eccezione a runtime su UPDATE/DELETE.
+    // Con @Modifying chiama executeUpdate() invece di getResultList(), e invalida
+    // la cache di primo livello di Hibernate così le entità in memoria restano allineate.
+    @Modifying
+    @Query("UPDATE Booking b SET b.deleted = true WHERE b.guest.id = ?1")
+    void softDeleteByGuestId(int guestId);
 
 }

@@ -15,7 +15,8 @@ import { BookingService } from '../APIservices/booking/booking-service';
   templateUrl: './booking-row.html',
   styleUrl: './booking-row.css',
 })
-export class BookingRow {
+export class BookingRow
+{
 
   // SERVIZI
   private bookingService = inject(BookingService);
@@ -24,19 +25,25 @@ export class BookingRow {
   // model() è diverso da input(): permette al padre di passare la prenotazione
   // e al figlio di aggiornarla localmente quando cambia stato (es. dopo check-in).
   // Senza model(), dovrei emettere un evento e lasciare che il padre aggiorni i dati.
-  booking      = model.required<Booking>();
-  checkInDone  = output<Booking>();
+  booking = model.required<Booking>();
+  checkInDone = output<Booking>();
   completeDone = output<Booking>();
 
   // STATO PRIVACY
   // Signals booleani per il toggle privacy: false = nascosto (default)
-  ssnVisible     = signal(false);
+  ssnVisible = signal(false);
   addressVisible = signal(false);
 
   /** Mostra o nasconde il codice fiscale dell'ospite. */
-  toggleSsn():     void { this.ssnVisible.update(v => !v);     }
+  toggleSsn():     void
+  {
+    this.ssnVisible.update(v => !v);
+  }
   /** Mostra o nasconde l'indirizzo dell'ospite. */
-  toggleAddress(): void { this.addressVisible.update(v => !v); }
+  toggleAddress(): void
+  {
+    this.addressVisible.update(v => !v);
+  }
 
   // LOGICA DATE
   // La data di oggi in formato YYYY-MM-DD: serve per confrontare le date
@@ -45,11 +52,20 @@ export class BookingRow {
   readonly today = new Date().toISOString().split('T')[0];
 
   /** True se la data coincide con oggi. */
-  isToday(date: any):  boolean { return String(date) === this.today; }
+  isToday(date: any):  boolean
+  {
+    return String(date) === this.today;
+  }
   /** True se la data è già passata. */
-  isPast(date: any):   boolean { return String(date) <   this.today; }
+  isPast(date: any):   boolean
+  {
+    return String(date) <   this.today;
+  }
   /** True se la data è nel futuro. */
-  isFuture(date: any): boolean { return String(date) >   this.today; }
+  isFuture(date: any): boolean
+  {
+    return String(date) >   this.today;
+  }
 
   // AZIONI PRENOTAZIONE
   // Dopo ogni transizione di stato, aggiorno la prenotazione localmente
@@ -59,10 +75,12 @@ export class BookingRow {
   // ma esattamente quel letterale, così il tipo rimane BookingStatus.
 
   /** Esegue il check-in: porta la prenotazione da PENDING a CHECKED_IN e notifica il padre. */
-  acceptBooking(): void {
+  acceptBooking(): void
+  {
     const id = this.booking().id ?? 0;
     this.bookingService.acceptBooking(id).subscribe({
-      next: () => {
+      next: () =>
+      {
         const updated = { ...this.booking(), status: 'CHECKED_IN' as const };
         this.booking.set(updated);
         this.checkInDone.emit(updated);
@@ -72,10 +90,12 @@ export class BookingRow {
   }
 
   /** Annulla la prenotazione: porta lo stato a CANCELED. */
-  cancel(): void {
+  cancel(): void
+  {
     const id = this.booking().id ?? 0;
     this.bookingService.cancel(id).subscribe({
-      next: () => {
+      next: () =>
+      {
         this.booking.set({ ...this.booking(), status: 'CANCELED' as const });
       },
       error: err => console.error('Errore cancel:', err)
@@ -83,10 +103,12 @@ export class BookingRow {
   }
 
   /** Esegue il check-out: porta la prenotazione da CHECKED_IN a CHECKED_OUT (camera da pulire). */
-  checkout(): void {
+  checkout(): void
+  {
     const id = this.booking().id ?? 0;
     this.bookingService.checkout(id).subscribe({
-      next: () => {
+      next: () =>
+      {
         this.booking.set({ ...this.booking(), status: 'CHECKED_OUT' as const });
       },
       error: err => console.error('Errore check-out:', err)
@@ -94,10 +116,12 @@ export class BookingRow {
   }
 
   /** Segna la prenotazione come COMPLETE (camera pulita e di nuovo disponibile) e notifica il padre. */
-  complete(): void {
+  complete(): void
+  {
     const id = this.booking().id ?? 0;
     this.bookingService.complete(id).subscribe({
-      next: () => {
+      next: () =>
+      {
         const updated = { ...this.booking(), status: 'COMPLETE' as const };
         this.booking.set(updated);
         this.completeDone.emit(updated);
@@ -108,14 +132,22 @@ export class BookingRow {
 
   // MAPPER STATO
   /** Mapper stato backend → testo italiano leggibile per l'interfaccia. */
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'PENDING':     return 'In attesa';
-      case 'CHECKED_IN':  return 'Ospite presente';
-      case 'CHECKED_OUT': return 'Da pulire';
-      case 'COMPLETE':    return 'Disponibile';
-      case 'CANCELED':    return 'Cancellata';
-      default:            return status;
+  getStatusText(status: string): string
+  {
+    switch (status)
+    {
+      case 'PENDING':
+        return 'In attesa';
+      case 'CHECKED_IN':
+        return 'Ospite presente';
+      case 'CHECKED_OUT':
+        return 'Da pulire';
+      case 'COMPLETE':
+        return 'Disponibile';
+      case 'CANCELED':
+        return 'Cancellata';
+      default:
+        return status;
     }
   }
 }

@@ -3,23 +3,32 @@
   <div class="departures-header-box">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <h2 class="page-title" style="margin: 0;">Partenze di Oggi</h2>
+      <!-- (click)="refresh()" richiama loadBookings() dal server:
+           utile se un altro operatore ha modificato qualcosa nel frattempo. -->
       <button class="refresh-btn" (click)="refresh()" title="Aggiorna">
         <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
   </div>
 
-  <!-- Stato vuoto -->
+  <!-- Stato vuoto: mostrato solo se entrambe le liste sono vuote.
+       Controlliamo sia toCleanBookings() che cleanedBookings() perché
+       potrebbe non esserci nulla da pulire ma ci sono già camere completate. -->
   @if (toCleanBookings().length === 0 && cleanedBookings().length === 0) {
     <div class="w3-panel w3-leftbar w3-padding-16 empty-state">
       <p>Nessuna partenza prevista per oggi.</p>
     </div>
   }
 
-  <!-- Lista partenze da pulire -->
+  <!-- Lista partenze da gestire (status = CHECKED_IN o CHECKED_OUT).
+       @for itera il Signal toCleanBookings(); track booking.id dice ad Angular
+       quale chiave usare per identificare ogni elemento: evita ricreazioni DOM inutili. -->
   @if (toCleanBookings().length > 0) {
     <div class="bookings-list">
       @for (booking of toCleanBookings(); track booking.id) {
+        <!-- (completeDone) è l'output di BookingRow: viene emesso quando l'operatore
+             segna la camera come pulita (COMPLETE). Il padre lo intercetta per
+             spostare la card da toCleanBookings a cleanedBookings localmente. -->
         <app-booking-row [booking]="booking" (completeDone)="onCleanedDone($event)"></app-booking-row>
       }
     </div>
@@ -27,20 +36,29 @@
 
 </div>
 
-<!-- Sezione Camere Pulite separata -->
+<!-- Sezione "Camere Pulite" collassabile: separata visivamente dalla lista principale.
+     Appare solo se esiste almeno una camera già completata oggi. -->
 @if (cleanedBookings().length > 0) {
   <div class="cleaned-section" style="padding: 0 8px 8px; margin-top: 16px;">
     <div class="collapsible-section">
 
+      <!-- Header cliccabile: (click)="toggleCleaned()" inverte il Signal
+           cleanedExpanded, che controlla il @if sotto. -->
       <div class="collapsible-header orange" (click)="toggleCleaned()">
         <span>Camere Pulite</span>
+        <!-- Il badge mostra quante camere sono già state completate. -->
         <span class="count-badge orange-badge">{{ cleanedBookings().length }}</span>
+        <!-- Freccia che cambia direzione in base allo stato espanso/collassato. -->
         <span class="chevron">@if (cleanedExpanded()) { ▲ } @else { ▼ }</span>
       </div>
 
+      <!-- La lista viene renderizzata solo se la sezione è espansa:
+           questo evita di creare DOM inutile quando la sezione è chiusa. -->
       @if (cleanedExpanded()) {
         <div class="expanded-list">
           @for (b of cleanedBookings(); track b.id) {
+            <!-- Nessun output (completeDone): le prenotazioni già COMPLETE
+                 non hanno il pulsante "pulizie eseguite" nella card. -->
             <app-booking-row [booking]="b"></app-booking-row>
           }
         </div>

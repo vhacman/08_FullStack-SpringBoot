@@ -37,6 +37,87 @@
   background-color: #2d6ca8;
 }
 
+/* ── Empty State ─────────────────────────────────────── */
+.empty-state {
+  color: #5a7a96;
+  font-size: 0.9rem;
+}
+
+/* ── Guests List ─────────────────────────────────────── */
+.guests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Guest Card ──────────────────────────────────────── */
+.guest-card {
+  background-color: #fff;
+  border: 1px solid #dce8f4;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guest-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a3650;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guest-name i {
+  color: #3a82c4;
+}
+
+.guest-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.guest-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-delete {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid #e0b0b0;
+  border-radius: 4px;
+  color: #c0392b;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-delete:hover {
+  background-color: #fdecea;
+}
+
+.guest-detail-item {
+  display: flex;
+  gap: 4px;
+  font-size: 0.82rem;
+}
+
+.detail-label {
+  color: #7a96b0;
+  font-weight: 600;
+}
+
+.detail-value {
+  color: #2c4a62;
+}
+
 /* ── Modal Overlay ───────────────────────────────────── */
 .modal-overlay {
   position: fixed;
@@ -73,6 +154,71 @@
   font-size: 1rem;
   font-weight: 700;
   color: #1a3650;
+}
+
+/* ── Confirm Delete Popup ────────────────────────────── */
+.confirm-box {
+  background: #fff;
+  border: 1px solid #f5c6c6;
+  border-radius: 10px;
+  padding: 24px 28px;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(192, 57, 43, 0.12);
+}
+
+.confirm-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c0392b;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm-body {
+  font-size: 0.88rem;
+  color: #2c4a62;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-cancel-confirm {
+  padding: 7px 16px;
+  border: 1px solid #bcd8f0;
+  border-radius: 4px;
+  background: #fff;
+  color: #2c4a62;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-cancel-confirm:hover {
+  background-color: #e3f0fb;
+}
+
+.btn-confirm-delete {
+  padding: 7px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #c0392b;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-confirm-delete:hover {
+  background-color: #a93226;
 }
 
 /* ── Modal Close Button ──────────────────────────────── */

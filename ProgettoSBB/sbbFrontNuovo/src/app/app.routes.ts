@@ -11,9 +11,9 @@ import { Calendar } from './calendar/calendar';
  * Il path '' (root) carica la homepage con gli arrivi/partenze del giorno.
  */
 export const routes: Routes = [
-    { path: '',          component: HomePage },
-    { path: 'bookings',  component: BookingList },
-    { path: 'rooms',     component: AvailabilityRooms },
-    { path: 'guests',    component: MenageGuests },
-    { path: 'calendar',  component: Calendar },
+  { path: '',         component: HomePage },
+  { path: 'bookings', component: BookingList },
+  { path: 'rooms',    component: AvailabilityRooms },
+  { path: 'guests',   component: MenageGuests },
+  { path: 'calendar', component: Calendar },
 ];

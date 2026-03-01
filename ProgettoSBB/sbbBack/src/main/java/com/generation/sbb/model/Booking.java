@@ -7,17 +7,22 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 /**
  * Prenotazione che lega un ospite (Guest) a una camera (Room) per un dato periodo.
  * Lo stato segue una macchina a stati rigida definita in BookingStatus:
  * non è modificabile direttamente, solo tramite i metodi di BookingService.
  * Ogni transizione aggiorna anche lo stato della camera associata (RoomStatus).
+ *
+ * Soft delete: come Guest, una prenotazione "eliminata" resta nel DB con deleted = true.
+ * @SQLRestriction la esclude automaticamente da tutte le query normali.
  */
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLRestriction("deleted = false")
 public class Booking {
 
     @Id
@@ -54,4 +59,7 @@ public class Booking {
     // alla camera (Room.status = TO_CLEAN / AVAILABLE) e non alla prenotazione.
     // Tenere "cleaned" qui era semanticamente sbagliato: la pulizia è una
     // proprietà della stanza, non di chi ci ha soggiornato.
+
+    // Soft delete: se true la prenotazione è "cancellata" ma la riga rimane nel DB.
+    private boolean deleted = false;
 }
