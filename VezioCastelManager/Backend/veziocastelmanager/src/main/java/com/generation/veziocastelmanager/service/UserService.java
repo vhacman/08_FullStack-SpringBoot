@@ -11,10 +11,11 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService
 {
-
     @Autowired
     private UserRepository  userRepository;
 
@@ -27,12 +28,29 @@ public class UserService
     @Autowired
     private JwtService      jwtService;
 
-    public UserDTO register(UserDTO userDTO)
+    public List<UserDTO> findAll()
+    {
+        return userMapper.toDTOs(userRepository.findAll());
+    }
+
+    public UserDTO findById(int id)
+    {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return userMapper.toDTO(user);
+    }
+
+    public UserDTO save(UserDTO userDTO)
     {
         userDTO.setPassword(passwordHasher.toHash(userDTO.getPassword()));
-        User    user    = userMapper.toEntity(userDTO);
-        user            = userRepository.save(user);
+        User user = userMapper.toEntity(userDTO);
+        user      = userRepository.save(user);
         return userMapper.toDTO(user);
+    }
+
+    public void deleteById(int id)
+    {
+        userRepository.deleteById(id);
     }
 
     public TokenDTO login(LoginDTO loginDTO)

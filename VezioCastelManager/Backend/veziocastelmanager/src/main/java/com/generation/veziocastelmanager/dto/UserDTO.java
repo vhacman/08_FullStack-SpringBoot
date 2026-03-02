@@ -8,24 +8,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
-
-    private int id;
-
+public class UserDTO
+{
+    private int         id;
     @NotBlank(message = "First name is required")
-    private String firstName;
-
+    private String      firstName;
     @NotBlank(message = "Last name is required")
-    private String lastName;
-
+    private String      lastName;
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    private String email;
-
+    private String      email;
     @NotBlank(message = "Password is required")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-
+    private String      password;
     @NotBlank(message = "Username is required")
-    private String username;
+    private String      username;
 }

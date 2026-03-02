@@ -1,9 +1,7 @@
 package com.generation.veziocastelmanager.api;
 
-import com.generation.veziocastelmanager.dto.LoginDTO;
-import com.generation.veziocastelmanager.dto.TokenDTO;
-import com.generation.veziocastelmanager.dto.UserDTO;
-import com.generation.veziocastelmanager.service.UserService;
+import com.generation.veziocastelmanager.dto.TicketDTO;
+import com.generation.veziocastelmanager.service.TicketService;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,33 +13,52 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vcm/api/users")
+@RequestMapping("/vcm/api/tickets")
 @CrossOrigin(origins = "http://localhost:4200")
-public class UserAPI
+public class TicketAPI
 {
     @Autowired
-    private UserService service;
-
+    private TicketService service;
 
     @GetMapping
-    public List<UserDTO> findAll()
+    public List<TicketDTO> findAll()
     {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public UserDTO findById(@PathVariable int id)
+    public TicketDTO findById(@PathVariable int id)
     {
         return service.findById(id);
     }
 
+    @GetMapping("/seller/{sellerId}")
+    public List<TicketDTO> findBySellerId(@PathVariable int sellerId)
+    {
+        return service.findBySellerId(sellerId);
+    }
+
+    @GetMapping("/visitor/{visitorId}")
+    public List<TicketDTO> findByVisitorId(@PathVariable int visitorId)
+    {
+        return service.findByVisitorId(visitorId);
+    }
+
+    @GetMapping("/date")
+    public List<TicketDTO> findByDate(@RequestParam LocalDate date)
+    {
+        return service.findByDate(date);
+    }
+
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody UserDTO dto)
+    public ResponseEntity<Object> save(@RequestBody TicketDTO dto)
     {
         try
         {
@@ -55,7 +72,7 @@ public class UserAPI
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody UserDTO dto)
+    public ResponseEntity<Object> update(@PathVariable int id, @RequestBody TicketDTO dto)
     {
         try
         {
@@ -74,11 +91,5 @@ public class UserAPI
     {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/login")
-    public TokenDTO login(@RequestBody LoginDTO loginDTO)
-    {
-        return service.login(loginDTO);
     }
 }

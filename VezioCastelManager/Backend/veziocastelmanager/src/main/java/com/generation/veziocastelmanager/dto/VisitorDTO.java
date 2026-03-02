@@ -9,16 +9,13 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class VisitorDTO {
-
-    private int id;
-
+public class VisitorDTO
+{
+    private int         id;
     @NotBlank(message = "First name is required")
-    private String firstName;
-
+    private String      firstName;
     @NotBlank(message = "Last name is required")
-    private String lastName;
-
+    private String      lastName;
     @NotNull(message = "Date of birth is required")
-    private LocalDate dateOfBirth;
+    private LocalDate   dateOfBirth;
 }
