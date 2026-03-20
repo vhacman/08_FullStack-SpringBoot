@@ -3,40 +3,39 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
-// io vengo eseguito in maniera trasparente a ogni REQUEST e modifico le request
 export const authInterceptor: HttpInterceptorFn = (req, next) =>
 {
   const router = inject(Router);
-  const token = localStorage.getItem('token'); // Recupera il JWT
-
-  let authReq = req;
 
   // --- AGGIUNTA DEL TOKEN (LOGICA IN USCITA) ---
-  if (token) {
-    // Cloniamo la richiesta originale per iniettare l'header Authorization
-    authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+  // se la richiesta è per il login, non aggiungere il token
+  // perché è lui che genera il token — non ne ha bisogno
+  let authReq = req;
+  if (!req.url.includes('/users/login'))
+  {
+    const token = localStorage.getItem('token');
+    if (token)
+    {
+      authReq = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
   }
 
-  // --- 2. GESTIONE ERRORE (LOGICA IN ENTRATA) ---
+  // --- GESTIONE ERRORE (LOGICA IN ENTRATA) ---
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
 
-      // Se il server risponde 401 (Non autorizzato) o 403 (Proibito)
-      if (error.status === 401 || error.status === 403) {
+      // Se il server risponde 401 o 403 su qualsiasi altra richiesta
+      if (error.status === 401 || error.status === 403)
+      {
         console.error('Sessione scaduta o non autorizzata. Reindirizzamento...');
-
-        // Puliamo il localStorage perché il token non è più valido
         localStorage.removeItem('token');
-
-        // Portiamo l'utente alla pagina di login
         router.navigate(['/login']);
       }
 
-      // Propaghiamo l'errore al componente che ha fatto la chiamata
       return throwError(() => error);
     })
   );

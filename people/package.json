@@ -1,0 +1,16 @@
+{
+  "name": "people",
+  "version": "1.0.0",
+  "description": "Progetto Spring Boot scritto dal professore come base didattica. Modella un albero genealogico con entità `Person` e `Trait`.",
+  "main": "test.jest.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.3.0"
+  }
+}

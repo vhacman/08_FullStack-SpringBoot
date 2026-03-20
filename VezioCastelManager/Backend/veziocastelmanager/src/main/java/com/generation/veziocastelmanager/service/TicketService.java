@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -65,5 +66,15 @@ public class TicketService
     public void deleteById(int id)
     {
         ticketRepository.deleteById(id);
+    }
+
+    //TODO: implementare un sistema che permetta all'utente di estrapolare le informazioni
+    // di tutti i biglietti che ha prodotto in un dato giorno.
+    public List<TicketDTO>      findAllForToday()
+    {
+        LocalDate       today = LocalDate.now();
+        List<Ticket>    tickets = ticketRepository.findAllByDate(today);
+        List<TicketDTO> ticketDTOs = ticketMapper.toDTOs(tickets);
+        return ticketDTOs;
     }
 }

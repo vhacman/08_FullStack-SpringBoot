@@ -1,6 +1,12 @@
-# 09 — FullStack Spring Boot
+<div align="center">
 
-Applicazioni full-stack con backend Spring Boot REST API e frontend Angular 21. Ogni progetto è strutturato con backend e frontend separati.
+# 08 — FullStack Spring Boot + Angular
+
+Applicazioni full-stack con backend **Spring Boot 4** + **MySQL** e frontend **Angular 21**.
+
+</div>
+
+---
 
 ## Progetti
 
@@ -12,6 +18,9 @@ Applicazioni full-stack con backend Spring Boot REST API e frontend Angular 21. 
 | [BloggerV01](BloggerV01/) | Piattaforma blog con utenti, blog e palette — solo backend | Spring Boot, MySQL, JPA, PortalUser, Blog, Enum |
 | [SBBPROF](SBBPROF/) | Gestione hotel full-stack: ospiti, camere, prenotazioni, utenti | Spring Boot, Angular 21, MySQL, CRUD completo |
 | [VezioCastelManager](VezioCastelManager/) | Gestione visitatori e biglietti per museo/castello | Spring Boot, Angular 21, MySQL, Ticket, Visitor, Auth |
+| [people](people/) | Albero genealogico con query JPQL avanzate — base didattica del professore | Spring Boot, MySQL, JPA, JPQL, Jest |
+
+---
 
 ## Struttura comune
 
@@ -22,7 +31,58 @@ ProjectName/
 └── [project]FeVecchio/   # Frontend (versione precedente, se presente)
 ```
 
-## Stack
+---
 
-**Backend:** Java 21, Spring Boot 4, Spring Data JPA, Hibernate, MySQL, Maven
-**Frontend:** Angular 21, TypeScript, HttpClient
+## Stack Tecnologico
+
+| Layer | Tecnologie |
+|-------|------------|
+| **Backend** | Java 21, Spring Boot 4, Spring Data JPA, Hibernate, MySQL, Maven |
+| **Frontend** | Angular 21, TypeScript 5.9, HttpClient, Signals |
+| **Mapping** | MapStruct 1.6.3, Lombok |
+| **Testing** | Jest (people), Postman |
+| **Pattern** | DTO, Repository, Service, MapStruct mapper |
+
+---
+
+## Concetti sviluppati
+
+| Concetto | Progetti |
+|----------|----------|
+| REST API + DTO + MapStruct | BloodWork, PetShelter, ProgettoSBB, fooddelivery |
+| Enum su entità JPA | PetShelter, BloggerV01 |
+| Autenticazione con ruoli | ProgettoSBB, VezioCastelManager |
+| CRUD completo fullstack | SBBPROF, PetShelter, BloodWork |
+| Query JPQL con `@Query` | people |
+| Test automatici con Jest | people |
+| Relazioni Many-to-One / One-to-Many | Tutti |
+
+---
+
+## Avvio backend
+
+```bash
+# Da [project]be/
+./mvnw spring-boot:run
+```
+
+Richiede MySQL in esecuzione. Configurare credenziali in `src/main/resources/application.properties`.
+Porta default: `8080`.
+
+## Avvio frontend
+
+```bash
+cd [project]fe
+npm install
+npm start   # → http://localhost:4200
+```
+
+---
+
+<div align="center">
+
+**Hacman Viorica Gabriela** | Generation Italy — Java Full Stack Developer
+
+[Torna al README principale](../README.md)
+
+</div>

@@ -2,7 +2,16 @@
   <p class="error">{{ errorMessage() }}</p>
 }
 
+<!-- Bottone esportazione XML: scarica tutti i biglietti come file tickets.xml -->
+<button mat-raised-button color="primary" (click)="exportAllAsXml()">
+  <mat-icon>download</mat-icon> Esporta XML
+</button>
+
 <table mat-table [dataSource]="tickets()">
+
+
+
+  <!-- tabella esistente sotto... -->
 
   <!-- ID -->
   <ng-container matColumnDef="id">
